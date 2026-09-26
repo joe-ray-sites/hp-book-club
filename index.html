@@ -1635,6 +1635,361 @@ html.house-page-open body { overflow: hidden; }
 }
 
 
+/* ── Club › Discussion Guides (SW v10): age gate, sticky age bar, chapter cards ── */
+.age-gate .club-intro-title { margin-bottom: 6px; }
+.age-options { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.age-option {
+  display: grid; grid-template-columns: 64px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 14px; align-items: center;
+  width: 100%; padding: 12px 14px; border-radius: 14px; text-align: left; cursor: pointer;
+  background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid transparent; -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+.age-option:active { transform: scale(0.99); }
+.age-option:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+@media (hover: hover) { .age-option:hover { border-color: var(--md-sys-color-primary); } }
+.age-option-label { grid-row: 1 / span 2; font-family: var(--font-serif); font-size: 22px; font-weight: 700; line-height: 1; color: var(--md-sys-color-primary); }
+.age-option-name { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); }
+.age-option-blurb { font-family: var(--font-sans); font-size: 14px; line-height: 1.4; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
+
+.age-bar {
+  position: sticky; top: calc(56px + env(safe-area-inset-top, 0px) + 8px); z-index: 20;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 10px 8px 14px; margin: 0 0 12px; border-radius: 30px;
+  background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid var(--md-sys-color-primary); box-shadow: 0 10px 26px -10px rgba(0,0,0,0.32);
+}
+.age-bar-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); flex: 1; white-space: nowrap; }
+.age-seg { display: inline-flex; gap: 4px; padding: 3px; border-radius: 22px; background: var(--md-sys-color-surface-container); }
+.age-seg-btn {
+  min-height: 36px; min-width: 56px; padding: 6px 12px; border-radius: 18px; cursor: pointer;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+  background: transparent; color: var(--md-sys-color-on-surface); border: none;
+  -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s;
+}
+.age-seg-btn[aria-pressed="true"] { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.age-seg-btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.guide-books { margin-bottom: 2px; }
+.guide-intro .club-intro-title { font-size: 19px; }
+.guide-num { font-family: var(--font-serif); font-size: 20px; font-weight: 700; }
+.guide-recap { font-family: var(--font-serif); font-size: 15px; line-height: 1.5; font-style: italic; color: var(--md-sys-color-on-surface-variant); margin: 14px 0 12px; }
+.guide-qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.guide-q { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px 10px 8px; border-radius: 12px; background: var(--md-sys-color-surface-container); border: 1.5px solid transparent; transition: border-color 0.2s, background 0.2s; }
+.guide-q.is-picked { border-color: var(--md-sys-color-primary); background: var(--md-sys-color-primary-container); }
+.guide-q.is-done .guide-q-text { color: var(--md-sys-color-on-surface-variant); text-decoration: line-through; text-decoration-color: var(--md-sys-color-outline); }
+.guide-check { flex-shrink: 0; width: 40px; height: 40px; margin: -6px 0 -6px -2px; border-radius: 50%; border: none; background: transparent; color: var(--md-sys-color-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+.guide-check .material-symbols-rounded { font-size: 24px; }
+.guide-check:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -2px; }
+.guide-q-text { font-family: var(--font-sans); font-size: 16px; line-height: 1.45; padding-top: 2px; outline: none; }
+.guide-spark { margin-top: 12px; }
+.guide-actions { margin-top: 12px; }
+
+@media (prefers-reduced-motion: reduce) { .age-option, .age-seg-btn, .guide-q { transition: none; } }
+
+
+/* ── Club › Notes (SW v11): three levels, callouts, and the rich-text notes sheet ──
+   The sheet, toolbar and editor are the reference app's notes feature (its #notes-modal,
+   .fmt-bar and .notes-editor, ref L886–998 + L2846–2930), restated in this app's tokens and
+   fonts. The level pages, chapter grid and the Theme / Interesting Things callouts are new. */
+
+/* CTA row (ref .card-cta L1800–1814) — "Take notes" / "Edit notes" / "Share" */
+.card-cta {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  margin-top: 4px; padding: 12px 14px; border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: none; cursor: pointer; font-family: var(--font-sans); text-align: left;
+  color: var(--md-sys-color-primary); font-size: 15px; font-weight: 600;
+  text-decoration: none; -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, transform 0.1s;
+}
+.card-cta:active { transform: scale(0.99); }
+.card-cta:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+@media (hover: hover) { .card-cta:hover { background: var(--md-sys-color-primary-container); } }
+.card-cta .cta-lead { font-size: 20px; flex-shrink: 0; }
+.card-cta .cta-label { flex: 1; }
+.card-cta .cta-arrow { font-size: 18px; flex-shrink: 0; }
+.card-cta.card-cta--secondary { background: transparent; padding: 9px 14px; font-size: 13px; }
+.card-cta + .card-cta { margin-top: 6px; }
+
+/* Scope strip: "All books" + the seven books (same .book-picker tiles as Listen / Guides) */
+.note-scope { margin-bottom: 2px; }
+.note-scope .book-tile .material-symbols-rounded { font-size: 22px; display: block; color: var(--md-sys-color-primary); }
+.note-scope .book-tile[aria-selected="true"] .material-symbols-rounded { color: var(--hp-chrome-accent); }
+.note-crumb { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); margin: 0 0 6px; }
+.note-crumb button { background: none; border: 0; padding: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--md-sys-color-primary); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; -webkit-tap-highlight-color: transparent; }
+.note-crumb .material-symbols-rounded { font-size: 14px; }
+.note-crumb b { color: var(--md-sys-color-on-surface); font-weight: 600; }
+
+/* A saved note's first lines, under its button */
+.note-preview { font-family: var(--font-serif); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin: 10px 2px 2px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.note-hint { font-family: var(--font-sans); font-size: 14px; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 0 0 10px; }
+
+/* Chapter grid: pick a chapter before the chapter notes appear */
+.note-chgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 6px; margin: 10px 0 4px; }
+.note-ch {
+  position: relative; min-height: 46px; border-radius: 12px; cursor: pointer;
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700; letter-spacing: 0.02em;
+  background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid transparent; -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.note-ch:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.note-ch[aria-pressed="true"] { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-primary); }
+.note-ch.has-note::after { content: ""; position: absolute; right: 6px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--hp-metal); }
+.note-ch[aria-pressed="true"].has-note::after { background: var(--md-sys-color-on-primary); }
+.note-ch-ep { font-size: 12px; letter-spacing: 0.06em; }
+
+/* Chapter page */
+.note-chapter .club-intro-title { margin-bottom: 4px; }
+.note-chapter-sub { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--md-sys-color-on-surface-variant); margin: 0 0 14px; }
+
+/* Callouts: Theme (one sentence) and Interesting Things (three sentences) */
+.note-callout { border: 1.5px solid var(--md-sys-color-outline-variant); border-left: 4px solid var(--md-sys-color-primary); border-radius: 12px; padding: 10px 12px 12px; margin: 0 0 12px; background: var(--md-sys-color-surface-container); }
+.note-callout-head { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); margin-bottom: 8px; }
+.note-callout-head .material-symbols-rounded { font-size: 18px; }
+.note-callout-hint { margin-left: auto; font-weight: 400; letter-spacing: 0.06em; text-transform: none; color: var(--md-sys-color-on-surface-variant); }
+.note-input {
+  display: block; width: 100%; box-sizing: border-box; min-height: 44px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1.5px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.4;
+}
+.note-input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
+.note-input:focus { outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; border-color: transparent; }
+.note-line {
+  display: flex; align-items: flex-start; gap: 8px; width: 100%; text-align: left;
+  padding: 8px 8px 8px 10px; border-radius: 10px; border: 1.5px solid transparent; background: transparent;
+  color: var(--md-sys-color-on-surface); cursor: text; -webkit-tap-highlight-color: transparent;
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.45;
+}
+.note-line:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+@media (hover: hover) { .note-line:hover { border-color: var(--md-sys-color-outline-variant); } }
+.note-line-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.note-line--theme .note-line-text { font-family: var(--font-serif); font-size: 18px; line-height: 1.4; font-style: italic; }
+.note-line .material-symbols-rounded { flex-shrink: 0; font-size: 18px; color: var(--md-sys-color-on-surface-variant); margin-top: 3px; }
+.note-things { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; counter-reset: things; }
+.note-things li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; }
+.note-things li::before { counter-increment: things; content: counter(things); font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--md-sys-color-secondary); padding-top: 12px; text-align: center; }
+
+/* Digest (All books) and "Themes so far" (book page) */
+.note-digest { margin-top: 12px; }
+.note-digest-book { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: 0; padding: 8px 0 4px; cursor: pointer; color: var(--md-sys-color-on-surface); -webkit-tap-highlight-color: transparent; }
+.note-digest-book .note-digest-num { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); }
+.note-digest-book .note-digest-title { font-family: var(--font-serif); font-size: 17px; font-weight: 600; flex: 1; }
+.note-digest-book .material-symbols-rounded { font-size: 20px; color: var(--md-sys-color-on-surface-variant); }
+.note-digest-rows { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.note-digest-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; width: 100%; text-align: left; padding: 8px 10px; border-radius: 10px; background: var(--md-sys-color-surface-container); border: 0; cursor: pointer; color: var(--md-sys-color-on-surface); -webkit-tap-highlight-color: transparent; }
+.note-digest-row:focus-visible, .note-digest-book:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.note-digest-row .note-digest-ch { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-sys-color-primary); padding-top: 3px; }
+.note-digest-row .note-digest-text { font-family: var(--font-serif); font-size: 15px; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.note-digest-row .note-digest-text.is-theme { font-style: italic; }
+.note-digest-row .note-digest-text.is-plain { color: var(--md-sys-color-on-surface-variant); }
+.note-empty { font-family: var(--font-sans); font-size: 14px; color: var(--md-sys-color-on-surface-variant); text-align: center; padding: 14px 8px 4px; }
+
+/* ── The notes sheet (ref #notes-modal) ─────────────────────────────────── */
+.notes-modal-overlay {
+  position: fixed; inset: 0; z-index: 1060;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+}
+.notes-modal-overlay.open { display: flex; animation: hpSheetFade 0.22s ease; }
+.notes-modal-container {
+  position: relative;
+  background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
+  border-radius: 28px 28px 0 0;
+  width: 100%; max-width: 640px;
+  height: min(92dvh, 100%); display: flex; flex-direction: column;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.35);
+}
+.notes-modal-overlay.open .notes-modal-container { animation: hpSheetUp 0.28s cubic-bezier(0.22,1,0.36,1); }
+.notes-modal-drag { width: 36px; height: 4px; border-radius: 2px; background: var(--md-sys-color-outline-variant); margin: 12px auto 4px; flex-shrink: 0; }
+.notes-modal-header { display: flex; align-items: center; gap: 8px; padding: 10px 8px 10px 16px; border-bottom: 1px solid var(--md-sys-color-outline-variant); flex-shrink: 0; }
+.notes-modal-drag, .notes-modal-header { touch-action: none; -webkit-user-select: none; user-select: none; }
+.notes-modal-drag { cursor: grab; }
+.notes-modal-icon { color: var(--md-sys-color-primary); font-size: 20px; flex-shrink: 0; }
+.notes-modal-title { font-family: var(--font-sans); font-size: 16px; font-weight: 600; flex: 1; min-width: 0; color: var(--md-sys-color-on-surface); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notes-modal-header .icon-btn { margin-left: auto; color: var(--md-sys-color-on-surface-variant); }
+
+/* Formatting toolbar (ref .fmt-bar L903–946). The buttons scroll inside .fmt-scroll; the swatch
+   popover is a SIBLING of that scroller — `overflow-x: auto` forces overflow-y to auto as well, so a
+   popover inside the scroller was clipped to the bar's 49 px (hit in the pane, 2026-09-26). */
+.fmt-bar {
+  flex-shrink: 0; position: relative;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface);
+}
+.fmt-scroll {
+  display: flex; align-items: center; gap: 2px;
+  overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+  padding: 6px 10px;
+}
+.fmt-scroll::-webkit-scrollbar { display: none; }
+.fmt-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; flex-shrink: 0;
+  border: none; border-radius: 8px; background: transparent; cursor: pointer;
+  color: var(--md-sys-color-on-surface-variant);
+  -webkit-tap-highlight-color: transparent;
+}
+.fmt-btn:active { background: var(--md-sys-color-surface-variant); }
+.fmt-btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -2px; }
+.fmt-btn .material-symbols-rounded { font-size: 20px; }
+.fmt-sep { width: 1px; height: 22px; margin: 0 5px; background: var(--md-sys-color-outline-variant); flex-shrink: 0; }
+.fmt-pop {
+  display: none;
+  position: absolute; top: calc(100% + 4px); right: 10px; z-index: 5;
+  padding: 8px; gap: 8px;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px; box-shadow: var(--md-sys-elevation-2);
+}
+.fmt-pop.open { display: flex; flex-wrap: wrap; max-width: 200px; }
+.fmt-sw { width: 26px; height: 26px; flex-shrink: 0; border: 1px solid var(--md-sys-color-outline-variant); border-radius: 50%; cursor: pointer; padding: 0; -webkit-tap-highlight-color: transparent; }
+.fmt-sw:active { transform: scale(0.9); }
+.fmt-sw--none { background: linear-gradient(45deg, transparent 44%, var(--md-sys-color-error) 44%, var(--md-sys-color-error) 56%, transparent 56%), var(--md-sys-color-surface) !important; }
+
+/* The editor (ref .notes-textarea + .notes-editor) */
+.notes-textarea {
+  flex: 1; width: 100%; box-sizing: border-box; min-height: 0;
+  border: none; outline: none; resize: none;
+  padding: 16px 18px;
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.7;
+  -webkit-overflow-scrolling: touch; overflow-y: auto; touch-action: pan-y;
+}
+.notes-editor { outline: none; -webkit-user-select: text; user-select: text; }
+.notes-editor.is-empty:before { content: attr(data-placeholder); color: var(--md-sys-color-on-surface-variant); opacity: 0.6; pointer-events: none; }
+.notes-editor ul, .notes-editor ol { padding-left: 1.5em; margin: 0.4em 0; }
+.notes-editor ul ul, .notes-editor ol ol, .notes-editor ul ol, .notes-editor ol ul { margin: 0.2em 0; }
+.notes-editor li { list-style: disc; margin: 0.15em 0; }
+.notes-editor ol li { list-style: decimal; }
+.notes-editor b, .notes-editor strong { font-weight: 700; }
+/* the bare <blockquote> the indent button leaves outside a list is an indent, not a quote … */
+.notes-editor blockquote { margin: 0.3em 0 0.3em 1.5em; padding: 0; border: none; font-style: normal; }
+/* … a real quotation (.nq, from the quote button) gets the house rule and the serif */
+.notes-editor blockquote.nq { margin: 0.6em 0; padding: 2px 0 2px 14px; border-left: 3px solid var(--md-sys-color-primary); font-family: var(--font-serif); font-style: italic; color: var(--md-sys-color-on-surface); }
+
+.notes-footer { padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--md-sys-color-outline-variant); flex-shrink: 0; display: flex; gap: 10px; align-items: center; }
+.notes-size-btn { min-height: 36px; background: var(--md-sys-color-surface-variant); border: none; border-radius: 20px; padding: 6px 14px; cursor: pointer; color: var(--md-sys-color-on-surface-variant); font-family: var(--font-mono); font-size: 14px; font-weight: 700; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+.notes-size-btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.notes-status { margin-left: auto; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.3; color: var(--md-sys-color-on-surface-variant); padding-right: 4px; }
+.notes-status .material-symbols-rounded { font-size: 16px; }
+.notes-status--saved .material-symbols-rounded { color: var(--md-sys-color-primary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .notes-modal-overlay.open, .notes-modal-overlay.open .notes-modal-container { animation: none; }
+  .card-cta, .note-ch { transition: none; }
+}
+
+
+/* ── Play (SW v12): game picker strip → one game panel. First game: The Half-Way Quest ──
+   Same tile strip as Listen / Club (.book-picker + .book-tile, here .game-tile). The quest reuses the
+   Club's card primitives (.club-intro, .eyebrow, .btn) and adds a cover plate, a sticky challenge
+   rail, staged reveals (task → clue → video → completion) and the letter-grid puzzle. */
+.play-head { margin-bottom: 4px; }
+.game-tile { width: 156px; min-height: 112px; }
+.game-tile .material-symbols-rounded, .game-tile .nav-icon { font-size: 22px; width: 22px; height: 22px; display: block; color: var(--md-sys-color-primary); fill: currentColor; }
+.game-tile[aria-selected="true"] .material-symbols-rounded, .game-tile[aria-selected="true"] .nav-icon { color: var(--hp-chrome-accent); }
+.game-tile .book-tile-title { margin-top: 8px; }
+.game-tile-sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-secondary); margin-top: 3px; }
+.game-tile[aria-selected="true"] .game-tile-sub { color: var(--hp-chrome-muted); }
+
+/* Cover */
+.quest-cover { padding: 0; overflow: hidden; }
+.quest-cover-media { position: relative; background: var(--hp-chrome); color: var(--hp-on-chrome); }
+.quest-cover-media img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; opacity: 0.86; }
+.quest-cover-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, var(--hp-chrome) 100%); }
+.quest-cover-text { position: absolute; left: 18px; right: 18px; bottom: 16px; z-index: 1; }
+.quest-cover-text .eyebrow { color: var(--hp-chrome-accent); margin-bottom: 4px; }
+.quest-cover-title { font-family: var(--font-serif); font-size: 30px; line-height: 1.08; font-weight: 700; margin: 0; color: var(--hp-on-chrome); text-shadow: 0 2px 12px rgba(0,0,0,0.45); }
+.quest-cover-sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--hp-chrome-muted); margin-top: 6px; }
+.quest-cover-body { padding: 16px 18px 18px; }
+.quest-cover-body p { font-family: var(--font-sans); font-size: 15px; line-height: 1.55; color: var(--md-sys-color-on-surface); margin: 0 0 12px; }
+.quest-quote { margin: 0 0 14px; padding: 10px 0 10px 14px; border-left: 3px solid var(--md-sys-color-primary); font-family: var(--font-serif); font-size: 17px; line-height: 1.45; font-style: italic; color: var(--md-sys-color-on-surface); }
+.quest-quote cite { display: block; font-family: var(--font-mono); font-size: 11px; font-style: normal; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-secondary); margin-top: 6px; }
+.quest-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.quest-cover-body .btn { margin-top: 2px; }
+
+/* Sticky rail of challenges */
+.quest-rail {
+  position: sticky; top: calc(56px + env(safe-area-inset-top, 0px) + 8px); z-index: 20;
+  display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  padding: 8px 10px; margin: 0 0 12px; border-radius: 30px;
+  background: var(--md-sys-color-surface); border: 1.5px solid var(--md-sys-color-primary);
+  box-shadow: 0 10px 26px -10px rgba(0,0,0,0.32); touch-action: pan-x;
+}
+.quest-rail::-webkit-scrollbar { display: none; }
+.quest-rail-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); padding: 0 6px 0 4px; white-space: nowrap; flex-shrink: 0; }
+.quest-step {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid transparent; -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.quest-step .material-symbols-rounded { font-size: 20px; }
+.quest-step.is-done { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); }
+.quest-step[aria-current="step"] { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-primary); }
+.quest-step:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.quest-step--puzzle { border-radius: 12px; }
+
+/* Challenge card */
+.quest-card { padding: 0; overflow: hidden; }
+.quest-media { position: relative; background: var(--md-sys-color-surface-container); }
+.quest-media img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 25%; }
+.quest-media .eyebrow { position: absolute; left: 14px; top: 12px; padding: 5px 10px; border-radius: 20px; background: var(--hp-chrome); color: var(--hp-chrome-accent); }
+.quest-body { padding: 14px 18px 18px; }
+.quest-task { font-family: var(--font-serif); font-size: 22px; line-height: 1.2; font-weight: 700; margin: 0 0 6px; }
+.quest-hint { font-family: var(--font-sans); font-size: 14px; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 0 0 12px; }
+.quest-sub { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); margin: 14px 0 6px; display: flex; align-items: center; gap: 6px; }
+.quest-sub .material-symbols-rounded { font-size: 18px; }
+.quest-scroll { border: 1.5px solid var(--md-sys-color-outline-variant); border-left: 4px solid var(--hp-metal); border-radius: 12px; background: var(--md-sys-color-surface-container); padding: 12px 14px; font-family: var(--font-serif); font-size: 18px; line-height: 1.5; font-style: italic; color: var(--md-sys-color-on-surface); }
+.quest-note { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface); margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--md-sys-color-surface-container); }
+.quest-done { border-radius: 12px; padding: 12px 14px; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-surface); font-family: var(--font-sans); font-size: 16px; line-height: 1.5; }
+.quest-done .quest-done-text { font-family: var(--font-serif); font-size: 19px; font-weight: 700; line-height: 1.3; }
+.quest-done ul { list-style: none; margin: 0; padding: 0; font-family: var(--font-serif); font-size: 17px; line-height: 1.5; font-style: italic; }
+.quest-reward { margin-top: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-primary); }
+.quest-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.quest-reset { align-self: center; background: none; border: 0; padding: 8px 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-on-surface-variant); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; -webkit-tap-highlight-color: transparent; }
+.quest-reset:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; border-radius: 8px; }
+.quest-stage-in { animation: questIn 0.32s ease both; }
+@keyframes questIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Video: a poster with a play button, swapped for the Drive preview frame on tap */
+.quest-video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--hp-chrome); color: var(--hp-on-chrome); }
+.quest-video img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+.quest-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--hp-chrome); }
+.quest-video-btn { position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.45)); border: 0; cursor: pointer; color: var(--hp-on-chrome); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; -webkit-tap-highlight-color: transparent; }
+.quest-video-btn .quest-play-ring { width: 64px; height: 64px; border-radius: 50%; background: var(--hp-metal); color: var(--hp-metal-on); display: flex; align-items: center; justify-content: center; box-shadow: var(--md-sys-elevation-2); }
+.quest-video-btn .quest-play-ring .material-symbols-rounded { font-size: 36px; }
+.quest-video-btn:focus-visible { outline: 3px solid var(--hp-metal); outline-offset: -3px; }
+.quest-video-mark { position: absolute; right: -8%; bottom: -12%; width: 46%; opacity: 0.16; color: var(--hp-metal); pointer-events: none; }
+.quest-video-mark svg { width: 100%; height: auto; fill: currentColor; display: block; }
+.quest-video-links { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); }
+.quest-video-links a { color: var(--md-sys-color-primary); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; gap: 4px; min-height: 32px; }
+.quest-video-links .material-symbols-rounded { font-size: 16px; }
+
+/* Puzzle */
+.quest-puzzle-clue { font-family: var(--font-serif); font-size: 18px; font-style: italic; line-height: 1.45; margin: 0 0 12px; }
+.quest-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 0 0 12px; }
+.quest-letter { aspect-ratio: 1; min-height: 44px; border-radius: 10px; border: 1.5px solid var(--md-sys-color-outline-variant); background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); font-family: var(--font-serif); font-size: 22px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.12s, color 0.12s, transform 0.08s; }
+.quest-letter:active { transform: scale(0.94); background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.quest-letter:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.quest-answer { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 8px 8px 8px 14px; border-radius: 12px; border: 1.5px dashed var(--md-sys-color-outline); background: var(--md-sys-color-surface-container); margin: 0 0 8px; }
+.quest-answer-text { flex: 1; min-width: 0; font-family: var(--font-serif); font-size: 22px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; overflow-wrap: anywhere; color: var(--md-sys-color-on-surface); }
+.quest-answer-text.is-empty { font-family: var(--font-sans); font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--md-sys-color-on-surface-variant); }
+.quest-answer .icon-btn { width: 44px; height: 44px; color: var(--md-sys-color-on-surface-variant); background: transparent; border: 0; cursor: pointer; }
+.quest-bingo { margin-top: 16px; }
+.quest-bingo img { display: block; width: 100%; max-width: 360px; margin: 0 auto; border-radius: 12px; border: 1px solid var(--md-sys-color-outline-variant); background: var(--md-sys-color-surface); }
+.quest-bingo figcaption { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-align: center; color: var(--md-sys-color-on-surface-variant); margin-top: 8px; }
+
+@media (prefers-reduced-motion: reduce) { .quest-stage-in { animation: none; } .quest-step, .quest-letter { transition: none; } }
+
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -1844,6 +2199,68 @@ html[data-mono="1"] .quiz-opt.is-wrong { opacity: 1; border-style: dashed; }
 html[data-mono="1"] .quiz-opt.is-wrong .quiz-key { background: #000; color: #FFF; }
 html[data-mono="1"] .quiz-why b, html[data-mono="1"] .quiz-why.is-wrong b { color: #000; text-decoration: underline; }
 html[data-mono="1"] .quiz-result-grade.is-fail { background: #FFF; color: #000; border: 2px dashed #000; }
+html[data-mono="1"] .age-option, html[data-mono="1"] .guide-q { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .age-option-label, html[data-mono="1"] .age-option-name, html[data-mono="1"] .age-option-blurb, html[data-mono="1"] .guide-check, html[data-mono="1"] .guide-recap { color: #000; }
+html[data-mono="1"] .age-bar { background: #FFF; color: #000; border-color: #000; box-shadow: none; }
+html[data-mono="1"] .age-bar-label { color: #000; }
+html[data-mono="1"] .age-seg { background: #FFF; border: 1px solid #000; }
+html[data-mono="1"] .age-seg-btn { color: #000; }
+html[data-mono="1"] .age-seg-btn[aria-pressed="true"] { background: #000; color: #FFF; }
+html[data-mono="1"] .guide-q.is-picked { background: #000; color: #FFF; }
+html[data-mono="1"] .guide-q.is-picked .guide-check, html[data-mono="1"] .guide-q.is-picked .guide-q-text { color: #FFF; }
+html[data-mono="1"] .guide-q.is-done .guide-q-text { color: #000; text-decoration-color: #000; }
+html[data-mono="1"] .card-cta { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .card-cta.card-cta--secondary { border-style: dashed; }
+html[data-mono="1"] .note-scope .book-tile .material-symbols-rounded { color: #000; }
+html[data-mono="1"] .note-scope .book-tile[aria-selected="true"] .material-symbols-rounded { color: #FFF; }
+html[data-mono="1"] .note-crumb, html[data-mono="1"] .note-crumb button, html[data-mono="1"] .note-crumb b, html[data-mono="1"] .note-preview, html[data-mono="1"] .note-hint, html[data-mono="1"] .note-chapter-sub, html[data-mono="1"] .note-empty { color: #000; }
+html[data-mono="1"] .note-ch { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .note-ch[aria-pressed="true"] { background: #000; color: #FFF; }
+html[data-mono="1"] .note-ch.has-note::after { background: #000; }
+html[data-mono="1"] .note-ch[aria-pressed="true"].has-note::after { background: #FFF; }
+html[data-mono="1"] .note-callout { background: #FFF; border-color: #000; }
+html[data-mono="1"] .note-callout-head, html[data-mono="1"] .note-callout-hint, html[data-mono="1"] .note-things li::before { color: #000; }
+html[data-mono="1"] .note-input { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .note-line, html[data-mono="1"] .note-line .material-symbols-rounded { color: #000; }
+html[data-mono="1"] .note-digest-book, html[data-mono="1"] .note-digest-book .note-digest-num, html[data-mono="1"] .note-digest-book .material-symbols-rounded { color: #000; }
+html[data-mono="1"] .note-digest-row { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .note-digest-row .note-digest-ch, html[data-mono="1"] .note-digest-row .note-digest-text.is-plain { color: #000; }
+html[data-mono="1"] .notes-modal-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-mono="1"] .notes-modal-container { background: #FFF; color: #000; border-top: 2px solid #000; box-shadow: none; }
+html[data-mono="1"] .notes-modal-drag { background: #000; }
+html[data-mono="1"] .notes-modal-header, html[data-mono="1"] .fmt-bar, html[data-mono="1"] .notes-footer { border-color: #000; background: #FFF; }
+html[data-mono="1"] .notes-modal-icon, html[data-mono="1"] .notes-modal-title, html[data-mono="1"] .fmt-btn, html[data-mono="1"] .notes-status, html[data-mono="1"] .notes-status--saved .material-symbols-rounded { color: #000; }
+html[data-mono="1"] .fmt-sep { background: #000; }
+html[data-mono="1"] .fmt-pop { background: #FFF; border-color: #000; box-shadow: none; }
+html[data-mono="1"] .fmt-sw { border-color: #000; filter: grayscale(1); }
+html[data-mono="1"] .notes-size-btn { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .notes-editor { color: #000; filter: grayscale(1); }
+html[data-mono="1"] .notes-editor blockquote.nq { border-color: #000; color: #000; }
+html[data-mono="1"] .game-tile .material-symbols-rounded, html[data-mono="1"] .game-tile .nav-icon, html[data-mono="1"] .game-tile-sub { color: #000; }
+html[data-mono="1"] .game-tile[aria-selected="true"] .material-symbols-rounded, html[data-mono="1"] .game-tile[aria-selected="true"] .nav-icon, html[data-mono="1"] .game-tile[aria-selected="true"] .game-tile-sub { color: #FFF; }
+html[data-mono="1"] .quest-cover-media { background: #000; color: #FFF; }
+html[data-mono="1"] .quest-cover-media img { filter: grayscale(1); opacity: 0.7; }
+html[data-mono="1"] .quest-cover-media::after { background: linear-gradient(180deg, rgba(0,0,0,0) 30%, #000 100%); }
+html[data-mono="1"] .quest-cover-text .eyebrow, html[data-mono="1"] .quest-cover-title, html[data-mono="1"] .quest-cover-sub { color: #FFF; text-shadow: none; }
+html[data-mono="1"] .quest-cover-body p, html[data-mono="1"] .quest-quote, html[data-mono="1"] .quest-quote cite, html[data-mono="1"] .quest-hint, html[data-mono="1"] .quest-sub, html[data-mono="1"] .quest-reward, html[data-mono="1"] .quest-reset, html[data-mono="1"] .quest-video-links, html[data-mono="1"] .quest-video-links a, html[data-mono="1"] .quest-bingo figcaption, html[data-mono="1"] .quest-answer-text, html[data-mono="1"] .quest-answer .icon-btn { color: #000; }
+html[data-mono="1"] .quest-quote { border-color: #000; }
+html[data-mono="1"] .quest-rail { background: #FFF; border-color: #000; box-shadow: none; }
+html[data-mono="1"] .quest-rail-label { color: #000; }
+html[data-mono="1"] .quest-step { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .quest-step.is-done { background: #FFF; color: #000; border: 2px solid #000; }
+html[data-mono="1"] .quest-step[aria-current="step"] { background: #000; color: #FFF; }
+html[data-mono="1"] .quest-media { background: #FFF; }
+html[data-mono="1"] .quest-media img, html[data-mono="1"] .quest-video img, html[data-mono="1"] .quest-bingo img { filter: grayscale(1); }
+html[data-mono="1"] .quest-media .eyebrow { background: #000; color: #FFF; }
+html[data-mono="1"] .quest-scroll, html[data-mono="1"] .quest-note, html[data-mono="1"] .quest-done { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .quest-scroll { border-left-width: 4px; }
+html[data-mono="1"] .quest-video { background: #000; color: #FFF; }
+html[data-mono="1"] .quest-video-btn { color: #FFF; }
+html[data-mono="1"] .quest-video-btn .quest-play-ring { background: #FFF; color: #000; box-shadow: none; }
+html[data-mono="1"] .quest-video-mark { color: #FFF; }
+html[data-mono="1"] .quest-letter { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .quest-letter:active { background: #000; color: #FFF; }
+html[data-mono="1"] .quest-answer { background: #FFF; border-color: #000; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -2022,14 +2439,13 @@ html[data-mono="1"] .quiz-result-grade.is-fail { background: #FFF; color: #000; 
   <!-- ── PLAY ── -->
   <section class="section" id="section-play" data-section="play">
     <div class="section-inner section-inner--pad">
-      <div class="card tab-card">
-        <div class="card-body">
-          <div class="eyebrow">Play</div>
-          <h2 class="display">Games</h2>
-          <p class="lead">A set of interactive games from the wizarding world is coming here.</p>
-          <span class="chip">In progress</span>
-        </div>
+      <div class="play-head">
+        <div class="eyebrow">Play</div>
+        <h2 class="display">Games</h2>
+        <p class="lead">Pick a game, then play it through.</p>
       </div>
+      <div class="book-picker" id="playGames" role="tablist" aria-label="Choose a game"></div>
+      <div id="playPanel"></div>
     </div>
   </section>
 
@@ -2116,6 +2532,24 @@ html[data-mono="1"] .quiz-result-grade.is-fail { background: #FFF; color: #000; 
 </nav>
 
 <!-- ── Shared bottom sheet (ids per the primitives' contract: overlay #hp-sheet-overlay, container #hp-sheet) ── -->
+<!-- Notes sheet (ref #notes-modal L15879–15898): rich-text editor with the formatting bar; autosaves -->
+<div id="hp-notes-modal" class="notes-modal-overlay" aria-hidden="true">
+  <div class="notes-modal-container" id="hp-notes-container" role="dialog" aria-modal="true" aria-labelledby="notes-modal-title" tabindex="-1">
+    <div class="notes-modal-drag" aria-hidden="true"></div>
+    <div class="notes-modal-header">
+      <span class="material-symbols-rounded notes-modal-icon" aria-hidden="true">edit_note</span>
+      <span class="notes-modal-title" id="notes-modal-title">Notes</span>
+      <button class="icon-btn" type="button" onclick="closeNotesModal()" title="Close" aria-label="Close notes"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
+    </div>
+    <div class="fmt-bar"><div class="fmt-scroll" role="toolbar" aria-label="Formatting"><button type="button" class="fmt-btn" title="Bold" aria-label="Bold" onmousedown="event.preventDefault()" onclick="fmtCmd('bold')"><span class="material-symbols-rounded" aria-hidden="true">format_bold</span></button><button type="button" class="fmt-btn" title="Italic" aria-label="Italic" onmousedown="event.preventDefault()" onclick="fmtCmd('italic')"><span class="material-symbols-rounded" aria-hidden="true">format_italic</span></button><button type="button" class="fmt-btn" title="Underline" aria-label="Underline" onmousedown="event.preventDefault()" onclick="fmtCmd('underline')"><span class="material-symbols-rounded" aria-hidden="true">format_underlined</span></button><button type="button" class="fmt-btn" title="Bullet list" aria-label="Bullet list" onmousedown="event.preventDefault()" onclick="fmtCmd('insertUnorderedList')"><span class="material-symbols-rounded" aria-hidden="true">format_list_bulleted</span></button><button type="button" class="fmt-btn" title="Numbered list" aria-label="Numbered list" onmousedown="event.preventDefault()" onclick="fmtCmd('insertOrderedList')"><span class="material-symbols-rounded" aria-hidden="true">format_list_numbered</span></button><button type="button" class="fmt-btn" title="Outdent" aria-label="Outdent" onmousedown="event.preventDefault()" onclick="fmtIndent(0)"><span class="material-symbols-rounded" aria-hidden="true">format_indent_decrease</span></button><button type="button" class="fmt-btn" title="Indent" aria-label="Indent" onmousedown="event.preventDefault()" onclick="fmtIndent(1)"><span class="material-symbols-rounded" aria-hidden="true">format_indent_increase</span></button><button type="button" class="fmt-btn" title="Quote" aria-label="Quote" onmousedown="event.preventDefault()" onclick="fmtQuote()"><span class="material-symbols-rounded" aria-hidden="true">format_quote</span></button><span class="fmt-sep" aria-hidden="true"></span><button type="button" class="fmt-btn" title="Text colour" aria-label="Text colour" onmousedown="event.preventDefault()" onclick="fmtTogglePop(this,'fore')"><span class="material-symbols-rounded" aria-hidden="true">format_color_text</span></button><button type="button" class="fmt-btn" title="Highlight" aria-label="Highlight" onmousedown="event.preventDefault()" onclick="fmtTogglePop(this,'hilite')"><span class="material-symbols-rounded" aria-hidden="true">ink_highlighter</span></button></div><div class="fmt-pop"></div></div><div id="notes-editor" class="notes-textarea notes-editor is-empty" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Notes" data-placeholder="Write your notes here…" oninput="noteInput()" onblur="noteSave()"></div>
+    <div class="notes-footer">
+      <button class="notes-size-btn" type="button" onclick="adjustNotesFontSize(-1)" title="Smaller text" aria-label="Smaller text">A−</button>
+      <button class="notes-size-btn" type="button" onclick="adjustNotesFontSize(1)" title="Larger text" aria-label="Larger text">A+</button>
+      <div class="notes-status notes-status--saved" id="notes-status" aria-live="polite"><span class="material-symbols-rounded" aria-hidden="true">cloud_done</span><span>Notes save as you type</span></div>
+    </div>
+  </div>
+</div>
+
 <div class="hp-sheet-overlay" id="hp-sheet-overlay" aria-hidden="true">
   <div class="hp-sheet" id="hp-sheet" role="dialog" aria-modal="true" aria-labelledby="hp-sheet-title" tabindex="-1">
     <div class="hp-sheet-drag" aria-hidden="true"></div>
@@ -2471,7 +2905,7 @@ function initNav() {
    are cleared whenever the overlay is not open. */
 function _fitSheets() {
   const vv = window.visualViewport;
-  document.querySelectorAll('.hp-sheet-overlay').forEach(function (ov) {
+  document.querySelectorAll('.hp-sheet-overlay, .notes-modal-overlay').forEach(function (ov) {
     if (!vv || !ov.classList.contains('open')) {
       ov.style.top = ''; ov.style.bottom = ''; ov.style.height = '';
       return;
@@ -2624,6 +3058,7 @@ function housePageIsOpen() {
 function _onKeydown(e) {
   if (e.key !== 'Escape') return;
   if (typeof closeHousePage === 'function' && housePageIsOpen()) { closeHousePage(); return; }
+  if (typeof notesModalIsOpen === 'function' && notesModalIsOpen()) { closeNotesModal(); return; }
   if (isSheetOpen()) { closeSheet(); return; }
   if (isHeaderMenuOpen()) closeHeaderMenu();
 }
@@ -2671,6 +3106,7 @@ function init() {
   if (typeof initHousePage === 'function') initHousePage();
   if (typeof initListen === 'function') initListen();
   if (typeof initClub === 'function') initClub();
+  if (typeof initPlay === 'function') initPlay();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
@@ -3518,11 +3954,9 @@ function initListen() {
    {classId:{best,total,attempts}}. Plain ES2017. */
 
 var CLUB_TOPICS = [
-  { id: 'guides', name: 'Discussion Guides', icon: 'forum', meta: 'Coming soon', ready: false,
-    blurb: 'Questions and talking points for every book, written for members reading the series together.' },
+  { id: 'guides', name: 'Discussion Guides', icon: 'forum', meta: '7 books', ready: true },
   { id: 'classes', name: 'Classes', icon: 'school', meta: '8 subjects', ready: true },
-  { id: 'notes', name: 'Notes', icon: 'edit_note', meta: 'Coming soon', ready: false,
-    blurb: 'A place to keep your own notes on each book and chapter as you read.' },
+  { id: 'notes', name: 'Notes', icon: 'edit_note', meta: '3 levels', ready: true },
   { id: 'homework', name: 'Homework', icon: 'assignment', meta: 'Coming soon', ready: false,
     blurb: 'Reading assignments and small tasks between meetings.' }
 ];
@@ -3718,6 +4152,8 @@ function selectClubTopic(id) {
   document.querySelectorAll('.club-tile').forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-topic') === id ? 'true' : 'false'); });
   var panel = document.getElementById('clubPanel'); if (!panel) return;
   if (topic.id === 'classes') renderClasses(panel);
+  else if (topic.id === 'guides') renderGuides(panel);
+  else if (topic.id === 'notes') renderNotes(panel);
   else panel.innerHTML = '<div class="club-intro club-soon"><span class="material-symbols-rounded" aria-hidden="true">' + topic.icon + '</span>' +
     '<h3 class="club-intro-title">' + clubEsc(topic.name) + '</h3><p>' + clubEsc(topic.blurb || '') + '</p><span class="chip">Coming soon</span></div>';
   var picker = document.getElementById('clubTopics'), tile = picker && picker.querySelector('.club-tile[data-topic="' + id + '"]');
@@ -3825,9 +4261,1056 @@ function initClub() {
   if (!document.getElementById('clubTopics')) return;
   var stored = null; try { stored = localStorage.getItem('hp-club-topic'); } catch (e) {}
   var ok = CLUB_TOPICS.some(function (t) { return t.id === stored; });
-  clubTopic = ok ? stored : 'classes';         // Classes is the only built topic for now
+  clubTopic = ok ? stored : 'guides';          // first tile; Homework is still a stub
+  if (typeof initGuides === 'function') initGuides();
+  if (typeof initNotes === 'function') initNotes();
   renderClubTopics();
   selectClubTopic(clubTopic);
+}
+
+/* guides.js — Club › Discussion Guides. Harry Potter Book Club.
+   Three audiences (10–13 · 14–17 · 18+). The first visit asks which one is at the table; after
+   that a sticky segmented bar keeps the choice one tap away. First pass: chapters 1–5 of every
+   book, three questions per chapter per audience, plus a "try this" for the room and a
+   one-line recap. Question styles were informed by published guides (Scholastic's reading-club
+   guides, LitLovers, Bookclubs.com); every question here is the club's own.
+   Storage (shared origin → prefixed): hp-club-age (y|t|a), hp-club-guide-book (1–7),
+   hp_club-guides {qid:1} for questions marked "talked about". Plain ES2017. */
+
+var GUIDE_AGES = [
+  { id: 'y', label: '10–13', name: 'Young readers', blurb: 'Questions about what happened, how it felt, and what you would have done.' },
+  { id: 't', label: '14–17', name: 'Teen readers', blurb: 'Why people act the way they do, what the story is really about, and where it touches your own life.' },
+  { id: 'a', label: '18+', name: 'Adult readers', blurb: 'The craft of the writing, the world it holds up a mirror to, and what changes on a re-read.' }
+];
+
+/* GUIDES[book] = [ {n, t, recap, y:[3], t:[3], a:[3], spark} ] — the `t` key on a chapter is its
+   title; the teen questions live under `teen` to avoid the clash. */
+var GUIDES = {
+  1: [
+    { n: 1, t: 'The Boy Who Lived', recap: 'On the day Voldemort falls, owls fly by daylight, a cat reads a map, and a baby is left on a doorstep in Privet Drive.',
+      y: ['The Dursleys are proud of being completely normal. What would they find most annoying about a wizard living next door?', 'Hagrid cries when he hands baby Harry over. What does that tell you about Hagrid before we even meet him properly?', 'Dumbledore leaves Harry with a letter instead of explaining in person. If you were Harry, what would you want that letter to say?'],
+      teen: ['We meet Harry through the eyes of people who despise him. Why might the author start the most famous wizard’s story in the dullest house in England?', 'McGonagall argues Harry should not be left with the Dursleys, and Dumbledore overrules her. Whose instinct do you trust more at this point, and why?', 'Everyone is afraid to say Voldemort’s name except Dumbledore. What does refusing to name a fear do to a community?'],
+      a: ['The chapter is told almost entirely from Vernon Dursley’s limited point of view. What does that choice let the author hide, and what does it let her mock?', 'Dumbledore’s decision to leave Harry with relatives who will not love him is defended as being for his own good. How comfortable are you with that trade, knowing what the next ten years cost Harry?', 'Wizards celebrating in the streets are described as careless and conspicuous. What is the book already suggesting about the magical world’s judgement and its relationship with Muggles?'],
+      spark: 'Quick round: each person names one detail from this chapter that only makes sense once you have read the whole series.' },
+    { n: 2, t: 'The Vanishing Glass', recap: 'Ten years on, Harry sleeps in a cupboard, Dudley counts his thirty-seven presents, and a boa constrictor at the zoo says thank you.',
+      y: ['Harry has a cupboard, Dudley has two bedrooms. What is the most unfair thing the Dursleys do to Harry in this chapter?', 'The snake seems to understand Harry. If you could talk to one animal for a day, which would you pick and what would you ask?', 'Strange things keep happening around Harry: his hair grows back, he ends up on the school roof. Why does he keep getting punished for things he cannot control?'],
+      teen: ['Harry has learned not to ask questions and not to expect anything. How does growing up like that shape the way he treats people later, good and bad?', 'Dudley is spoiled rotten and still miserable. What is the book saying about getting everything you want?', 'Harry feels a strange kinship with a snake raised in captivity that has never seen Brazil. What do the two of them have in common?'],
+      a: ['The Dursleys’ cruelty is played for comedy: the thirty-seven presents, the knitted jumpers, the cupboard. Does the comic tone soften the neglect or sharpen it?', 'Harry’s accidental magic always arrives when he is frightened or angry. How does the book connect magic to emotion here, and how will that idea pay off?', 'Re-reading, the snake conversation is the first hint that Harry can speak Parseltongue. How does the author plant a clue so that it reads as charming on a first pass and ominous on a second?'],
+      spark: 'Vote: which is worse, Dudley’s birthday tantrum or Aunt Petunia pretending Harry does not exist? Defend your choice in one sentence.' },
+    { n: 3, t: 'The Letters from No One', recap: 'A letter arrives addressed to the cupboard under the stairs, then a dozen, then hundreds, and the Dursleys flee to a hut on a rock in the sea.',
+      y: ['The first letter is addressed to “The Cupboard under the Stairs”. How would you feel if a stranger knew exactly where you slept?', 'Uncle Vernon moves Harry into Dudley’s second bedroom to stop the letters. Why does that not work, and what does it show about whoever is sending them?', 'The Dursleys end up in a freezing hut on a rock at sea. Which of them would you least like to be stuck in that hut with?'],
+      teen: ['Vernon would rather go mad than let Harry read one letter. What is he really afraid of?', 'Harry counts down to his eleventh birthday alone, drawing a cake in the dust. What does that small moment tell you about how he has survived the Dursleys?', 'The letters escalate from one to hundreds. What does the wizarding world’s persistence suggest about how it treats people who try to opt out?'],
+      a: ['The chapter is structured as a siege, with the letters as the attacking army. How does the escalating comedy manage suspense while keeping the stakes low enough for a children’s book?', 'Vernon’s unravelling is farcical, but Petunia’s silence is not. Re-reading with her history in mind, what is she thinking as the letters pour in?', 'Harry has never had a birthday cake and is not surprised by it. How does the book use understatement, rather than pathos, to make his neglect land?'],
+      spark: 'Draw or describe the letter you would send to eleven-year-old you. Where would you address it?' },
+    { n: 4, t: 'The Keeper of the Keys', recap: 'At midnight a giant knocks the door down, brings a squashed birthday cake, and tells Harry three things: he is a wizard, his parents were murdered, and the murderer vanished.',
+      y: ['Hagrid’s first words to Harry are about how much he looks like his parents. Why does that matter so much to Harry?', 'Hagrid gives Dudley a pig’s tail. Was that fair? What would you have done in Hagrid’s place?', 'If someone knocked on your door tonight and said you were secretly a wizard, what would you ask them first?'],
+      teen: ['Harry learns in one night that his parents did not die in a car crash, that he is famous, and that a man tried to kill him as a baby. Which of those would be hardest to take in?', 'The Dursleys knew the truth all along and chose to lie. Is there any version of their reasoning that you can understand?', 'Hagrid says of Voldemort, “not everyone is brave enough to say the name”. How does the book use courage as a measure of character from the very start?'],
+      a: ['Hagrid is both the deliverer of the truth and an unreliable, half-informed narrator of it. What does the book gain by having Harry’s origin story told by someone who does not have the full picture?', 'Petunia’s outburst about her sister is the first crack in the Dursleys’ blankness. How does the author use jealousy, rather than simple villainy, to explain her?', 'The pig’s tail is a comic punishment that Hagrid never finishes and never regrets. How does the series handle justice done outside any legal process, here and later?'],
+      spark: 'Rank Hagrid’s three revelations by how they would change your life, most to least. Compare orders around the table.' },
+    { n: 5, t: 'Diagon Alley', recap: 'Through the back of a dingy pub: a goblin bank with a vault that holds one small package, a boy in a robe shop with opinions about the right sort, and a wand that chooses its owner.',
+      y: ['Harry is rich in the wizarding world and poor in the Muggle one. What is the first thing you would buy in Diagon Alley?', 'The pale boy at Madam Malkin’s reminds Harry of Dudley. What do the two boys have in common?', 'Ollivander says the wand chooses the wizard. What do you think Harry’s wand saw in him?'],
+      teen: ['Hagrid warns Harry not to trust goblins, and Ollivander is frankly creepy. How does the book teach Harry, and us, to read new people quickly?', 'The Malfoy boy sorts people before he has met them: Hufflepuff losers, the wrong sort. Where have you seen that kind of instant sorting outside a book?', 'Harry’s wand shares a core with Voldemort’s. How does it feel to have something in common with the person who destroyed your family?'],
+      a: ['Diagon Alley is a shopping trip that doubles as a full introduction to an economy, a class system and a history. How does the author dispense that much information without it feeling like a lecture?', 'Gringotts vault 713 and the brother wand are both planted here. Which plant is more elegant on a re-read, and why?', 'Hagrid’s account of the houses, with Slytherin as the one that produced all the Dark wizards, is the first opinion Harry hears. How much of the series’ house prejudice is seeded by one biased adult in a pub?'],
+      spark: 'Everyone chooses a wand: name the wood, the core and the length. The table decides whether it suits you.' }
+  ],
+  2: [
+    { n: 1, t: 'The Worst Birthday', recap: 'Harry turns twelve and nobody notices. The Dursleys rehearse a dinner party, Hedwig is locked up, and something with huge eyes watches from the hedge.',
+      y: ['No cards, no presents, and his friends have not written all summer. What would you do if you thought your best friends had forgotten you?', 'The Dursleys plan the whole evening around impressing the Masons. What is the silliest part of their plan?', 'Something is watching Harry from the garden hedge. What did you guess it was?'],
+      teen: ['After a year at Hogwarts, Privet Drive feels worse to Harry, not better. Why does knowing a better place exist make a bad one harder?', 'Uncle Vernon rehearses everyone’s lines like a play. What is he performing, and for whom?', 'Harry’s only weapon against the Dursleys is the threat of magic he is not allowed to use. What happens to a person when their power is entirely a bluff?'],
+      a: ['The second book opens almost exactly where the first did, in the same house with the same people. What does the repetition establish about the series’ rhythm, and what has shifted?', 'The Masons’ dinner is a satire of suburban social climbing. What, specifically, is being satirised, and does it still land?', 'Hedwig locked in her cage is Harry’s situation in miniature. How often does the series use animals as mirrors for their owners?'],
+      spark: 'Plan the birthday Harry should have had. Each person contributes one detail: a guest, a gift, a place.' },
+    { n: 2, t: 'Dobby’s Warning', recap: 'A house-elf in a pillowcase begs Harry not to return to Hogwarts, confesses to stealing his letters, and drops a pudding on the Masons. Bars go up on the bedroom window.',
+      y: ['Dobby punishes himself every time he says something rude about his family. How would you try to help someone who does that?', 'Dobby thinks he is protecting Harry by keeping him away from school. Was he right to steal the letters?', 'The Ministry sends a warning to Harry for magic Dobby did. Has anyone ever blamed you for something you did not do? What did you do about it?'],
+      teen: ['Dobby serves a family he clearly fears and is not allowed to speak against. What does the book want you to notice about how the wizarding world treats him?', 'Dobby loves Harry and still wrecks his evening, gets him locked up, and nearly gets him expelled. Can good intentions excuse that?', 'The Ministry’s letter does not care who cast the spell, only where. What does that tell you about how magical law sees Harry’s household?'],
+      a: ['Dobby is introduced as comic relief and turns out to be the book’s first look at slavery. How does the tone manage both, and does it ever tip too far one way?', 'The Ministry’s Trace cannot tell Harry’s magic from Dobby’s. What does this early glimpse of magical bureaucracy suggest about the institution we will come to know?', 'Harry is now literally caged. How does the author escalate the Dursleys’ treatment from neglect to imprisonment without changing the comic register?'],
+      spark: 'Two-minute debate: Dobby was right to keep Harry away from Hogwarts. One side argues for, one against, then swap.' },
+    { n: 3, t: 'The Burrow', recap: 'A flying Ford Anglia at the window, a rescue by three Weasleys, and Harry’s first sight of a wizarding home: crooked, crowded, and full of things that talk.',
+      y: ['The Weasleys pull the bars off Harry’s window with a flying car. What is the bravest and what is the silliest part of that rescue?', 'The Burrow is nothing like Privet Drive: a clock with no numbers, dishes that wash themselves, ghouls in the attic. Which bit of the Burrow would you want in your own house?', 'Mrs Weasley is furious with her sons and kind to Harry in the same breath. Why can she be both at once?'],
+      teen: ['Ron is embarrassed by his home and Harry thinks it is the best house he has ever seen. Why do we so often see our own lives more harshly than others do?', 'Mrs Weasley’s anger is the first time anyone has been frightened for Harry rather than of him. How does he react to being worried about?', 'Mr Weasley is fascinated by Muggles and knows almost nothing about them. Is his interest respectful, patronising, or both?'],
+      a: ['The Burrow is the book’s picture of a loving home: loud, poor, chaotic. How does the author write warmth without sentimentality?', 'Ginny cannot speak in Harry’s presence. On a re-read, how much of this book’s plot is already visible in that silence?', 'Mr Weasley enchants a Muggle car in defiance of his own department’s rules. What does the series think of small, affectionate hypocrisies, and where does it draw the line?'],
+      spark: 'Describe the Weasley clock hand for someone at this table. Where would it be pointing right now?' },
+    { n: 4, t: 'At Flourish and Blotts', recap: 'Floo powder goes wrong and drops Harry in Knockturn Alley, Gilderoy Lockhart poses for the cameras, and two fathers come to blows in a bookshop.',
+      y: ['Harry says “Diagonally” and ends up somewhere frightening. Have you ever got badly lost? What did you do?', 'Lockhart drags Harry into a photograph he did not want. How would you have got out of it?', 'Mr Weasley and Mr Malfoy fight in a bookshop while their children watch. Who behaved worst in that scene?'],
+      teen: ['In Borgin and Burkes, Draco complains that Harry gets special treatment and his father tells him to keep his opinions quiet. What does that exchange tell you about the Malfoy household?', 'Lockhart is famous for books about things he says he did. Why do people so readily believe a confident man with good teeth?', 'Mr Malfoy sneers at the Weasleys for being poor and for liking Muggles. Which insult is he more offended by, and why?'],
+      a: ['Knockturn Alley shows the wizarding world’s underside within an hour of Diagon Alley’s charm. What does the proximity say about how the author builds her world?', 'Lucius Malfoy slips a diary into Ginny’s cauldron in plain sight of the reader. How does the author make the moment nearly invisible on a first read?', 'Lockhart is a portrait of celebrity manufactured from other people’s stories. Which parts of that satire feel sharper now than when the book was written?'],
+      spark: 'Cast Lockhart’s next book. Each person invents a title in his style: an alliterative creature and a verb.' },
+    { n: 5, t: 'The Whomping Willow', recap: 'The barrier to platform nine and three-quarters seals shut, two boys fly a car to Scotland, a tree hits back, and Snape gets the disciplinary meeting of his dreams.',
+      y: ['The barrier will not let Harry and Ron through, so they fly the car. Was that clever, brave, or a terrible idea? Can it be all three?', 'The Whomping Willow smashes the car, and then the car drives off into the forest on its own. Do you feel sorry for the car?', 'Snape wants them expelled; McGonagall gives detention. Which teacher would you rather be in trouble with?'],
+      teen: ['Ron and Harry had other options: waiting for the Weasleys, sending Hedwig. Why do twelve-year-olds so often pick the most dramatic plan?', 'Snape is openly delighted to catch Harry. What is it about Harry, before Harry has done anything, that Snape cannot stand?', 'Dumbledore’s disappointment hurts Harry more than any punishment. Why does disappointing someone you respect feel worse than being shouted at?'],
+      a: ['The flying-car sequence is pure wish-fulfilment that ends in a wrecked tree, a broken wand and a snapped friendship with an adult. How does the author let the fantasy run and still charge for it?', 'Snape reads the Evening Prophet aloud, and the boys realise they have been seen by Muggles. What does the book think the actual harm of the stunt was, and does it match what the adults punish?', 'Ron’s broken wand will misfire all year. How does the series use damaged objects to track a character’s fortunes?'],
+      spark: 'Sentence the boys yourselves. The table agrees on one fair consequence that is neither Snape’s nor McGonagall’s.' }
+  ],
+  3: [
+    { n: 1, t: 'Owl Post', recap: 'Harry does his homework under the covers by torchlight and, for the first time in his life, gets birthday presents: three owls, a Pocket Sneakoscope, and a book that bites.',
+      y: ['Harry hides his homework under the blankets because the Dursleys hate magic. What is the most unusual place you have ever done homework?', 'The Monster Book of Monsters attacks everything in the room. How would you calm down a book with teeth?', 'Ron’s family won a prize and went to Egypt. Where would you take your family if you won?'],
+      teen: ['This is the first birthday Harry has ever properly celebrated, and he does it alone at midnight. Why does the author give him joy and loneliness in the same scene?', 'Hermione sends a practical gift, Ron a mysterious one, Hagrid a dangerous one. What does each present say about the friend who chose it?', 'The Hogsmeade permission form needs a guardian’s signature. How does a small piece of paperwork become a symbol of everything Harry does not have?'],
+      a: ['The chapter is constructed as a series of deliveries, each one opening a door onto the plot. How does the author make exposition feel like unwrapping presents?', 'Scabbers appears in the Prophet photograph on Ron’s shoulder in Egypt. Re-reading, how does knowing what that rat is change the temperature of an otherwise cosy chapter?', 'Harry’s summer is defined by secrecy and quiet rebellion rather than open conflict. How has his strategy for surviving the Dursleys matured since book one?'],
+      spark: 'Everyone names the gift they would send thirteen-year-old Harry and why. No brooms allowed.' },
+    { n: 2, t: 'Aunt Marge’s Big Mistake', recap: 'A murderer named Black is on the Muggle news, Aunt Marge arrives with a bulldog and opinions, and after three days of insults Harry loses control.',
+      y: ['Harry tries so hard to stay calm because he wants the Hogsmeade form signed. When did his patience finally run out?', 'Aunt Marge says horrible things about Harry’s parents. What would you have said back if you were allowed?', 'Harry blows up his aunt like a balloon. Is it funny, scary, or a bit of both?'],
+      teen: ['Marge insists that bad blood comes out, that Harry was doomed by his parents. Why is that idea so poisonous, and where else in the series do people believe it?', 'Harry keeps his temper for days and then loses it all at once. Is the explosion a failure of self-control or the only honest response left?', 'Harry walks out into the night with a trunk and nowhere to go. What is he choosing in that moment?'],
+      a: ['Aunt Marge is the Dursleys’ prejudice with the volume turned up: breeding, bloodlines, drowning the runt. How does the author use a comic monster to say something serious about inherited hatred?', 'Harry’s magic acts before he decides to use it. How does the series treat the line between accidental magic and intent, and does anyone ever hold him responsible?', 'The chapter opens with a Muggle newsreader describing Sirius Black. What does the crossover of the two worlds’ news signal about the stakes of this book?'],
+      spark: 'Rewrite the dinner with one change: Harry gets to answer Marge honestly, but politely. What does he say?' },
+    { n: 3, t: 'The Knight Bus', recap: 'A huge black dog in the dark, a violently purple triple-decker that appears from nowhere, and a Minister for Magic waiting in a pub who does not seem to want to punish anyone.',
+      y: ['The Knight Bus appears the moment Harry sticks out his wand hand. Where would you ask it to take you?', 'Stan Shunpike talks non-stop and Ernie drives like a maniac. Would you rather ride the Knight Bus or the Hogwarts Express?', 'Harry expects to be expelled and instead gets a room and a meal. Why do you think the Minister is being so nice?'],
+      teen: ['Harry learns that Sirius Black, the man on the news, is a wizard who killed thirteen people with one curse. How does the threat feel different once it belongs to his world rather than the Muggle one?', 'Fudge forgives Harry instantly and will not say why. What is it like to be treated well and suspect it is not about you?', 'The black dog will be explained much later. On first reading, what did you think it meant, and did the book want you to think that?'],
+      a: ['The Knight Bus is one of the series’ great pieces of whimsy, arriving straight after the most frightened Harry has been. What does the tonal whiplash do for the reader?', 'Fudge’s leniency is politics, not kindness: he needs Harry safe and visible. How does the book begin to teach Harry, and us, to read adult motives?', 'Stan’s account of Black comes from the Daily Prophet and pub gossip. How does the author use unreliable second-hand narration to set up the book’s central reversal?'],
+      spark: 'Design a Knight Bus for your town: the colour, the conductor’s catchphrase, and the one rule for passengers.' },
+    { n: 4, t: 'The Leaky Cauldron', recap: 'Two weeks of freedom in Diagon Alley, a broomstick in a window, a cat that hunts Ron’s rat, and a conversation overheard through a door.',
+      y: ['Harry has two whole weeks on his own in Diagon Alley. What would you do first, and what would you do every day?', 'Crookshanks goes straight for Scabbers. Whose side are you on, the cat’s or the rat’s?', 'Mr Weasley asks Harry to promise not to go looking for Black. Would you have promised?'],
+      teen: ['Harry overhears that Black escaped to find him, and decides not to be frightened by a man he has never met. Is that courage or a failure of imagination?', 'Hermione buys a cat, Ron defends his rat, and neither will back down. Why do small loyalties cause such big arguments between friends?', 'Mr Weasley tells Harry the truth against his wife’s wishes. When is a young person owed information that the adults would rather keep from them?'],
+      a: ['The Firebolt in the shop window is pure desire, put on the page long before it matters. How does the author use objects of longing to structure a plot?', 'Arthur and Molly argue about whether Harry should be told the truth. How does the series stage the question of what children should know, and whose side does it take here?', 'Harry’s fortnight of independence is the happiest he has been, and it is bought with a murderer’s escape. How does the book keep pairing freedom with danger?'],
+      spark: 'The table votes: tell Harry everything, tell him nothing, or tell him some of it. Then decide what “some of it” would include.' },
+    { n: 5, t: 'The Dementor', recap: 'A shabby professor asleep in the compartment, a hooded thing that stops the train, a scream Harry hears that nobody else does, and chocolate that helps.',
+      y: ['The Dementor makes Harry feel he will never be cheerful again. What is the opposite feeling, the one that would keep a Dementor away from you?', 'Professor Lupin hands out chocolate and it actually helps. What cheers you up when you are frightened?', 'Malfoy makes fun of Harry for fainting. Why do some people laugh at other people’s fear?'],
+      teen: ['Only Harry hears a woman screaming when the Dementor comes. Why do the Dementors affect him more than everyone else, and what does that say about what he carries?', 'Ginny is shaking and Neville is white, but the joke afterwards is on Harry. How do groups decide whose fear counts?', 'Dumbledore warns that Dementors are not fooled by tricks, disguises, or Invisibility Cloaks. What kind of danger cannot be outwitted?'],
+      a: ['The Dementor is the author’s picture of depression, by her own account: cold, the draining of every good memory, the sense it will never end. How does making it a creature, rather than a mood, help a young reader understand it?', 'Lupin is introduced asleep, shabby and underestimated. What does the series do, again and again, with characters who are dismissed on sight?', 'The Ministry has stationed the guards of a prison around a school. What does that decision tell you about how the wizarding government weighs children’s safety against adult fear?'],
+      spark: 'Everyone names their Patronus animal and the memory they would use to cast it. No repeats.' }
+  ],
+  4: [
+    { n: 1, t: 'The Riddle House', recap: 'A village remembers three unexplained deaths, an old gardener investigates a light in a derelict house, and overhears two men planning a murder before becoming one himself.',
+      y: ['This chapter does not start with Harry at all. Were you confused, curious, or worried? When did you realise who the men in the house were?', 'Frank Bryce was blamed for the Riddles’ deaths even though he was innocent. How would it feel to be suspected by your whole village for fifty years?', 'Voldemort is barely more than a voice in a chair. Why is he scarier when you cannot see him?'],
+      teen: ['The villagers decided Frank was guilty because he was odd and a loner. How does a community talk itself into a verdict?', 'Wormtail suggests using someone other than Harry and is overruled. What does the exchange tell you about how Voldemort treats the people who serve him?', 'Harry wakes with his scar burning, having watched a murder in a dream. What would you do with information you cannot prove and cannot explain?'],
+      a: ['The series switches, for the first time, to a point of view outside Harry’s. What does the cold open buy in tone and scale, and what does it risk?', 'Frank Bryce is a war veteran, disliked for his temper and his limp, killed for his decency. How does this opening quietly set the theme of who the wizarding war chews up?', 'Bertha Jorkins, the Quidditch World Cup and the “faithful servant” at Hogwarts are all planted in one overheard conversation. How much of the book’s plot is fair-play visible here?'],
+      spark: 'Predict, from this chapter alone, who the “faithful servant” at Hogwarts is. Write your guess down and check it at the end of the book.' },
+    { n: 2, t: 'The Scar', recap: 'Harry wakes with his scar hurting, tries to remember a dream that is already fading, and decides who he can tell. The answer is a convict on the run.',
+      y: ['Harry’s scar hurts for the first time since Voldemort was near it. Why is a pain no one else can see so hard to talk about?', 'Harry imagines what Ron, Hermione and the Dursleys would each say if he told them. Who would you tell first about something strange and frightening?', 'Harry writes to Sirius and keeps it light so Sirius will not worry. Have you ever hidden how you felt to protect someone else?'],
+      teen: ['Harry has a headmaster, two best friends and a godfather, and still spends the chapter deciding he is on his own. Why do people with support so often refuse to use it?', 'The Dursleys have started treating Harry better since they learned he has a murderer for a godfather. What does it say about them that fear works where decency did not?', 'Harry edits his letter to sound casual. Is protecting someone from your fear a kindness or a kind of lie?'],
+      a: ['The whole chapter is interior: a boy on a bed, thinking. How does the author keep a static scene moving, and why does the book need a breath here after the murder?', 'Harry rehearses Hermione’s voice telling him to consult a book and Ron’s telling him not to worry. How does the series use imagined dialogue to show how well he knows his friends?', 'Sirius is now Harry’s confidant, chosen over Dumbledore. What does it mean for the story that the adult Harry trusts most is a fugitive he has met once?'],
+      spark: 'Write the honest version of Harry’s letter to Sirius, the one he did not send. Two sentences each, round the table.' },
+    { n: 3, t: 'The Invitation', recap: 'Dudley is on a grapefruit diet and everyone suffers, Mrs Weasley’s letter arrives covered in stamps, and Harry learns exactly how much a godfather’s name is worth at the dinner table.',
+      y: ['Dudley’s diet means everyone has to eat grapefruit. What would be the worst food to be forced to share with your family all summer?', 'Mrs Weasley covers the envelope in stamps because she is not sure how many Muggles use. What is something you would get wrong if you visited the wizarding world?', 'Harry mentions his godfather and Uncle Vernon says yes to the World Cup. Was it fair for Harry to use Sirius like that?'],
+      teen: ['Vernon reads the invitation and his first worry is what the neighbours will think. What does the family’s obsession with appearances cost each of them?', 'Harry leverages the Dursleys’ fear of Sirius without ever saying anything untrue. When does clever handling become manipulation?', 'Harry is happier than he has been all summer because of a piece of paper. Why do invitations matter so much to people who are used to being left out?'],
+      a: ['The Dursley chapters are shrinking, book by book. What does the author still need from them here, and why is Dudley’s diet the chosen vehicle?', 'Harry has learned to work the Dursleys using the one lever he has. How has his relationship with power changed since the boy who accepted the cupboard?', 'Mrs Weasley’s letter and its stamps are a small joke about cultural fluency. How does the series treat wizards’ ignorance of Muggles: fondly, critically, or both?'],
+      spark: 'Write the letter Mrs Weasley should have sent, in a way that would not have terrified Uncle Vernon. Is it even possible?' },
+    { n: 4, t: 'Back to the Burrow', recap: 'The Weasleys arrive by Floo into a boarded-up fireplace, blast their way out, and Fred and George leave a sweet where Dudley will find it. His tongue grows four feet.',
+      y: ['The Weasleys burst out of a fireplace that has been blocked up. Which Dursley reaction was the funniest?', 'The twins leave a Ton-Tongue Toffee for Dudley on purpose. Did he deserve it?', 'Mr Weasley tries to be polite to the Dursleys and they refuse to answer. Who was ruder in that living room?'],
+      teen: ['Mr Weasley is genuinely angry with the twins for the toffee, even though Dudley has bullied Harry for years. Why does he insist on fairness towards people who show none?', 'Vernon and Petunia cannot manage a single civil word to a man who has just rescued Harry. What is fear of the unfamiliar doing to them?', 'Harry leaves without a goodbye from anyone but a cousin with a giant tongue. How do you say goodbye to people who never wanted you?'],
+      a: ['Arthur Weasley’s decency in a hostile living room is one of the series’ clearest moral demonstrations. How does the scene define what “good” means in this world?', 'The twins’ prank is cruelty dressed as comedy, and the book both laughs and rebukes. How does the author hold those two responses at once?', 'Petunia’s and Vernon’s terror of the fireplace is played for laughs, but it is real fear of a world that can walk through their walls. Is the book fair to them?'],
+      spark: 'Take a vote: Ton-Tongue Toffee, justified or not? Then ask whether the vote changes if Dudley had been kind to Harry that summer.' },
+    { n: 5, t: 'Weasleys’ Wizard Wheezes', recap: 'Bill has an earring and Charlie has burns, Percy has a report on cauldron bottoms, the twins have a business plan their mother has already burned, and a witch from the Ministry has gone missing.',
+      y: ['The twins want to open a joke shop and their mother wants them to get proper jobs. Whose side are you on?', 'Bill is cool, Charlie works with dragons, Percy loves rules. Which Weasley brother would you most want as your own?', 'Percy is very proud of a report about cauldron thickness. What is the most boring thing you have ever seen someone be excited about?'],
+      teen: ['Mrs Weasley burns the twins’ order forms because she is frightened for their future. Is that love, control, or both?', 'Percy talks about his boss the way the twins talk about their shop. What does each of them want to be, and is either of them wrong?', 'Bertha Jorkins is missing and the Ministry shrugs because she was forgetful. How do institutions decide which missing people matter?'],
+      a: ['The Burrow scenes are an ensemble comedy that also load the plot: Crouch, Bagman, the missing witch, the World Cup. How does the author make exposition sound like family bickering?', 'The Weasleys’ poverty is a constant, gentle pressure: secondhand robes, the twins’ capital, Percy’s ambition. How does class shape each child differently?', 'Percy’s pride in his Ministry post is ridiculous here and tragic later. How does the series treat the people who trust institutions too much?'],
+      spark: 'Pitch a Weasleys’ Wizard Wheezes product to the table. The table plays Mrs Weasley and decides whether to burn the order form.' }
+  ],
+  5: [
+    { n: 1, t: 'Dudley Demented', recap: 'The hottest summer in years, a boy listening to the news under a window, a gang of bullies in an alley, and two Dementors in Little Whinging. Then Mrs Figg says something she should not know.',
+      y: ['Harry hides under the window to listen to the news. What is he hoping to hear, and why can he not just ask someone?', 'Dudley’s gang beats up younger kids for fun. Why does Dudley act one way with his friends and another way at home?', 'Harry saves Dudley’s life with a Patronus. Would you have saved someone who had been horrible to you for years?'],
+      teen: ['Harry is furious with his friends for their vague letters and with Dumbledore for the silence. Is his anger fair, and does it matter whether it is?', 'Dudley taunts Harry about hearing his mother’s death in his sleep. What does it take to say something that cruel to someone?', 'Mrs Figg has watched Harry for years and pretended to be a boring old neighbour. How would you feel about being protected without being told?'],
+      a: ['The book opens on heat, boredom and rage. How does the author establish the fifth book’s emotional key, an adolescent fury, in the first few pages?', 'Dementors in a Muggle suburb break the rules the series has taught us. What does it mean for the story that the danger has followed Harry into the place that was supposed to be safe?', 'Mrs Figg is the first sign of a whole apparatus of adults managing Harry’s life from a distance. How does the book invite us to feel about being watched for our own good?'],
+      spark: 'One-word round: how does Harry feel at the start of this chapter? Go round twice; no word can be repeated.' },
+    { n: 2, t: 'A Peck of Owls', recap: 'Five owls in one evening: expulsion, a hearing, a warning to stay put, a note from Sirius, and a Howler for Petunia that says only “Remember my last.”',
+      y: ['Harry is expelled by letter and then un-expelled by another letter. How would you feel getting your whole future in the post?', 'Uncle Vernon tries to throw Harry out and Aunt Petunia says no. Why is that such a surprise?', 'The Howler is addressed to Petunia, not Harry. What do you think Dumbledore’s “last” message to her said?'],
+      teen: ['Everyone is telling Harry what to do and no one is telling him why. What happens to trust when instructions come without reasons?', 'Petunia knows what Dementors are and lets slip that she heard “that awful boy” talk about them. What has she been hiding, and from whom?', 'The Ministry wants Harry’s wand snapped for defending himself. When has the law punished the wrong person in a story you know, or in real life?'],
+      a: ['Petunia’s decision to keep Harry is the most consequential thing she does in seven books, and it happens in a sentence. How does the author land a turning point so quietly?', 'The Ministry’s owls contradict each other within an hour. What does the confusion tell you about the institution, and about who is really in charge of Harry’s fate?', 'Re-reading, “that awful boy” is Snape, not James. How much of Petunia’s bitterness is about magic, and how much about a friendship she lost?'],
+      spark: 'Draft Dumbledore’s earlier letter to Petunia, the one the Howler refers to. Keep it to three sentences.' },
+    { n: 3, t: 'The Advance Guard', recap: 'Nine witches and wizards in the Dursleys’ kitchen, a metamorphosing Auror who cannot keep her hair still, a night flight over London, and a house that appears between two others.',
+      y: ['Tonks changes her hair colour while brushing her teeth. If you could change one thing about your appearance at will, what would it be?', 'The Order flies Harry across London at night in the freezing cold. Which part of that journey would you love, and which would you hate?', 'Number twelve squeezes itself into existence between two houses. What would the Muggle neighbours think if they noticed?'],
+      teen: ['Moody trusts no one and checks everything; Tonks jokes and knocks things over. Which of them would you rather have guarding you, and why?', 'Harry has spent a month begging for news and, when nine adults finally arrive, he finds he is angry rather than relieved. Why?', 'Lupin says Harry’s parents’ friends are now his guards. What is it like to inherit other people’s loyalties?'],
+      a: ['The Order arrives like a cavalry charge and the book undercuts it at once with mundane details: sinks, a washing-up bowl, an Auror tripping over an umbrella stand. Why does the author refuse to let rescue feel heroic here?', 'Moody’s paranoia is comic and correct; there really is a traitor problem in this world. How does the series calibrate how much suspicion is healthy?', 'Grimmauld Place is hidden by a Fidelius Charm, the same magic that failed Harry’s parents. How does the book use the echo?'],
+      spark: 'Assign each person at the table an Order code name and a job for the escort mission. Who is on the broom next to Harry?' },
+    { n: 4, t: 'Number Twelve, Grimmauld Place', recap: 'A house that hates its guests, a portrait that screams, a house-elf muttering insults, and Harry finally lets his friends have it, in capital letters.',
+      y: ['Harry shouts at Ron and Hermione for a whole page. Were they to blame for keeping quiet, or was it Dumbledore’s fault?', 'The twins Apparate in and out with loud cracks just to show off. Would you be able to resist doing that if you had just passed your test?', 'Kreacher mutters rude things about everyone in the house. Why do you think Sirius lets him?'],
+      teen: ['Ron and Hermione followed Dumbledore’s orders and Harry punishes them for it. Who owed Harry more, his friends or the adults who gave the order?', 'Percy has cut himself off from his family over the Ministry’s line on Harry. How does someone convince himself that loyalty to an institution beats loyalty to his own parents?', 'Sirius is trapped in the house he ran away from as a teenager. What does confinement do to a person who defines himself by defiance?'],
+      a: ['Harry’s outburst is printed in capitals, an unusual choice for this author. What does the typography do that dialogue alone could not, and does it earn its place?', 'Grimmauld Place is a gothic house full of dark artefacts, and it belongs to the good side. What does the series do with the idea that the resistance is headquartered in a Death Eater family’s home?', 'Mrs Weasley and Sirius are already at odds over who Harry belongs to. How does the book handle two kinds of love competing for one boy?'],
+      spark: 'Read Harry’s outburst aloud with feeling, then answer as Ron or Hermione would have if they had been allowed to finish a sentence.' },
+    { n: 5, t: 'The Order of the Phoenix', recap: 'Across a kitchen table, Sirius and Mrs Weasley fight over what Harry is allowed to know. He learns that Voldemort is recruiting quietly, that the Ministry is denying everything, and that there is a weapon.',
+      y: ['Mrs Weasley wants to protect Harry by telling him less; Sirius wants to protect him by telling him more. Who is right?', 'Harry learns that most of the wizarding world does not believe Voldemort is back. How would you convince people who do not want to believe you?', 'The Order is a small group of adults fighting in secret. What would you name your own secret club, and what would it be for?'],
+      teen: ['Sirius says Harry is not a child; Mrs Weasley says he is not an adult either. At fifteen, which of them would you have wanted on your side?', 'The Ministry is discrediting Harry rather than face what he saw. Why do institutions so often attack the messenger?', 'Mrs Weasley points out that Sirius sometimes talks to Harry as if he were James. Is she being cruel, or saying something true that needed saying?'],
+      a: ['This chapter is almost entirely a table argument about information: who gets it, when, and why. How does the author make policy debate feel like family drama?', 'Mrs Weasley’s fear is that the Order will cost her children; Sirius’s is that caution will cost the war. How does the series weigh the parent’s instinct against the soldier’s?', 'The Ministry’s denial campaign is the book’s central political engine. Which real patterns of official denial does the author seem to be drawing on, and how has the book aged?'],
+      spark: 'Split the table into Molly and Sirius. Each side gets one minute to make its case to Harry. Harry, decide.' }
+  ],
+  6: [
+    { n: 1, t: 'The Other Minister', recap: 'The Muggle Prime Minister has a very bad week, a portrait in his office clears its throat, and Cornelius Fudge arrives to explain that the bridge, the hurricane and the murders were not accidents.',
+      y: ['The Prime Minister of Britain knows about wizards and has to keep it secret. Who would you find it hardest not to tell?', 'A portrait in the office announces visitors from the Ministry of Magic. What would you do if a painting in your house started talking to you?', 'Fudge has been sacked and Scrimgeour is the new Minister. Why does Fudge still turn up to explain things?'],
+      teen: ['The Muggle Prime Minister is told about a war he cannot fight, in a world he cannot see. How does it feel to be responsible for people you cannot protect?', 'Fudge spent a year denying Voldemort was back and lost his job for it. Does he seem sorry, or just embarrassed?', 'Kingsley Shacklebolt has been placed as the Prime Minister’s secretary without his knowledge. Is protecting someone by spying on them acceptable?'],
+      a: ['The book opens with an outsider’s view of the wizarding war, as the fourth did. What does the Prime Minister’s bafflement let the author say about how magic’s violence spills into the ordinary world?', 'Fudge is finished and knows it. How does the author write a disgraced politician: with contempt, pity, or something more mixed?', 'Scrimgeour arrives as a lion-like man of action after a year of denial. What is the series about to say about the difference between decisiveness and wisdom?'],
+      spark: 'Write the news headline the Muggle papers ran for one of Fudge’s “accidents”, then the true headline the Prophet should have run.' },
+    { n: 2, t: 'Spinner’s End', recap: 'Two sisters at midnight in a mill town, a man in a house full of books, and a promise made with wands and a flame of fire: an Unbreakable Vow.',
+      y: ['Narcissa is desperate to protect her son and Bellatrix does not trust Snape at all. Which sister would you want on your side?', 'Snape answers every one of Bellatrix’s questions calmly. Did you believe him?', 'An Unbreakable Vow kills you if you break it. What promise would you be willing to make on those terms?'],
+      teen: ['Snape gives Bellatrix a complete explanation for every suspicious thing he has ever done. Which of his answers is hardest to swallow, and what does that tell you about him?', 'Narcissa Malfoy, who sneered at everyone in book four, is on her knees begging. What does fear for a child do to pride?', 'Snape agrees to the Vow without knowing exactly what Draco’s task is. Why would anyone bind his life to a promise he cannot see the end of?'],
+      a: ['This is the only chapter in the series told entirely without Harry, in the company of Death Eaters. What does the author gain by letting the reader sit in the enemy’s room?', 'Snape’s double talk is written so that it reads as loyalty to Voldemort on a first pass and loyalty to Dumbledore on a second. Pick a line and read it both ways.', 'The Unbreakable Vow is a plot device that also asks a moral question: what does it mean to swear your life to protect someone else’s child? How does it echo Lily’s choice?'],
+      spark: 'Re-read Snape’s explanation to Bellatrix aloud. The table calls out each line that could be true two ways.' },
+    { n: 3, t: 'Will and Won’t', recap: 'Dumbledore comes to Privet Drive in person, offers the Dursleys mead they will not drink, tells them exactly what they have done to both boys, and takes Harry away with a blackened hand.',
+      y: ['Dumbledore makes the Dursleys’ glasses of mead bump against their heads until they drink. Is that rude, funny, or both?', 'Dumbledore says the Dursleys have treated Dudley badly too, by spoiling him. Do you agree?', 'Sirius left Harry everything, including a house and a house-elf who hates him. Which of those would you rather not inherit?'],
+      teen: ['Dumbledore tells the Dursleys to their faces that they have damaged both boys. Why did it take six years for an adult to say it, and why does it land so hard now?', 'Harry inherits Kreacher, who calls him names, and Dumbledore insists he give the elf an order to prove ownership. How does that scene sit with you?', 'Dumbledore’s hand is dead and blackened and he will not explain. What does it do to Harry to see the strongest person he knows visibly hurt?'],
+      a: ['Dumbledore’s scolding of the Dursleys is the moment many readers wanted from book one. Why does the author make it so restrained, and what does the restraint say about him?', 'Kreacher is transferred like property between two people who despise slavery in principle. How does the series handle its own characters’ blind spots, and does it always notice them?', 'The blackened hand is the first sign that Dumbledore is dying. How does the author establish mortality in a character the reader has treated as untouchable?'],
+      spark: 'Dumbledore tells the Dursleys one truth each about themselves. Give each person at the table a character from the series and one truth they need to hear.' },
+    { n: 4, t: 'Horace Slughorn', recap: 'A wrecked house that turns out to be a trap for visitors, an armchair that is a man, a collector of famous students, and Harry used, openly, as bait.',
+      y: ['Slughorn disguises himself as an armchair. If you had to hide as a piece of furniture, what would you be?', 'Slughorn likes to collect students who might become famous. Would you want to be in his club?', 'Dumbledore uses Harry to persuade Slughorn to come back to Hogwarts. Did Harry mind?'],
+      teen: ['Slughorn is not evil, just vain and comfortable. Why is that kind of person so useful to someone like Voldemort, and to someone like Dumbledore?', 'Dumbledore tells Harry plainly that he is bait, and Harry goes along with it. What has changed between them since last year’s silence?', 'Slughorn talks about Lily as a favourite, and about talent as something he spots and collects. What is the difference between a mentor and a collector?'],
+      a: ['Slughorn is a study in the sin of comfortable complicity: he knows things, he prefers not to. How does the author make him likeable enough that his failure matters?', 'Dumbledore is candid with Harry for the first time about using him. Is the honesty a repair of last year’s damage, or a more sophisticated form of management?', 'The Slug Club is patronage dressed as friendship. What does the series think about networks of the well-connected, and where does it place Harry inside them?'],
+      spark: 'Slughorn would collect one person from this table. Decide who, and what he would expect in return.' },
+    { n: 5, t: 'An Excess of Phlegm', recap: 'Bill is engaged to Fleur, Ginny and Hermione cannot stand her, the O.W.L. results arrive at breakfast, and Harry learns he can be an Auror after all, and that he cannot take N.E.W.T. Potions.',
+      y: ['Ginny calls Fleur “Phlegm” behind her back. Is it fair to dislike someone for being annoying?', 'The O.W.L. results come by owl in the middle of breakfast. Would you rather open your exam results alone or with everyone watching?', 'Harry gets an Outstanding in Defence Against the Dark Arts. Which subject would you most want an O in?'],
+      teen: ['Fleur is beautiful, foreign and confident, and the girls of the house hate her on sight. How much of that is about Fleur?', 'Ron got seven O.W.L.s and Hermione ten, and Hermione is upset about a single E. What does that tell you about how each of them measures themselves?', 'Mrs Weasley is grieving Percy while planning Bill’s wedding. How do families hold joy and loss at the same time?'],
+      a: ['The Fleur subplot is often read as the book’s weakest strand. Is the hostility towards her a flaw in the writing, or a deliberate portrait of how women are policed by other women?', 'Exam results arrive as comedy, but they route the rest of the series: Harry into Potions, Neville into confidence. How does the author use school machinery to steer fate?', 'The Burrow is now a safe house with wards and passwords. How has the series’ picture of home changed since the flying car?'],
+      spark: 'Everyone gives themselves an O.W.L. in a real-life subject: cooking, patience, parallel parking. Grades must be honest.' }
+  ],
+  7: [
+    { n: 1, t: 'The Dark Lord Ascending', recap: 'Two men on a dark lane, a long table at Malfoy Manor, a woman turning slowly in the air above it, and a wand taken from a father in front of his son.',
+      y: ['The book starts with Voldemort’s meeting, not with Harry. How did that make you feel about what was coming?', 'Voldemort takes Lucius Malfoy’s wand and mocks him for it. Why does he humiliate the people on his own side?', 'Professor Burbage taught Muggle Studies and wrote that Muggles were not so different from wizards. Why does that frighten Voldemort so much?'],
+      teen: ['Draco cannot look at the woman above the table. What has changed in him since the boy who bragged in Madam Malkin’s?', 'Snape and Yaxley give conflicting information and Voldemort chooses to believe Snape. Why does a paranoid man trust anyone at all?', 'The Malfoys are hosting the Dark Lord in their own home and are terrified. What does it look like when you get everything you claimed to want?'],
+      a: ['The final book opens in the enemy’s house with a hostage teacher and an execution. How does the author signal that the rules of a children’s series no longer apply?', 'Charity Burbage dies for an editorial arguing that Muggles are human. How does the series frame ideas, rather than only spells, as the thing this war is about?', 'Lucius Malfoy’s wand is taken in a scene about ownership and mastery. Re-reading, how early does the book start teaching the wandlore that decides its ending?'],
+      spark: 'Around the table: which Death Eater at that table do you think is most afraid, and what gave them away?' },
+    { n: 2, t: 'In Memoriam', recap: 'Harry packs a life into a trunk, reads two versions of Dumbledore’s story in the same newspaper, and holds a shard of mirror in which, for a second, he thinks he sees a blue eye.',
+      y: ['Harry throws away old homework and keeps a shard of broken mirror. Which object of yours would you keep no matter what?', 'The newspaper prints a kind obituary of Dumbledore and an advert for a nasty book about him. Which would you read first?', 'Harry realises he never asked Dumbledore about his life. Who in your life would you like to ask more questions?'],
+      teen: ['Doge’s obituary and Rita Skeeter’s teaser describe the same man as a saint and a fraud. How do you decide who someone was after they are gone?', 'Harry is angry that Dumbledore told him so little about himself. Are we owed the private lives of the people who shape us?', 'Harry is about to leave the only home he has known, and his feelings are complicated rather than sad. Why is leaving a bad place still hard?'],
+      a: ['The chapter is built from documents: an obituary, an advertisement, a memory. How does the author use texts within the text to open the question of Dumbledore’s reliability?', 'Rita Skeeter’s book is a tabloid smear that will turn out to contain real truths. What is the series saying about how the press and history each get the past wrong?', 'The mirror shard and the flash of blue are the book’s quietest plant. How does the author hide a rescue in plain sight, and did you notice on first reading?'],
+      spark: 'Write the first line of Dumbledore’s obituary as Harry would write it now, before the book has told him the rest.' },
+    { n: 3, t: 'The Dursleys Departing', recap: 'Vernon changes his mind for the last time, Dudley does not think Harry is a waste of space, and Petunia stops in the doorway with something to say and does not say it.',
+      y: ['Dudley leaves Harry a cup of tea and says he saved his life. Were you surprised? What made Dudley change?', 'Harry and Dudley shake hands. What would you have said to a cousin like Dudley at the very end?', 'Aunt Petunia turns back in the doorway and then leaves without a word. What do you think she wanted to say?'],
+      teen: ['Dudley is the only Dursley who manages a decent goodbye, and it takes a Dementor to get him there. What does it take to change how you see someone you have hated?', 'Vernon keeps changing his mind because he cannot believe anyone would protect him for free. What has a life of suspicion cost him?', 'Petunia’s unsaid sentence is the last we ever see of her. Is silence the most honest ending for her, or a failure?'],
+      a: ['Dudley’s handshake is one of the series’ few genuine redemptions and the author gives it a single page. Why so little, and does it work?', 'Petunia, who chose bitterness over her sister for thirty years, gets a doorway and no dialogue. How does the author use what is withheld as characterisation?', 'The Dursleys leave under the protection of the world they despised. What does the book think about people who are saved by the very thing they refused to understand?'],
+      spark: 'Finish Petunia’s sentence. Each person offers one version; the table picks the truest.' },
+    { n: 4, t: 'The Seven Potters', recap: 'Six friends drink Polyjuice and become him, the sky over Little Whinging fills with Death Eaters, Hedwig falls, and Harry’s wand does something he did not ask it to.',
+      y: ['Six people turn into Harry, and none of them enjoy it. Which of the fake Harrys would you have wanted to be paired with?', 'Hedwig dies protecting Harry. Why is losing a pet in a story sometimes sadder than anything else?', 'Harry’s wand fires on its own at Voldemort. What do you think was happening?'],
+      teen: ['Harry hates the plan because it puts six friends in danger for him, and they do it anyway. What does it feel like to be loved that much and not be able to stop it?', 'Harry gives away which one is real by refusing to Stun Stan Shunpike. Was his mercy a weakness in the middle of a battle, or the thing that makes him worth protecting?', 'Voldemort is flying without a broom. What does it do to the story when the villain breaks a rule you did not know could be broken?'],
+      a: ['The decoy plan is a set-piece the author had been building towards for books: a battle in the sky over a suburb. How does she keep seven identical characters legible under pressure?', 'Hedwig’s death in the first action scene is the book announcing that nothing is protected. Is it a fair use of the reader’s attachment, or a cheap one?', 'Harry’s wand acting of its own accord is the series’ deepest piece of wandlore, and it is introduced as confusion rather than explanation. How does the author manage a mystery she will not solve for twenty chapters?'],
+      spark: 'Plan a better decoy. Each person changes one thing about the seven-Potters plan and the table decides whether it improves the odds.' },
+    { n: 5, t: 'Fallen Warrior', recap: 'The Burrow fills with survivors one at a time. George has lost an ear, Mad-Eye is dead, Mundungus ran, and someone told the enemy the date.',
+      y: ['Everyone waits at the Burrow for the others to arrive. What is the worst part of waiting for news?', 'George makes a joke about his ear while he is still bleeding. Why do people joke when things are terrible?', 'Harry wants to leave so he stops putting his friends in danger, and Ron and Hermione refuse to let him. What would you say to make him stay?'],
+      teen: ['Mad-Eye Moody, the most careful man in the Order, is the first to die. What is the book saying about whether caution can save you?', 'Suspicion falls immediately on someone in the room. How quickly does a group under attack turn on itself, and how do you stop it?', 'Lupin asks Harry a question only the real Harry could answer before he lets him in. When does vigilance become its own kind of damage?'],
+      a: ['The chapter is a roll call: arrivals, wounds, absences. How does the author write grief in a household that has no time for it?', 'Harry’s instinct to leave is framed as both noble and self-centred. How does the series treat his recurring wish to face things alone?', 'The traitor question will not be answered for hundreds of pages. What does the unresolved suspicion do to the reader’s experience of every safe-house scene that follows?'],
+      spark: 'Moody would have had a rule for tonight. Each person states the rule they would enforce at the Burrow after this attack.' }
+  ]
+};
+
+var GUIDES_KEY = 'hp_club-guides';
+var guideAge = null;               // 'y' | 't' | 'a'
+var guideBook = 1;
+var _guideOpen = null;             // "b1c3" of the open chapter card
+
+function guideAgeInfo(id) { for (var i = 0; i < GUIDE_AGES.length; i++) if (GUIDE_AGES[i].id === id) return GUIDE_AGES[i]; return null; }
+function guideQs(ch, age) { return age === 't' ? ch.teen : ch[age]; }
+function guideBookTitle(n) { var b = null; LISTEN_BOOKS.forEach(function (x) { if (x.n === n) b = x; }); return b ? b.title : 'Book ' + n; }
+function loadGuideMarks() { try { return JSON.parse(localStorage.getItem(GUIDES_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function toggleGuideMark(qid, btn) {
+  var m = loadGuideMarks();
+  if (m[qid]) delete m[qid]; else m[qid] = 1;
+  try { localStorage.setItem(GUIDES_KEY, JSON.stringify(m)); } catch (e) {}
+  var li = btn && btn.closest ? btn.closest('.guide-q') : null;
+  if (li) { li.classList.toggle('is-done', !!m[qid]); btn.setAttribute('aria-pressed', m[qid] ? 'true' : 'false'); var ic = btn.querySelector('.material-symbols-rounded'); if (ic) ic.textContent = m[qid] ? 'check_circle' : 'radio_button_unchecked'; }
+}
+function setGuideAge(id, opts) {
+  if (!guideAgeInfo(id)) return;
+  guideAge = id;
+  try { localStorage.setItem('hp-club-age', id); } catch (e) {}
+  var panel = document.getElementById('clubPanel');
+  if (panel && clubTopic === 'guides') renderGuides(panel, opts && opts.keepScroll);
+}
+function selectGuideBook(n) {
+  if (!GUIDES[n]) return;
+  guideBook = n; _guideOpen = null;
+  try { localStorage.setItem('hp-club-guide-book', String(n)); } catch (e) {}
+  var panel = document.getElementById('clubPanel');
+  if (panel && clubTopic === 'guides') renderGuides(panel, true);
+}
+function toggleGuideChapter(key) {
+  _guideOpen = (_guideOpen === key) ? null : key;
+  document.querySelectorAll('.guide-card').forEach(function (c) {
+    var on = c.getAttribute('data-key') === _guideOpen;
+    c.classList.toggle('open', on);
+    var b = c.querySelector('.class-head'); if (b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
+  });
+  if (_guideOpen) {
+    var card = document.querySelector('.guide-card[data-key="' + _guideOpen + '"]');
+    if (card) { var top = card.getBoundingClientRect().top + window.pageYOffset - (56 + 76); try { window.scrollTo(0, Math.max(0, top)); } catch (e) {} }   // clear the sticky age bar
+  }
+}
+function askGuideOne(key) {
+  var card = document.querySelector('.guide-card[data-key="' + key + '"]'); if (!card) return;
+  var qs = Array.prototype.slice.call(card.querySelectorAll('.guide-q'));
+  var pool = qs.filter(function (q) { return !q.classList.contains('is-done'); });
+  if (!pool.length) pool = qs;
+  qs.forEach(function (q) { q.classList.remove('is-picked'); });
+  var pick = pool[Math.floor(Math.random() * pool.length)];
+  if (pick) { pick.classList.add('is-picked'); var t = pick.querySelector('.guide-q-text'); if (t && t.focus) t.focus(); }
+}
+
+function renderGuides(panel, keepScroll) {
+  var y = window.pageYOffset;
+  if (!guideAge) {
+    panel.innerHTML = '<div class="club-intro age-gate"><div class="eyebrow">Discussion Guides</div><h3 class="club-intro-title">Who is around the table?</h3>' +
+      '<p>The same chapters, three ways. Pick the group you are reading with and the questions will match; you can switch at any time.</p>' +
+      '<div class="age-options">' + GUIDE_AGES.map(function (a) {
+        return '<button class="age-option" type="button" onclick="setGuideAge(\'' + a.id + '\')"><span class="age-option-label">' + a.label + '</span><span class="age-option-name">' + clubEsc(a.name) + '</span><span class="age-option-blurb">' + clubEsc(a.blurb) + '</span></button>';
+      }).join('') + '</div></div>';
+    return;
+  }
+  var age = guideAgeInfo(guideAge), marks = loadGuideMarks(), chapters = GUIDES[guideBook] || [];
+  var html = '<div class="age-bar" role="group" aria-label="Questions for"><span class="age-bar-label">Questions for</span><div class="age-seg">' +
+    GUIDE_AGES.map(function (a) { return '<button class="age-seg-btn" type="button" aria-pressed="' + (a.id === guideAge ? 'true' : 'false') + '" onclick="setGuideAge(\'' + a.id + '\',{keepScroll:true})" title="' + clubEsc(a.name) + '">' + a.label + '</button>'; }).join('') + '</div></div>' +
+    '<div class="book-picker guide-books" role="tablist" aria-label="Choose a book">' + [1, 2, 3, 4, 5, 6, 7].map(function (n) {
+      return '<button class="book-tile guide-book-tile" type="button" role="tab" data-book="' + n + '" aria-selected="' + (n === guideBook ? 'true' : 'false') + '" onclick="selectGuideBook(' + n + ')"><span class="book-tile-num">Book ' + n + '</span><span class="book-tile-title">' + clubEsc(guideBookTitle(n)) + '</span><span class="book-tile-meta">Chapters 1–5</span></button>';
+    }).join('') + '</div>' +
+    '<div class="club-intro guide-intro"><div class="eyebrow">' + clubEsc(age.name) + ' · ' + age.label + '</div><h3 class="club-intro-title">Harry Potter and the ' + clubEsc(guideBookTitle(guideBook)) + '</h3>' +
+    '<p>Three questions a chapter and one thing to try around the table. Tick a question once the group has talked it through; <em>Ask me one</em> picks from the ones you have not.</p></div>' +
+    '<div class="class-list">' + chapters.map(function (ch) {
+      var key = 'b' + guideBook + 'c' + ch.n, qs = guideQs(ch, guideAge) || [], open = _guideOpen === key;
+      var done = qs.filter(function (_, i) { return marks[key + guideAge + i]; }).length;
+      return '<article class="class-card guide-card' + (open ? ' open' : '') + '" data-key="' + key + '">' +
+        '<button class="class-head" type="button" aria-expanded="' + (open ? 'true' : 'false') + '" onclick="toggleGuideChapter(\'' + key + '\')">' +
+        '<span class="class-icon guide-num">' + ch.n + '</span>' +
+        '<span class="class-text"><span class="class-name">' + clubEsc(ch.t) + '</span><span class="class-teacher">Chapter ' + ch.n + (done ? ' · ' + done + ' of ' + qs.length + ' talked about' : '') + '</span></span>' +
+        '<span class="material-symbols-rounded class-chevron" aria-hidden="true">expand_more</span></button>' +
+        '<div class="class-body"><p class="guide-recap">' + clubEsc(ch.recap) + '</p>' +
+        '<ol class="guide-qs">' + qs.map(function (q, i) {
+          var qid = key + guideAge + i, on = !!marks[qid];
+          return '<li class="guide-q' + (on ? ' is-done' : '') + '"><button class="guide-check" type="button" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="Mark question ' + (i + 1) + ' as talked about" onclick="toggleGuideMark(\'' + qid + '\', this)"><span class="material-symbols-rounded" aria-hidden="true">' + (on ? 'check_circle' : 'radio_button_unchecked') + '</span></button><span class="guide-q-text" tabindex="-1">' + clubEsc(q) + '</span></li>';
+        }).join('') + '</ol>' +
+        '<div class="class-know guide-spark"><b>Try this</b>' + clubEsc(ch.spark) + '</div>' +
+        '<div class="quiz-actions guide-actions"><button class="btn btn-metal" type="button" onclick="askGuideOne(\'' + key + '\')">Ask me one <span class="material-symbols-rounded" aria-hidden="true">casino</span></button></div>' +
+        '</div></article>';
+    }).join('') + '</div>' +
+    '<p class="club-foot">First pass: chapters 1–5 of each book. Question styles were informed by published reading-club guides; the questions here are the club’s own. Ticks are kept on this device only.</p>';
+  panel.innerHTML = html;
+  if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
+}
+
+function initGuides() {
+  var a = null, b = null;
+  try { a = localStorage.getItem('hp-club-age'); b = parseInt(localStorage.getItem('hp-club-guide-book'), 10); } catch (e) {}
+  guideAge = guideAgeInfo(a) ? a : null;
+  guideBook = GUIDES[b] ? b : 1;
+}
+
+
+/* notes.js — Club › Notes. Harry Potter Book Club.
+   The reference app's notes feature (its #notes-modal: a contenteditable rich editor with a
+   formatting bar — bold / italic / underline / lists / indent / quote / text colour / highlight —
+   debounced autosave, A− / A+ text size, share) ported whole, and around it three levels of notes:
+   the whole club, one book, one chapter. The chapter level adds two callouts — Theme (one sentence
+   that describes the chapter, shown on the page once written) and Interesting Things (three
+   one-sentence boxes). A chapter's "Take notes" button appears only after a book AND a chapter are
+   chosen; the book and club levels each have their own.
+   Storage: hp_club-notes = { <key>: value } — key 'all' | 'b<N>' | 'b<N>c<M>' holds the rich note
+   (HTML), 'b<N>c<M>.theme' and 'b<N>c<M>.i0'..'i2' hold plain sentences. Prefs: hp-club-notes-book,
+   hp-club-notes-ch, hp-notes-font. Plain ES2017. */
+
+var NOTES_STORE_KEY = 'hp_club-notes';
+var noteStore = {};
+var notesBook = 'all';                 // 'all' or 1..7
+var notesCh = 0;                       // 0 = no chapter picked yet
+var currentNoteKey = null;
+var notesFontSize = 16;
+var _naTimer = null, _naStatusTimer = null, _nfTimer = null;
+var _noteInitial = '', _noteTouched = false;
+var _notesWired = false;
+var NOTE_THING_HINTS = ['Something that surprised you…', 'A detail or line worth remembering…', 'A question this chapter left you with…'];
+var NOTE_THEME_HINT = 'In one sentence, what is this chapter about?';
+
+/* ── store + lookups ────────────────────────────────────────────────────── */
+function loadNoteStore() {
+  try { var v = JSON.parse(localStorage.getItem(NOTES_STORE_KEY) || '{}'); noteStore = (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
+  catch (e) { noteStore = {}; }
+}
+function saveNoteStore() { try { localStorage.setItem(NOTES_STORE_KEY, JSON.stringify(noteStore)); } catch (e) {} }
+function notesBookTitle(n) { return guideBookTitle(n); }
+/* Chapters come from the Listen catalogue (every chapter title of all seven books). Book 7's
+   epilogue is track n:0 there; here it is the book's last entry (37) so its key is stable. */
+function notesChapters(n) {
+  var b = null; LISTEN_BOOKS.forEach(function (x) { if (x.n === n) b = x; });
+  if (!b) return [];
+  return b.tracks.map(function (t) {
+    var ep = t.n === 0, m = ep ? b.tracks.length : t.n;
+    return { n: m, ep: ep, t: t.t, label: ep ? 'Epilogue' : 'Chapter ' + m };
+  });
+}
+function notesChapter(book, n) { var c = null; notesChapters(book).forEach(function (x) { if (x.n === n) c = x; }); return c; }
+function noteKey(book, ch) { return book === 'all' ? 'all' : ('b' + book + (ch ? 'c' + ch : '')); }
+function _plainHas(k) { return String(noteStore[k] || '').trim() !== ''; }
+function chapterHasAnything(book, ch) {
+  var k = noteKey(book, ch);
+  return _htmlHasContent(noteStore[k] || '') || _plainHas(k + '.theme') || _plainHas(k + '.i0') || _plainHas(k + '.i1') || _plainHas(k + '.i2');
+}
+function chapterKeysNoted(book) { return notesChapters(book).filter(function (c) { return chapterHasAnything(book, c.n); }); }
+function bookHasAnything(book) { return _htmlHasContent(noteStore[noteKey(book)] || '') || chapterKeysNoted(book).length > 0; }
+function notesLevelTitle(book, ch) {
+  if (book === 'all') return 'Club notes';
+  if (!ch) return notesBookTitle(book);
+  var c = notesChapter(book, ch);
+  return (c ? c.label + ' · ' + c.t : 'Chapter ' + ch);
+}
+
+/* ── panel ──────────────────────────────────────────────────────────────── */
+function renderNotes(panel, keepScroll) {
+  var y = window.pageYOffset;
+  var tiles = '<button class="book-tile" type="button" role="tab" data-book="all" aria-selected="' + (notesBook === 'all' ? 'true' : 'false') + '" onclick="selectNotesBook(\'all\')">' +
+    '<span class="material-symbols-rounded" aria-hidden="true">auto_stories</span><span class="book-tile-title">All books</span>' +
+    '<span class="book-tile-meta">' + (_htmlHasContent(noteStore.all || '') ? 'Club notes' : 'The whole series') + '</span></button>';
+  for (var n = 1; n <= 7; n++) {
+    var k = chapterKeysNoted(n).length, meta = k ? (k + (k === 1 ? ' chapter noted' : ' chapters noted')) : (bookHasAnything(n) ? 'Book notes' : 'No notes yet');
+    tiles += '<button class="book-tile" type="button" role="tab" data-book="' + n + '" aria-selected="' + (notesBook === n ? 'true' : 'false') + '" onclick="selectNotesBook(' + n + ')">' +
+      '<span class="book-tile-num">Book ' + n + '</span><span class="book-tile-title">' + clubEsc(notesBookTitle(n)) + '</span><span class="book-tile-meta">' + meta + '</span></button>';
+  }
+  var html = '<div class="book-picker note-scope" role="tablist" aria-label="Choose where to write">' + tiles + '</div>';
+  html += notesBook === 'all' ? renderNotesAll() : renderNotesBook(notesBook);
+  html += '<p class="club-foot">Notes save as you type and stay on this device only. Tap a written line to change it.</p>';
+  panel.innerHTML = html;
+  if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
+  var picker = panel.querySelector('.note-scope'), tile = picker && picker.querySelector('.book-tile[aria-selected="true"]');
+  if (picker && tile) {
+    var left = tile.offsetLeft - 8, right = tile.offsetLeft + tile.offsetWidth + 8;
+    if (left < picker.scrollLeft) picker.scrollLeft = left;
+    else if (right > picker.scrollLeft + picker.clientWidth) picker.scrollLeft = right - picker.clientWidth;
+  }
+}
+function notesRerender(keepScroll) {
+  var panel = document.getElementById('clubPanel');
+  if (panel && typeof clubTopic !== 'undefined' && clubTopic === 'notes') renderNotes(panel, keepScroll);
+}
+
+/* "Take notes" / "Edit notes" + the first lines of what is there + Share */
+function renderNoteBlock(key, title) {
+  var v = noteStore[key] || '', has = _htmlHasContent(v);
+  // clubEsc turns ' into &#39;, which the attribute decodes back to ' inside the JS string — so the
+  // entity is backslash-prefixed and the handler sees \' (a "Sorcerer's Stone" title otherwise breaks it).
+  var h = '<button class="card-cta" type="button" data-note-key="' + key + '" onclick="openNotesModal(\'' + key + '\', \'' + clubEsc(title).replace(/&#39;/g, '\\&#39;') + '\')">' +
+    '<span class="material-symbols-rounded cta-lead" aria-hidden="true">stylus_note</span><span class="cta-label note-btn-label">' + (has ? 'Edit notes' : 'Take notes') + '</span>' +
+    '<span class="material-symbols-rounded cta-arrow" aria-hidden="true">arrow_forward</span></button>';
+  if (has) h += '<div class="note-preview">' + clubEsc(_notePreview(v)) + '</div>';
+  return h;
+}
+function renderShareCta(book, ch) {
+  var arg = book === 'all' ? "'all'" : book + ', ' + (ch || 0);
+  return '<button class="card-cta card-cta--secondary" type="button" onclick="shareNotes(' + arg + ', this)">' +
+    '<span class="material-symbols-rounded cta-lead" aria-hidden="true">ios_share</span><span class="cta-label share-btn-label">Share these notes</span></button>';
+}
+
+function renderNotesAll() {
+  var h = '<div class="club-intro"><div class="eyebrow">All books</div><h3 class="club-intro-title">Club notes</h3>' +
+    '<p class="note-hint">Thoughts that belong to the whole series: the running conversation, favourites, things to bring up next time. Pick a book above for notes on one book or one chapter.</p>' +
+    renderNoteBlock('all', 'Club notes') + (_htmlHasContent(noteStore.all || '') ? renderShareCta('all') : '') + '</div>';
+  var books = [];
+  for (var n = 1; n <= 7; n++) if (bookHasAnything(n)) books.push(n);
+  h += '<div class="club-intro note-digest"><div class="eyebrow">Everything you have written</div>';
+  if (!books.length) h += '<div class="note-empty">Nothing yet. Choose a book above, then a chapter, and start with its theme.</div>';
+  books.forEach(function (n) { h += renderDigestBook(n, true); });
+  h += '</div>';
+  return h;
+}
+
+/* One book's entries: the book note, then a line per noted chapter (its theme when it has one). */
+function renderDigestBook(n, withHead) {
+  var h = '';
+  if (withHead) h += '<button class="note-digest-book" type="button" onclick="selectNotesBook(' + n + ')"><span class="note-digest-num">Book ' + n + '</span><span class="note-digest-title">' + clubEsc(notesBookTitle(n)) + '</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>';
+  var rows = '';
+  var bv = noteStore[noteKey(n)] || '';
+  if (withHead && _htmlHasContent(bv)) rows += '<li><button class="note-digest-row" type="button" onclick="notesGoto(' + n + ', 0)"><span class="note-digest-ch">Book</span><span class="note-digest-text is-plain">' + clubEsc(_notePreview(bv)) + '</span></button></li>';
+  chapterKeysNoted(n).forEach(function (c) {
+    var k = noteKey(n, c.n), theme = String(noteStore[k + '.theme'] || '').trim(), cls = 'is-theme', text = theme;
+    if (!text) { text = [0, 1, 2].map(function (i) { return String(noteStore[k + '.i' + i] || '').trim(); }).filter(Boolean)[0] || ''; cls = 'is-plain'; }
+    if (!text) { text = _notePreview(noteStore[k] || ''); cls = 'is-plain'; }
+    rows += '<li><button class="note-digest-row" type="button" onclick="notesGoto(' + n + ', ' + c.n + ')"><span class="note-digest-ch">' + (c.ep ? 'Epi.' : 'Ch ' + c.n) + '</span><span class="note-digest-text ' + cls + '">' + clubEsc(text) + '</span></button></li>';
+  });
+  if (rows) h += '<ul class="note-digest-rows">' + rows + '</ul>';
+  return h;
+}
+
+function renderNotesBook(n) {
+  var title = notesBookTitle(n), chapters = notesChapters(n);
+  var h = '<div class="club-intro"><div class="note-crumb"><button type="button" onclick="selectNotesBook(\'all\')">All books</button><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span><b>Book ' + n + '</b></div>' +
+    '<h3 class="club-intro-title">Harry Potter and the ' + clubEsc(title) + '</h3>' +
+    '<p class="note-hint">Notes on the book as a whole. For one chapter, pick it below.</p>' +
+    renderNoteBlock(noteKey(n), title) + (_htmlHasContent(noteStore[noteKey(n)] || '') ? renderShareCta(n, 0) : '') + '</div>';
+  h += '<div class="club-intro"><div class="eyebrow">Pick a chapter</div>' +
+    '<p class="note-hint">' + (notesCh ? 'Tap another chapter to switch.' : 'Chapter notes open once you have chosen one.') + ' A dot marks a chapter you have written in.</p>' +
+    '<div class="note-chgrid" role="group" aria-label="Chapters">' + chapters.map(function (c) {
+      return '<button class="note-ch' + (c.ep ? ' note-ch-ep' : '') + (chapterHasAnything(n, c.n) ? ' has-note' : '') + '" type="button" data-ch="' + c.n + '" aria-pressed="' + (c.n === notesCh ? 'true' : 'false') + '" aria-label="' + clubEsc(c.label + ': ' + c.t) + '" title="' + clubEsc(c.t) + '" onclick="selectNotesChapter(' + c.n + ')">' + (c.ep ? 'Epi' : c.n) + '</button>';
+    }).join('') + '</div></div>';
+  if (notesCh) h += renderNotesChapter(n, notesCh);
+  var noted = chapterKeysNoted(n);
+  h += '<div class="club-intro note-digest" id="note-themes-host">' + renderThemesSoFar(n, noted) + '</div>';
+  return h;
+}
+function renderThemesSoFar(n, noted) {
+  var h = '<div class="eyebrow">Themes so far</div>';
+  if (!noted.length) h += '<div class="note-empty">Each chapter’s one-line theme will collect here, so the book reads back as a list of its own sentences.</div>';
+  else h += renderDigestBook(n, false);
+  return h;
+}
+
+function renderNotesChapter(n, m) {
+  var c = notesChapter(n, m); if (!c) return '';
+  var k = noteKey(n, m);
+  return '<div class="club-intro note-chapter" id="note-chapter-card">' +
+    '<div class="note-crumb"><button type="button" onclick="selectNotesBook(\'all\')">All books</button><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span><button type="button" onclick="selectNotesChapter(0)">Book ' + n + '</button><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span><b>' + clubEsc(c.label) + '</b></div>' +
+    '<h3 class="club-intro-title">' + clubEsc(c.t) + '</h3><p class="note-chapter-sub">Harry Potter and the ' + clubEsc(notesBookTitle(n)) + ' · ' + clubEsc(c.label) + '</p>' +
+    '<section class="note-callout" aria-labelledby="note-theme-head"><div class="note-callout-head" id="note-theme-head"><span class="material-symbols-rounded" aria-hidden="true">lightbulb</span><span>Theme</span><span class="note-callout-hint">one sentence</span></div>' +
+    renderNoteField(k + '.theme', NOTE_THEME_HINT, true) + '</section>' +
+    '<section class="note-callout" aria-labelledby="note-things-head"><div class="note-callout-head" id="note-things-head"><span class="material-symbols-rounded" aria-hidden="true">auto_awesome</span><span>Interesting Things</span><span class="note-callout-hint">three sentences</span></div>' +
+    '<ol class="note-things">' + [0, 1, 2].map(function (i) { return '<li>' + renderNoteField(k + '.i' + i, NOTE_THING_HINTS[i], false) + '</li>'; }).join('') + '</ol></section>' +
+    renderNoteBlock(k, c.label + ' · ' + c.t) + (chapterHasAnything(n, m) ? renderShareCta(n, m) : '') +
+    '</div>';
+}
+
+/* A one-sentence field: an input until it has text, then the sentence itself (tap to edit).
+   Swaps happen in place — never a full re-render while a field has focus, or the tap that moved
+   focus to the next box would land on an element that no longer exists. */
+function renderNoteField(key, hint, theme) {
+  var v = String(noteStore[key] || '');
+  if (v.trim()) return '<button type="button" class="note-line' + (theme ? ' note-line--theme' : '') + '" data-key="' + key + '" onclick="notesEditField(this)" aria-label="Edit: ' + clubEsc(v) + '"><span class="note-line-text">' + clubEsc(v) + '</span><span class="material-symbols-rounded" aria-hidden="true">edit</span></button>';
+  return '<input class="note-input" type="text" maxlength="220" enterkeyhint="done" autocomplete="off" autocapitalize="sentences" data-key="' + key + '" data-theme="' + (theme ? '1' : '0') + '" placeholder="' + clubEsc(hint) + '" value="' + clubEsc(v) + '" oninput="notesFieldInput(this)" onblur="notesFieldBlur(this)" onkeydown="notesFieldKey(event, this)">';
+}
+function notesEditField(btn) {
+  var key = btn.getAttribute('data-key'), theme = btn.classList.contains('note-line--theme');
+  var hint = /\.theme$/.test(key) ? NOTE_THEME_HINT : NOTE_THING_HINTS[parseInt(key.slice(-1), 10)] || '';
+  var v = noteStore[key]; delete noteStore[key];           // render as an input, then put the text back
+  var tmp = document.createElement('div'); tmp.innerHTML = renderNoteField(key, hint, theme);
+  noteStore[key] = v;
+  var input = tmp.firstChild; input.value = v || '';
+  btn.replaceWith(input);
+  try { input.focus(); input.setSelectionRange(input.value.length, input.value.length); } catch (e) {}
+}
+function notesSetPlain(key, v) {
+  v = String(v || '').replace(/\s+/g, ' ').trim();
+  if (v) noteStore[key] = v; else delete noteStore[key];
+  saveNoteStore();
+}
+function notesFieldInput(el) {
+  clearTimeout(_nfTimer);
+  var key = el.getAttribute('data-key'), v = el.value;
+  _nfTimer = setTimeout(function () { notesSetPlain(key, v); notesRefreshMarks(); }, 300);
+}
+function notesFieldBlur(el) {
+  clearTimeout(_nfTimer);
+  var key = el.getAttribute('data-key');
+  notesSetPlain(key, el.value);
+  if (_plainHas(key)) {
+    var hint = el.getAttribute('placeholder') || '', theme = el.getAttribute('data-theme') === '1';
+    var tmp = document.createElement('div'); tmp.innerHTML = renderNoteField(key, hint, theme);
+    el.replaceWith(tmp.firstChild);
+  }
+  notesRefreshMarks();
+}
+function notesFieldKey(e, el) {
+  if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); el.blur(); }
+}
+/* Cheap in-place updates after a sentence changes: chapter dots, book tiles, "Themes so far",
+   and the chapter's Share button — without touching the field that has focus. */
+function notesRefreshMarks() {
+  var panel = document.getElementById('clubPanel'); if (!panel || notesBook === 'all') return;
+  var n = notesBook;
+  panel.querySelectorAll('.note-ch').forEach(function (b) { b.classList.toggle('has-note', chapterHasAnything(n, parseInt(b.getAttribute('data-ch'), 10))); });
+  var host = document.getElementById('note-themes-host'); if (host) host.innerHTML = renderThemesSoFar(n, chapterKeysNoted(n));
+  var tile = panel.querySelector('.note-scope .book-tile[data-book="' + n + '"] .book-tile-meta');
+  if (tile) { var k = chapterKeysNoted(n).length; tile.textContent = k ? (k + (k === 1 ? ' chapter noted' : ' chapters noted')) : (bookHasAnything(n) ? 'Book notes' : 'No notes yet'); }
+  var card = document.getElementById('note-chapter-card');
+  if (card && notesCh) {
+    var share = card.querySelector('.card-cta--secondary'), any = chapterHasAnything(n, notesCh);
+    if (any && !share) { var t = document.createElement('div'); t.innerHTML = renderShareCta(n, notesCh); card.appendChild(t.firstChild); }
+    else if (!any && share) share.remove();
+  }
+}
+
+function selectNotesBook(v) {
+  notesBook = v === 'all' ? 'all' : parseInt(v, 10);
+  notesCh = 0;
+  try { localStorage.setItem('hp-club-notes-book', String(notesBook)); localStorage.setItem('hp-club-notes-ch', '0'); } catch (e) {}
+  notesRerender(true);
+}
+function selectNotesChapter(m) {
+  notesCh = m || 0;
+  try { localStorage.setItem('hp-club-notes-ch', String(notesCh)); } catch (e) {}
+  notesRerender(true);
+  var card = document.getElementById('note-chapter-card');
+  if (card) {
+    var top = card.getBoundingClientRect().top + window.pageYOffset - (56 + 12);
+    try { window.scrollTo(0, Math.max(0, top)); } catch (e) {}
+  }
+}
+function notesGoto(n, m) {
+  notesBook = n; notesCh = m || 0;
+  try { localStorage.setItem('hp-club-notes-book', String(n)); localStorage.setItem('hp-club-notes-ch', String(notesCh)); } catch (e) {}
+  notesRerender(false);
+  var el = document.getElementById(m ? 'note-chapter-card' : 'clubPanel');
+  if (el) { try { window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - (56 + 12))); } catch (e) {} }
+}
+
+/* ── share (ref _notesToText / _shareOut L11500–11590) ──────────────────── */
+function _notesToText(html) {
+  var box = document.createElement('div');
+  box.innerHTML = String(html || '');
+  box.querySelectorAll('br').forEach(function (br) { br.replaceWith('\n'); });
+  box.querySelectorAll('li').forEach(function (li) {
+    var depth = 0, p = li.parentNode;
+    while (p && p !== box) { if (p.tagName === 'UL' || p.tagName === 'OL') depth++; p = p.parentNode; }
+    var pad = '  '.repeat(Math.max(0, depth - 1));
+    var list = li.parentNode, marker = '• ';
+    if (list && list.tagName === 'OL') {
+      var items = Array.prototype.filter.call(list.children, function (x) { return x.tagName === 'LI'; });
+      marker = (items.indexOf(li) + 1) + '. ';
+    }
+    li.prepend('\n' + pad + marker);
+  });
+  box.querySelectorAll('blockquote').forEach(function (bq) {
+    if (bq.classList.contains('nq')) { bq.prepend('\n“'); bq.append('”\n'); } else { bq.prepend('\n'); }
+  });
+  box.querySelectorAll('div, p, h1, h2, h3, h4, h5, h6').forEach(function (b) { b.prepend('\n'); });
+  return box.textContent.replace(/ /g, ' ').split('\n').map(function (l) {
+    var lead = l.match(/^[ \t]*/)[0];
+    return (lead + l.slice(lead.length).replace(/[ \t]+/g, ' ')).replace(/\s+$/, '');
+  }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+/* One line for a card: the note's lines joined with a middle dot, list markers dropped. */
+function _notePreview(html) {
+  return _notesToText(html).split('\n').map(function (l) { return l.trim().replace(/^(\u2022|\d+\.)\s+/, ''); }).filter(Boolean).join(' \u00b7 ');
+}
+function _shareBtnSay(btn, msg) {
+  if (!btn) return;
+  var lab = btn.querySelector('.share-btn-label'); if (!lab) return;
+  var was = lab.dataset.was || lab.textContent;
+  lab.dataset.was = was; lab.textContent = msg;
+  clearTimeout(btn._shareT);
+  btn._shareT = setTimeout(function () { lab.textContent = was; }, 2200);
+}
+function _shareFallback(text, btn) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { _shareBtnSay(btn, 'Copied to clipboard'); }, function () { _shareBtnSay(btn, 'Could not copy'); });
+  } else _shareBtnSay(btn, 'Sharing not supported here');
+}
+/* The one place navigator.share is called — reached synchronously from the tap. */
+function _shareOut(title, text, btn) {
+  if (!text) { _shareBtnSay(btn, 'Nothing to share yet'); return; }
+  if (navigator.share) {
+    try {
+      navigator.share({ title: title, text: text }).catch(function (e) { if (e && e.name === 'AbortError') return; _shareFallback(text, btn); });
+      return;
+    } catch (e) { /* fall through */ }
+  }
+  _shareFallback(text, btn);
+}
+function _chapterShareText(n, m) {
+  var c = notesChapter(n, m), k = noteKey(n, m), parts = [c ? c.label + ' · ' + c.t : 'Chapter ' + m];
+  var theme = String(noteStore[k + '.theme'] || '').trim(); if (theme) parts.push('Theme: ' + theme);
+  var things = [0, 1, 2].map(function (i) { return String(noteStore[k + '.i' + i] || '').trim(); }).filter(Boolean);
+  if (things.length) parts.push('Interesting things:\n' + things.map(function (t, i) { return (i + 1) + '. ' + t; }).join('\n'));
+  var body = _notesToText(noteStore[k] || ''); if (body) parts.push(body);
+  return parts.join('\n');
+}
+function shareNotes(book, ch, btn) {
+  var title, text;
+  if (book === 'all') { title = 'Harry Potter Book Club — Club notes'; text = _notesToText(noteStore.all || ''); }
+  else if (ch) { title = 'Harry Potter and the ' + notesBookTitle(book) + ' — ' + notesLevelTitle(book, ch); text = _chapterShareText(book, ch); }
+  else {
+    title = 'Harry Potter and the ' + notesBookTitle(book) + ' — Notes';
+    var parts = [], body = _notesToText(noteStore[noteKey(book)] || '');
+    if (body) parts.push(body);
+    chapterKeysNoted(book).forEach(function (c) { parts.push(_chapterShareText(book, c.n)); });
+    text = parts.join('\n\n');
+  }
+  if (!text) { _shareBtnSay(btn, 'Nothing to share yet'); return; }
+  _shareOut(title, title + '\n\n' + text, btn);
+}
+
+/* ── rich editor helpers (ref L11327–11520) ─────────────────────────────── */
+// A note counts as "having content" if it has real text or a list item — contenteditable
+// readily produces "<br>" / "<div><br></div>" for an empty box.
+function _htmlHasContent(html) {
+  if (!html) return false;
+  if (/<li[\s>]/i.test(html) || /<img[\s>]/i.test(html)) return true;
+  var t = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').replace(/ /g, ' ');
+  return t.replace(/&[a-z#0-9]+;/gi, 'x').trim() !== '';
+}
+function _looksRich(s) { return /<(div|p|br|ul|ol|li|span|b|i|u|strong|em|font|blockquote)[\s>\/]/i.test(s || ''); }
+function _loadEditor(el, stored) {
+  if (!stored) el.innerHTML = '';
+  else if (_looksRich(stored)) el.innerHTML = stored;
+  else el.innerHTML = clubEsc(stored).replace(/\n/g, '<br>');
+  _refreshEmpty(el);
+}
+function _caretToEnd(ed) {
+  try {
+    var r = document.createRange(); r.selectNodeContents(ed); r.collapse(false);
+    var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  } catch (e) {}
+}
+function _editorValue(el) { var html = el.innerHTML; return _htmlHasContent(html) ? html : ''; }
+function _refreshEmpty(el) { el.classList.toggle('is-empty', !_htmlHasContent(el.innerHTML)); }
+function _naStatus(id, text, saved) {
+  var el = document.getElementById(id); if (!el) return;
+  el.innerHTML = '<span class="material-symbols-rounded" aria-hidden="true">' + (saved ? 'cloud_done' : 'sync') + '</span><span>' + text + '</span>';
+  el.classList.toggle('notes-status--saved', !!saved);
+}
+function _openNoteEditor() { return notesModalIsOpen() ? document.getElementById('notes-editor') : null; }
+
+/* Indent / outdent. styleWithCSS OFF gives clean nested <ul>/<ol> inside a list. */
+function fmtIndent(inward) {
+  var ed = _openNoteEditor(); if (!ed) return;
+  ed.focus();
+  try { document.execCommand('styleWithCSS', false, false); } catch (e) {}
+  try { document.execCommand(inward ? 'indent' : 'outdent', false, null); } catch (e) {}
+  _cleanFmtArtifacts(ed); _refreshEmpty(ed); noteInput();
+}
+/* execCommand leaves redundant wrapper spans behind — outdent restates the current ink as an
+   inline colour, which would go wrong the moment the house (and its ink) changes. Strip anything
+   that only restates the default; a real highlight or a colour the user picked is left alone. */
+function _cleanFmtArtifacts(ed) {
+  var ink = getComputedStyle(ed).color;
+  ed.querySelectorAll('span[style]').forEach(function (sp) {
+    var st = sp.style;
+    if (st.fontFamily === 'inherit') st.removeProperty('font-family');
+    var bg = st.backgroundColor;
+    if (bg === 'transparent' || bg === 'rgba(0, 0, 0, 0)') st.removeProperty('background-color');
+    if (st.color && st.color === ink) st.removeProperty('color');
+    if (!sp.getAttribute('style')) { while (sp.firstChild) sp.parentNode.insertBefore(sp.firstChild, sp); sp.remove(); }
+  });
+}
+/* Nearest matching ancestor of the caret, without escaping the editor. */
+function _blockInEditor(ed, sel) {
+  var s = window.getSelection(); if (!s || !s.rangeCount) return null;
+  var node = s.getRangeAt(0).startContainer;
+  if (node.nodeType === 3) node = node.parentNode;
+  while (node && node !== ed) { if (node.matches && node.matches(sel)) return node; node = node.parentNode; }
+  return null;
+}
+/* Quote / unquote the current block; tagged .nq so it stays distinct from the bare <blockquote>
+   the indent button produces outside a list. */
+function fmtQuote() {
+  var ed = _openNoteEditor(); if (!ed) return;
+  ed.focus();
+  var open = _blockInEditor(ed, 'blockquote.nq');
+  if (open) { var parent = open.parentNode; while (open.firstChild) parent.insertBefore(open.firstChild, open); parent.removeChild(open); }
+  else {
+    try { document.execCommand('styleWithCSS', false, false); } catch (e) {}
+    try { document.execCommand('formatBlock', false, 'blockquote'); } catch (e) {}
+    var bq = _blockInEditor(ed, 'blockquote');
+    if (!bq) { try { document.execCommand('formatBlock', false, '<blockquote>'); } catch (e) {} bq = _blockInEditor(ed, 'blockquote'); }
+    if (bq) bq.classList.add('nq');
+  }
+  _cleanFmtArtifacts(ed); _refreshEmpty(ed); noteInput();
+}
+function fmtCmd(cmd, val) {
+  var ed = _openNoteEditor(); if (!ed) return;
+  ed.focus();
+  // Emit inline CSS (<span style>) rather than <font>/<b>, so every mark is stored the same way.
+  try { document.execCommand('styleWithCSS', false, true); } catch (e) {}
+  try { document.execCommand(cmd, false, val || null); } catch (e) {}
+  _cleanFmtArtifacts(ed); _refreshEmpty(ed); noteInput();
+}
+/* The swatches are colour SAMPLES the user picks and that are then baked into the note's HTML, so
+   they are absolute values by nature (same exception as the house swatches). */
+var _FMT_SWATCHES = {
+  fore: [['Default', 'default'], ['Red', '#D64545'], ['Amber', '#B7791F'], ['Green', '#4E8A3D'], ['Blue', '#3A7CC2'], ['Purple', '#8A5CC2']],
+  hilite: [['None', 'transparent'], ['Yellow', '#FFE082'], ['Green', '#BEE6A0'], ['Blue', '#A8D8F0'], ['Pink', '#F4B8D0'], ['Orange', '#FFCC99']]
+};
+function fmtTogglePop(btn, kind) {
+  var bar = btn.closest('.fmt-bar'), pop = bar.querySelector('.fmt-pop');
+  if (pop.classList.contains('open') && pop.dataset.kind === kind) { pop.classList.remove('open'); return; }
+  pop.dataset.kind = kind;
+  pop.innerHTML = _FMT_SWATCHES[kind].map(function (s) {
+    var name = s[0], hex = s[1];
+    var bg = hex === 'default' ? 'var(--md-sys-color-on-surface)' : hex === 'transparent' ? 'transparent' : hex;
+    var cross = hex === 'transparent' ? ' fmt-sw--none' : '';
+    return '<button type="button" class="fmt-sw' + cross + '" title="' + name + '" aria-label="' + name + '" style="background:' + bg + '" onmousedown="event.preventDefault()" onclick="fmtColor(\'' + kind + '\',\'' + hex + '\')"></button>';
+  }).join('');
+  pop.classList.add('open');
+}
+function fmtColor(kind, hex) {
+  var val = hex;
+  if (hex === 'default') val = getComputedStyle(document.documentElement).getPropertyValue('--md-sys-color-on-surface').trim() || 'inherit';
+  fmtCmd(kind === 'fore' ? 'foreColor' : 'hiliteColor', val);
+  document.querySelectorAll('.fmt-pop.open').forEach(function (p) { p.classList.remove('open'); });
+}
+
+/* ── the sheet (ref openNotesModal / closeNotesModal L11758–11840) ─────── */
+function notesModalIsOpen() { var ov = document.getElementById('hp-notes-modal'); return !!(ov && ov.classList.contains('open')); }
+function noteInput() {
+  var ed = document.getElementById('notes-editor'); if (ed) _refreshEmpty(ed);
+  _naStatus('notes-status', 'Saving…', false);
+  clearTimeout(_naTimer);
+  _naTimer = setTimeout(noteSave, 400);
+}
+function noteSave() {
+  clearTimeout(_naTimer); _naTimer = null;
+  var ed = document.getElementById('notes-editor');
+  if (!ed || currentNoteKey === null) return;
+  var val = _editorValue(ed);
+  // An untouched sheet must not persist anything.
+  if (!_noteTouched && val === _noteInitial) return;
+  _noteTouched = true;
+  if (val) noteStore[currentNoteKey] = val; else delete noteStore[currentNoteKey];
+  saveNoteStore();
+  var has = _htmlHasContent(val);
+  document.querySelectorAll('[data-note-key="' + currentNoteKey + '"] .note-btn-label').forEach(function (lab) { lab.textContent = has ? 'Edit notes' : 'Take notes'; });
+  _naStatus('notes-status', 'Saved', true);
+  clearTimeout(_naStatusTimer);
+  _naStatusTimer = setTimeout(function () { _naStatus('notes-status', 'Notes save as you type', true); }, 1600);
+}
+function openNotesModal(key, title) {
+  var ov = document.getElementById('hp-notes-modal'), ed = document.getElementById('notes-editor'); if (!ov || !ed) return;
+  currentNoteKey = key;
+  document.getElementById('notes-modal-title').textContent = title || 'Notes';
+  _loadEditor(ed, noteStore[key] || '');
+  ed.style.fontSize = notesFontSize + 'px';
+  _noteInitial = _editorValue(ed); _noteTouched = false;
+  _naStatus('notes-status', 'Notes save as you type', true);
+  var box = document.getElementById('hp-notes-container'); if (box) { box.style.transition = ''; box.style.transform = ''; }
+  ov.classList.add('open'); ov.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(_fitSheets);
+  setTimeout(function () { ed.focus(); _caretToEnd(ed); }, 150);
+}
+function closeNotesModal() {
+  var ov = document.getElementById('hp-notes-modal'); if (!ov || !ov.classList.contains('open')) return;
+  noteSave();                                                    // flush any pending debounce
+  document.querySelectorAll('.fmt-pop.open').forEach(function (p) { p.classList.remove('open'); });
+  ov.classList.remove('open'); ov.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  _fitSheets();
+  currentNoteKey = null; _noteTouched = false; _noteInitial = '';
+  notesRerender(true);                                           // previews, dots, digest
+}
+function adjustNotesFontSize(delta) {
+  notesFontSize = Math.min(26, Math.max(16, notesFontSize + delta));
+  try { localStorage.setItem('hp-notes-font', String(notesFontSize)); } catch (e) {}
+  var ed = document.getElementById('notes-editor'); if (ed) ed.style.fontSize = notesFontSize + 'px';
+}
+
+function initNotes() {
+  loadNoteStore();
+  var b = null, c = null, f = null;
+  try { b = localStorage.getItem('hp-club-notes-book'); c = localStorage.getItem('hp-club-notes-ch'); f = localStorage.getItem('hp-notes-font'); } catch (e) {}
+  notesBook = (b && /^[1-7]$/.test(b)) ? parseInt(b, 10) : 'all';
+  notesCh = (notesBook !== 'all' && c && /^\d+$/.test(c) && notesChapter(notesBook, parseInt(c, 10))) ? parseInt(c, 10) : 0;
+  notesFontSize = Math.min(26, Math.max(16, parseInt(f || '16', 10) || 16));
+  if (_notesWired) return;
+  _notesWired = true;
+  var ov = document.getElementById('hp-notes-modal');
+  if (ov) ov.addEventListener('click', function (e) { if (e.target === ov) closeNotesModal(); });   // backdrop tap closes
+  var box = document.getElementById('hp-notes-container');
+  if (box && typeof enableSheetDrag === 'function') {
+    enableSheetDrag(box, ['.notes-modal-drag', '.notes-modal-header'].map(function (s) { return box.querySelector(s); }).filter(Boolean), closeNotesModal);
+  }
+  // Any tap outside an open swatch popover dismisses it.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.fmt-bar')) return;
+    document.querySelectorAll('.fmt-pop.open').forEach(function (p) { p.classList.remove('open'); });
+  });
+}
+
+
+/* play.js — the Play tab. Harry Potter Book Club.
+   A game picker strip (same tiles as Listen's books) → one game panel. Games are entries in
+   PLAY_GAMES; adding one is a new entry with a render function. The first game is the owner's
+   "Half-Way Quest (Universal Surprise)" from the 2022 club night, rebuilt from the slide deck
+   (tools/play.py makes the image plates from it): a cover with the brief, a sticky rail of seven
+   challenges plus the puzzle, and each challenge revealed in the deck's order — the task, the clue
+   rhyme, the clue video (Google Drive preview, loaded on tap), and where it led. Progress in
+   hp_play-halfway { cur, rev: {n: stagesRevealed}, ans }; last game in hp-play-game. Plain ES2017. */
+
+var PLAY_GAMES = [
+  { id: 'halfway', num: 1, name: 'The Half-Way Quest', sub: 'Universal Surprise', icon: 'snitch', meta: '7 challenges + a puzzle', render: function (p) { renderHalfwayQuest(p); } }
+];
+var playGame = 'halfway';
+
+var HALFWAY = {
+  brief: 'Tonight you will be given the opportunity to earn points towards your half-way prize(s). You will be presented with 7 challenges that will require you to exercise all aspects of what you have learned over the past 2 years in book club. After completion of each challenge, you will earn points that can be used towards 2 purchase options.',
+  quote: 'Remember… it is not our abilities that show what we truly are, it is our choices.',
+  quoteBy: 'Albus Dumbledore',
+  photo: 'halfway-quest',
+  challenges: [
+    { n: 1, task: 'Cast a defensive spell to reveal the clue', photo: 'halfway-c1',
+      clue: 'It jangled with sounds of yuletide delight, as it rested inside a cloth bag the night of first sight.',
+      video: '1w8X_0mRBYiHrUqLKxTfP3U4LdsOQ49Yg', done: '‘Bone’fish gift card' },
+    { n: 2, task: 'Cast an offensive spell to reveal the clue', photo: 'halfway-c2',
+      clue: 'Like Harry, Hermione & Ron, you must brave many dangers… it’s true. Dobby’s words told of a place where his ears would be stuck like glue.',
+      video: '1lTIzJUtFpsHgwK97NUlHJEKw-YuRBPwC', poster: 'halfway-v2', done: 'Oven door' },
+    { n: 3, task: 'Define a theme to receive your next vial', photo: 'halfway-c3', videoFirst: true,
+      clue: 'On that winter’s night, no wish was left unmet, take coffee and mandrakes and what do you get?',
+      video: '1SpHyq4aETi4Q2qerhxCQIUfoBZbt3S_J', done: 'Behind the coffee grinds', reward: 'Reward: cash-in opportunity #1' },
+    { n: 4, task: 'Find a pin and paper before opening your next vial', photo: 'halfway-c4',
+      clue: 'At times we must go back and relive those quests from the past which already have been give(n).',
+      video: '1MCyvSD-XnJDAZFGbtyFfoppMWWPjhxcz', poster: 'halfway-v4', after: 'Repeat the words in the same spot to proceed on…', done: 'Singing outside' },
+    { n: 5, task: 'Cast 3 defensive spells to reveal the clue (no repeating)', photo: 'halfway-c5',
+      clue: 'She thought no one was looking, but little did she know… Headmaster sees all, blue hands have their toll. So, now is the time to reap what you sow. Choose wisely and tell him all that you know.',
+      video: '1Qmzw93i2WmkZSaXWv_T7oJ6m92LJ8HKk', poster: 'halfway-v5', done: 'Tell Professor about the hand you tried to hide' },
+    { n: 6, task: 'Cast 3 offensive spells to receive the next vial (no repeating)', photo: 'halfway-c6', videoFirst: true,
+      hint: 'You’ll want to take notes for this next challenge.',
+      clue: 'I have told you, I have warned you, let the sorting now begin…',
+      video: '17nAbWls5mu0C3lkIXBvrScAmf2zNSR4T',
+      doneLines: ['We’ll teach just those whose ancestry’s purest', 'We’ll teach those whose intelligence is surest', 'We’ll teach all those with brave deeds to their name', 'We’ll teach the lot and treat them just the same'] },
+    { n: 7, task: 'Cast an Unforgivable Curse to reveal the next clue', photo: 'halfway-c7', videoFirst: true,
+      clue: 'Start where the sound hits your listening ear. Then walk, DO NOT RUN, ’till no longer it’s clear. Choose only one, may your paths be but true. If seek your heart’s cry, forever may you lose.',
+      video: '1g76YsgZHj9x5HjuDp086h4qjirXTLbR-' }
+  ],
+  puzzle: { title: 'Solve this word puzzle to win the triple prize', clue: 'What was the last thing Lily said to Harry?', grid: 'AZONRPLEMKYIVCXWHUSBTDFJG', bingo: 'halfway-bingo' }
+};
+var HW_KEY = 'hp_play-halfway';
+var hw = { cur: 0, rev: {}, ans: '' };
+var HW_LABELS = { clue: 'Reveal the clue', video: 'Play the clue video', after: 'Then what?', done: 'Where did it lead?' };
+
+function playEsc(s) { return clubEsc(s); }
+function playAsset(name) { return 'assets/play/' + name + '.webp'; }
+
+/* ── picker ─────────────────────────────────────────────────────────────── */
+function renderPlayGames() {
+  var host = document.getElementById('playGames'); if (!host) return;
+  host.innerHTML = PLAY_GAMES.map(function (g) {
+    var icon = g.icon === 'snitch' ? '<svg class="nav-icon" aria-hidden="true"><use href="#hp-snitch"></use></svg>' : '<span class="material-symbols-rounded" aria-hidden="true">' + g.icon + '</span>';
+    return '<button class="book-tile game-tile" type="button" role="tab" data-game="' + g.id + '" aria-selected="' + (playGame === g.id ? 'true' : 'false') + '" onclick="selectPlayGame(\'' + g.id + '\')">' +
+      icon + '<span class="book-tile-title">' + playEsc(g.name) + '</span><span class="game-tile-sub">' + playEsc(g.sub) + '</span><span class="book-tile-meta">' + playEsc(g.meta) + '</span></button>';
+  }).join('');
+}
+function selectPlayGame(id) {
+  var game = null; PLAY_GAMES.forEach(function (g) { if (g.id === id) game = g; });
+  if (!game) return;
+  playGame = id;
+  try { localStorage.setItem('hp-play-game', id); } catch (e) {}
+  document.querySelectorAll('.game-tile').forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-game') === id ? 'true' : 'false'); });
+  var panel = document.getElementById('playPanel'); if (panel) game.render(panel);
+}
+
+/* ── The Half-Way Quest ─────────────────────────────────────────────────── */
+function hwLoad() {
+  try { var v = JSON.parse(localStorage.getItem(HW_KEY) || '{}'); hw = { cur: v.cur | 0, rev: (v.rev && typeof v.rev === 'object') ? v.rev : {}, ans: String(v.ans || '') }; }
+  catch (e) { hw = { cur: 0, rev: {}, ans: '' }; }
+  if (hw.cur < 0 || hw.cur > 8) hw.cur = 0;
+}
+function hwSave() { try { localStorage.setItem(HW_KEY, JSON.stringify(hw)); } catch (e) {} }
+function hwChallenge(n) { var c = null; HALFWAY.challenges.forEach(function (x) { if (x.n === n) c = x; }); return c; }
+/* The deck's order for each challenge: clue then video, or video then clue; an extra line for 4;
+   a completion for all but the last, which leads to the puzzle. */
+function hwStages(c) {
+  var s = c.videoFirst ? ['video', 'clue'] : ['clue', 'video'];
+  if (c.after) s.push('after');
+  if (c.done || c.doneLines) s.push('done');
+  return s;
+}
+function hwIsDone(n) { var c = hwChallenge(n); return !!c && (hw.rev[n] | 0) >= hwStages(c).length; }
+function hwDoneCount() { var k = 0; HALFWAY.challenges.forEach(function (c) { if (hwIsDone(c.n)) k++; }); return k; }
+
+function renderHalfwayQuest(panel, keepScroll) {
+  var y = window.pageYOffset;
+  var html = renderHwCover();
+  if (hw.cur > 0) html += renderHwRail() + '<div id="hwStage">' + (hw.cur === 8 ? renderHwPuzzle() : renderHwChallenge(hw.cur)) + '</div>';
+  html += '<p class="club-foot">From the club’s half-way quest night, 2022. The clue videos play from the club’s Google Drive; your place in the quest is kept on this device.</p>';
+  panel.innerHTML = html;
+  if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
+}
+function renderHwCover() {
+  var done = hwDoneCount(), started = hw.cur > 0 || done > 0;
+  var cta = !started ? 'Begin the quest' : (done >= 7 ? 'Back to the puzzle' : 'Continue at challenge ' + Math.max(1, Math.min(7, hw.cur || 1)));
+  var target = !started ? 1 : (done >= 7 ? 8 : Math.max(1, Math.min(8, hw.cur || 1)));
+  return '<article class="club-intro quest-cover">' +
+    '<div class="quest-cover-media"><img src="' + playAsset(HALFWAY.photo) + '" alt="The club at the dining table, wands raised, on quest night" loading="lazy">' +
+    '<div class="quest-cover-text"><div class="eyebrow">Game 1 · Universal Surprise</div><h3 class="quest-cover-title">The Half-Way Quest</h3><div class="quest-cover-sub">Seven challenges · one puzzle</div></div></div>' +
+    '<div class="quest-cover-body"><p>' + playEsc(HALFWAY.brief) + '</p>' +
+    '<blockquote class="quest-quote">' + playEsc(HALFWAY.quote) + '<cite>' + playEsc(HALFWAY.quoteBy) + '</cite></blockquote>' +
+    '<div class="quest-chips"><span class="chip">' + done + ' of 7 complete</span>' + (hw.cur === 8 || done >= 7 ? '<span class="chip">Puzzle unlocked</span>' : '') + '</div>' +
+    '<button class="btn btn-house btn-block" type="button" onclick="hwGo(' + target + ')"><span>' + cta + '</span><span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button>' +
+    '</div></article>';
+}
+function renderHwRail() {
+  var h = '<div class="quest-rail" role="tablist" aria-label="Quest progress"><span class="quest-rail-label">Quest</span>';
+  HALFWAY.challenges.forEach(function (c) {
+    var done = hwIsDone(c.n), cur = hw.cur === c.n;
+    h += '<button class="quest-step' + (done ? ' is-done' : '') + '" type="button" role="tab" aria-selected="' + (cur ? 'true' : 'false') + '"' + (cur ? ' aria-current="step"' : '') + ' aria-label="Challenge ' + c.n + (done ? ', complete' : '') + '" onclick="hwGo(' + c.n + ')">' + (done && !cur ? '<span class="material-symbols-rounded" aria-hidden="true">check</span>' : c.n) + '</button>';
+  });
+  h += '<button class="quest-step quest-step--puzzle" type="button" role="tab" aria-selected="' + (hw.cur === 8 ? 'true' : 'false') + '"' + (hw.cur === 8 ? ' aria-current="step"' : '') + ' aria-label="The word puzzle" onclick="hwGo(8)"><span class="material-symbols-rounded" aria-hidden="true">extension</span></button></div>';
+  return h;
+}
+function renderHwChallenge(n) {
+  var c = hwChallenge(n); if (!c) return '';
+  var stages = hwStages(c), shown = Math.min(hw.rev[n] | 0, stages.length);
+  var h = '<article class="club-intro quest-card" id="hw-card">' +
+    '<div class="quest-media"><img src="' + playAsset(c.photo) + '" alt="From quest night: challenge ' + n + '" loading="lazy"><span class="eyebrow">Challenge ' + n + ' of 7</span></div>' +
+    '<div class="quest-body"><h3 class="quest-task">' + playEsc(c.task) + '</h3>' +
+    (c.hint ? '<p class="quest-hint">' + playEsc(c.hint) + '</p>' : '<p class="quest-hint">Do the task at the table, then reveal what comes next.</p>');
+  for (var i = 0; i < shown; i++) h += renderHwStage(c, stages[i], false);
+  h += renderHwActions(c, shown) + '</div></article>';
+  return h;
+}
+function renderHwActions(c, shown) {
+  var n = c.n, stages = hwStages(c), h = '<div class="quest-actions">';
+  if (shown < stages.length) h += '<button class="btn btn-house btn-block" type="button" onclick="hwReveal()"><span>' + HW_LABELS[stages[shown]] + '</span><span class="material-symbols-rounded" aria-hidden="true">auto_awesome</span></button>';
+  else if (n < 7) h += '<button class="btn btn-metal btn-block" type="button" onclick="hwGo(' + (n + 1) + ')"><span>Next challenge</span><span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button>';
+  else h += '<button class="btn btn-metal btn-block" type="button" onclick="hwGo(8)"><span>On to the puzzle</span><span class="material-symbols-rounded" aria-hidden="true">extension</span></button>';
+  if (shown > 0) h += '<button class="quest-reset" type="button" onclick="hwReset(' + n + ')">Start this challenge over</button>';
+  return h + '</div>';
+}
+function renderHwStage(c, stage, fresh) {
+  var anim = fresh ? ' quest-stage-in' : '';
+  if (stage === 'clue') return '<div class="' + anim.trim() + '"><div class="quest-sub"><span class="material-symbols-rounded" aria-hidden="true">history_edu</span>The clue</div><div class="quest-scroll">' + playEsc(c.clue) + '</div></div>';
+  if (stage === 'after') return '<div class="' + anim.trim() + '"><div class="quest-sub"><span class="material-symbols-rounded" aria-hidden="true">campaign</span>Then</div><p class="quest-note">' + playEsc(c.after) + '</p></div>';
+  if (stage === 'done') {
+    var body = c.doneLines ? '<ul>' + c.doneLines.map(function (l) { return '<li>' + playEsc(l) + '</li>'; }).join('') + '</ul>' : '<div class="quest-done-text">' + playEsc(c.done) + '</div>';
+    return '<div class="' + anim.trim() + '"><div class="quest-sub"><span class="material-symbols-rounded" aria-hidden="true">workspace_premium</span>Quest completion</div><div class="quest-done">' + body + (c.reward ? '<div class="quest-reward">' + playEsc(c.reward) + '</div>' : '') + '</div></div>';
+  }
+  // video: poster + play; the Drive preview frame is only created on tap
+  var poster = c.poster ? '<img src="' + playAsset(c.poster) + '" alt="" loading="lazy">' : '<span class="quest-video-mark" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#hp-hallows"></use></svg></span>';
+  return '<div class="' + anim.trim() + '"><div class="quest-sub"><span class="material-symbols-rounded" aria-hidden="true">movie</span>The clue video</div>' +
+    '<div class="quest-video" id="hw-video-' + c.n + '">' + poster +
+    '<button class="quest-video-btn" type="button" onclick="hwPlayVideo(' + c.n + ')" aria-label="Play the clue video for challenge ' + c.n + '"><span class="quest-play-ring"><span class="material-symbols-rounded" aria-hidden="true">play_arrow</span></span><span>Play clue ' + c.n + '</span></button></div>' +
+    '<div class="quest-video-links"><span>Plays from Google Drive</span><a href="https://drive.google.com/file/d/' + c.video + '/view" target="_blank" rel="noopener">Open in Drive<span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a></div></div>';
+}
+function hwPlayVideo(n) {
+  var c = hwChallenge(n), box = document.getElementById('hw-video-' + n); if (!c || !box) return;
+  box.innerHTML = '<iframe src="https://drive.google.com/file/d/' + c.video + '/preview" title="Clue video for challenge ' + n + '" allow="autoplay; fullscreen; encrypted-media" allowfullscreen loading="lazy"></iframe>';
+}
+function renderHwPuzzle() {
+  var p = HALFWAY.puzzle, ans = hw.ans;
+  return '<article class="club-intro" id="hw-card"><div class="eyebrow">The triple prize</div><h3 class="club-intro-title">' + playEsc(p.title) + '</h3>' +
+    '<p class="quest-puzzle-clue">Clue: ' + playEsc(p.clue) + '</p>' +
+    '<div class="quest-sub"><span class="material-symbols-rounded" aria-hidden="true">grid_on</span>Tap letters to spell your answer</div>' +
+    '<div class="quest-answer" aria-live="polite"><span class="quest-answer-text' + (ans ? '' : ' is-empty') + '" id="hwAnswer">' + (ans ? playEsc(ans) : 'Your answer appears here') + '</span>' +
+    '<button class="icon-btn" type="button" onclick="hwLetter(\' \')" aria-label="Space"><span class="material-symbols-rounded" aria-hidden="true">space_bar</span></button>' +
+    '<button class="icon-btn" type="button" onclick="hwBackspace()" aria-label="Delete last letter"><span class="material-symbols-rounded" aria-hidden="true">backspace</span></button>' +
+    '<button class="icon-btn" type="button" onclick="hwClearAnswer()" aria-label="Clear answer"><span class="material-symbols-rounded" aria-hidden="true">close</span></button></div>' +
+    '<div class="quest-grid" role="group" aria-label="Letter grid">' + p.grid.split('').map(function (ch) { return '<button class="quest-letter" type="button" onclick="hwLetter(\'' + ch + '\')" aria-label="Letter ' + ch + '">' + ch + '</button>'; }).join('') + '</div>' +
+    '<figure class="quest-bingo"><img src="' + playAsset(p.bingo) + '" alt="Harry Potter bingo card with 24 picture squares and a free space" loading="lazy"><figcaption>The bingo card from the same slide</figcaption></figure>' +
+    '<div class="quest-actions"><button class="btn btn-metal btn-block" type="button" onclick="hwGo(0)"><span>Back to the quest</span><span class="material-symbols-rounded" aria-hidden="true">replay</span></button></div></article>';
+}
+function hwRenderAnswer() {
+  var el = document.getElementById('hwAnswer'); if (!el) return;
+  el.textContent = hw.ans || 'Your answer appears here';
+  el.classList.toggle('is-empty', !hw.ans);
+}
+function hwLetter(ch) { if (hw.ans.length >= 60) return; hw.ans += ch; hwSave(); hwRenderAnswer(); }
+function hwBackspace() { hw.ans = hw.ans.slice(0, -1); hwSave(); hwRenderAnswer(); }
+function hwClearAnswer() { hw.ans = ''; hwSave(); hwRenderAnswer(); }
+
+function hwGo(n) {
+  hw.cur = n | 0; hwSave();
+  var panel = document.getElementById('playPanel'); if (!panel) return;
+  renderHalfwayQuest(panel, true);
+  var target = n === 0 ? panel.querySelector('.quest-cover') : document.getElementById('hw-card');
+  if (target) {
+    var offset = n === 0 ? (56 + 12) : (56 + 8 + 56 + 12);          // header, or header + rail
+    try { window.scrollTo(0, Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - offset)); } catch (e) {}
+  }
+}
+function hwReveal() {
+  var c = hwChallenge(hw.cur); if (!c) return;
+  var stages = hwStages(c), shown = hw.rev[c.n] | 0;
+  if (shown >= stages.length) return;
+  hw.rev[c.n] = shown + 1; hwSave();
+  // Append the new stage in place — never rebuild the card, or a clue video that is playing
+  // would be torn down by the next reveal.
+  var actions = document.querySelector('#hw-card .quest-actions'); if (!actions) return;
+  var tmp = document.createElement('div'); tmp.innerHTML = renderHwStage(c, stages[shown], true);
+  var fresh = tmp.firstChild;
+  actions.parentNode.insertBefore(fresh, actions);
+  tmp.innerHTML = renderHwActions(c, shown + 1);
+  actions.replaceWith(tmp.firstChild);
+  var rail = document.querySelector('.quest-rail'); if (rail && hwIsDone(c.n)) rail.outerHTML = renderHwRail();
+  try { window.scrollTo(0, Math.max(0, fresh.getBoundingClientRect().top + window.pageYOffset - (56 + 8 + 56 + 24))); } catch (e) {}
+}
+function hwReset(n) {
+  delete hw.rev[n]; hwSave();
+  var stage = document.getElementById('hwStage'); if (stage) stage.innerHTML = renderHwChallenge(n);
+  var rail = document.querySelector('.quest-rail'); if (rail) rail.outerHTML = renderHwRail();
+}
+
+function initPlay() {
+  if (!document.getElementById('playGames')) return;
+  hwLoad();
+  var stored = null; try { stored = localStorage.getItem('hp-play-game'); } catch (e) {}
+  playGame = PLAY_GAMES.some(function (g) { return g.id === stored; }) ? stored : PLAY_GAMES[0].id;
+  renderPlayGames();
+  selectPlayGame(playGame);
 }
 </script>
 </body>
