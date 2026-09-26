@@ -1542,6 +1542,99 @@ html.house-page-open body { overflow: hidden; }
 }
 
 
+/* ── Club tab (SW v9): topic picker → panel. Same picker strip as Listen; Classes panel = eight
+   accordion cards, each with a syllabus and a five-question O.W.L. quiz. ── */
+.club-head { padding: 0 2px 14px; }
+.club-head .display { margin-bottom: 6px; }
+.club-head .lead { margin: 0; }
+.club-tile { width: 132px; min-height: 100px; }
+.club-tile .material-symbols-rounded, .club-tile .nav-icon { font-size: 22px; width: 22px; height: 22px; display: block; color: var(--md-sys-color-primary); fill: currentColor; }
+.club-tile[aria-selected="true"] .material-symbols-rounded, .club-tile[aria-selected="true"] .nav-icon { color: var(--hp-chrome-accent); }
+.club-tile .book-tile-title { margin-top: 8px; }
+
+.club-intro { background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); border-radius: 16px; box-shadow: var(--md-sys-elevation-1); padding: 16px 18px; margin-bottom: 14px; }
+.club-intro .eyebrow { margin-bottom: 4px; }
+.club-intro-title { font-family: var(--font-serif); font-size: 20px; font-weight: 600; line-height: 1.2; margin: 0 0 8px; }
+.club-intro p { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin: 0; }
+.club-intro p + p { margin-top: 8px; }
+.club-soon { text-align: center; padding: 28px 18px; }
+.club-soon .material-symbols-rounded { font-size: 40px; color: var(--md-sys-color-primary); display: block; margin: 0 auto 8px; }
+.club-soon .chip { margin-top: 12px; }
+
+/* Class cards */
+.class-list { display: flex; flex-direction: column; gap: 10px; }
+.class-card { background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); border-radius: 16px; box-shadow: var(--md-sys-elevation-1); overflow: hidden; border: 1.5px solid transparent; transition: border-color 0.2s; }
+.class-card.open { border-color: var(--md-sys-color-primary); }
+.class-head {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  min-height: 64px; padding: 10px 14px 10px 12px;
+  background: transparent; border: 0; text-align: left; cursor: pointer; color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.class-head:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -3px; border-radius: 14px; }
+.class-icon { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); box-shadow: var(--md-sys-elevation-1); }
+.class-icon .material-symbols-rounded { font-size: 24px; }
+.class-icon .nav-icon { width: 24px; height: 24px; fill: currentColor; display: block; }
+.class-text { flex: 1; min-width: 0; }
+.class-name { font-family: var(--font-serif); font-size: 18px; font-weight: 600; line-height: 1.2; display: block; }
+.class-teacher { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); display: block; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.class-grade { flex-shrink: 0; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border: 1.5px solid var(--md-sys-color-primary); }
+.class-grade--none { visibility: hidden; }
+.class-chevron { flex-shrink: 0; color: var(--md-sys-color-on-surface-variant); font-size: 24px; transition: transform 0.2s; }
+.class-card.open .class-chevron { transform: rotate(180deg); }
+.class-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--md-sys-color-outline-variant); }
+.class-card.open .class-body { display: block; }
+.class-summary { font-family: var(--font-sans); font-size: 15px; line-height: 1.55; margin: 14px 0 12px; }
+.class-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 0 0 14px; font-family: var(--font-sans); font-size: 14px; line-height: 1.4; }
+.class-facts dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-secondary); padding-top: 2px; }
+.class-facts dd { margin: 0; }
+.class-sub { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); margin: 14px 0 6px; }
+.class-syllabus { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.class-syllabus li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; font-family: var(--font-sans); font-size: 14px; line-height: 1.4; }
+.class-syllabus b { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--md-sys-color-secondary); padding-top: 3px; }
+.class-know { background: var(--md-sys-color-surface-container); border-radius: 12px; padding: 10px 12px; font-family: var(--font-sans); font-size: 14px; line-height: 1.45; margin-top: 12px; }
+.class-know b { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-primary); display: block; margin-bottom: 3px; }
+
+/* Quiz */
+.quiz { margin-top: 14px; border-top: 1px dashed var(--md-sys-color-outline-variant); padding-top: 14px; }
+.quiz-start { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.quiz-start p { flex: 1 1 200px; font-family: var(--font-sans); font-size: 14px; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 0; }
+.quiz-progress { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-sys-color-secondary); display: flex; justify-content: space-between; margin-bottom: 8px; }
+.quiz-q { font-family: var(--font-serif); font-size: 17px; font-weight: 600; line-height: 1.35; margin: 0 0 12px; }
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px;
+  padding: 10px 12px; border-radius: 12px; text-align: left; cursor: pointer;
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.35;
+  background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface);
+  border: 1.5px solid transparent; -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.quiz-opt:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.quiz-opt .quiz-key { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; background: var(--md-sys-color-surface); border: 1px solid var(--md-sys-color-outline-variant); }
+.quiz-opt[disabled] { cursor: default; }
+.quiz-opt.is-right { border-color: var(--md-sys-color-primary); background: var(--md-sys-color-primary-container); }
+.quiz-opt.is-right .quiz-key { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-primary); }
+.quiz-opt.is-wrong { border-color: var(--md-sys-color-error); opacity: 0.85; }
+.quiz-opt.is-wrong .quiz-key { background: var(--md-sys-color-error); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-error); }
+.quiz-why { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--md-sys-color-surface-container); }
+.quiz-why b { color: var(--md-sys-color-primary); }
+.quiz-why.is-wrong b { color: var(--md-sys-color-error); }
+.quiz-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.quiz-result { text-align: center; padding: 6px 0 2px; }
+.quiz-result-grade { width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 40px; font-weight: 700; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); box-shadow: var(--md-sys-elevation-2); }
+.quiz-result-grade.is-fail { background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); border: 2px solid var(--md-sys-color-outline); box-shadow: none; }
+.quiz-result-name { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); }
+.quiz-result-score { font-family: var(--font-serif); font-size: 20px; font-weight: 600; margin: 4px 0 6px; }
+.quiz-result p { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin: 0 0 12px; }
+.club-foot { font-family: var(--font-sans); font-size: 12px; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 14px 2px 0; }
+.club-foot a { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .class-card, .class-chevron, .quiz-opt { transition: none; }
+}
+
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -1739,6 +1832,18 @@ html[data-mono="1"] .listen-track-btn.is-playing .ltb-num, html[data-mono="1"] .
 html[data-mono="1"] .listen-track-btn.is-playing .ltb-icon, html[data-mono="1"] .listen-track-btn.is-done .ltb-icon { background: #FFF; color: #000; border: 1.5px solid #000; }
 html[data-mono="1"] .ltb-fill { background: #000; opacity: 0.12; }
 html[data-mono="1"] .lnp-note { color: #000; font-weight: 600; }
+html[data-mono="1"] .club-intro, html[data-mono="1"] .class-card { background: #FFF; color: #000; border: 1px solid #000; box-shadow: none; }
+html[data-mono="1"] .class-card.open { border: 2px solid #000; }
+html[data-mono="1"] .class-icon, html[data-mono="1"] .quiz-result-grade { background: #000; color: #FFF; box-shadow: none; }
+html[data-mono="1"] .class-grade { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .class-know, html[data-mono="1"] .quiz-why, html[data-mono="1"] .quiz-opt { background: #FFF; color: #000; border: 1.5px solid #000; }
+html[data-mono="1"] .quiz-opt .quiz-key { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .quiz-opt.is-right { background: #000; color: #FFF; }
+html[data-mono="1"] .quiz-opt.is-right .quiz-key { background: #FFF; color: #000; }
+html[data-mono="1"] .quiz-opt.is-wrong { opacity: 1; border-style: dashed; }
+html[data-mono="1"] .quiz-opt.is-wrong .quiz-key { background: #000; color: #FFF; }
+html[data-mono="1"] .quiz-why b, html[data-mono="1"] .quiz-why.is-wrong b { color: #000; text-decoration: underline; }
+html[data-mono="1"] .quiz-result-grade.is-fail { background: #FFF; color: #000; border: 2px dashed #000; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -1883,14 +1988,13 @@ html[data-mono="1"] .lnp-note { color: #000; font-weight: 600; }
   <!-- ── CLUB ── -->
   <section class="section" id="section-club" data-section="club">
     <div class="section-inner section-inner--pad">
-      <div class="card tab-card">
-        <div class="card-body">
-          <div class="eyebrow">The Club</div>
-          <h2 class="display">Discussion Guides</h2>
-          <p class="lead">Questions and topics for every book, built for members walking through the series together.</p>
-          <span class="chip">In progress</span>
-        </div>
+      <div class="club-head">
+        <div class="eyebrow">The Club</div>
+        <h2 class="display">Book Club</h2>
+        <p class="lead">Pick a subject to open it below.</p>
       </div>
+      <div class="book-picker" id="clubTopics" role="tablist" aria-label="Choose a subject"></div>
+      <div id="clubPanel"></div>
     </div>
   </section>
 
@@ -1976,7 +2080,7 @@ html[data-mono="1"] .lnp-note { color: #000; font-weight: 600; }
         </div>
         <div class="listen-tracks" id="listenTracks" aria-label="Chapters"></div>
       </div>
-      <p class="listen-foot">The recordings stream from the club&rsquo;s Google Drive, so they need a connection. Your place in every chapter is kept on this device only.</p>
+      <p class="listen-foot">The recordings stream from the club&rsquo;s own library online, so they need a connection. Your place in every chapter is kept on this device only.</p>
     </div>
   </section>
 
@@ -2566,6 +2670,7 @@ function init() {
   registerSW();
   if (typeof initHousePage === 'function') initHousePage();
   if (typeof initListen === 'function') initListen();
+  if (typeof initClub === 'function') initClub();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
@@ -2999,7 +3104,18 @@ var LISTEN_BOOKS = [
 ];
 /* @/listen-data */
 
-function LISTEN_SRC(id) { return 'https://drive.google.com/uc?export=download&id=' + id; }
+/* Where the bytes live. Drive refuses cross-site media (CLAUDE.md gotcha 11) and iOS Safari will not
+   play a GitHub release asset through github.com's redirect (gotcha 12), so the chapters sit in the
+   sibling repo hp-book-club-audio and stream from raw.githubusercontent.com (no redirect, Range, CORS):
+   book<N>/book<N>-ch<NN>.mp3, Book 7's epilogue book7/book7-epilogue.mp3. The Drive id stays each
+   track's identity (progress keys, catalogue); only the URL is derived here. */
+var LISTEN_RELEASE = 'https://raw.githubusercontent.com/joe-ray-sites/hp-book-club-audio/main/';
+function LISTEN_ASSET(id) {
+  var m = _listenIndex[id]; if (!m) return null;
+  var ch = m.track.n ? 'ch' + (m.track.n < 10 ? '0' : '') + m.track.n : 'epilogue';
+  return 'book' + m.book.n + '/book' + m.book.n + '-' + ch + '.mp3';
+}
+function LISTEN_SRC(id) { return LISTEN_RELEASE + LISTEN_ASSET(id); }
 
 var LISTEN_PROGRESS_KEY = 'hp_listen-progress';
 var LISTEN_LAST_KEY = 'hp_listen-last';
@@ -3391,6 +3507,327 @@ function initListen() {
   if (last) setCurrentAudio(last.t);            // "Continue" state — no network until play
   window.addEventListener('pagehide', saveCurrentAudioPos);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') saveCurrentAudioPos(); });
+}
+
+/* club.js — Club tab. Harry Potter Book Club.
+   Topic strip (Discussion Guides · Classes · Notes · Homework) → one panel. Classes is built:
+   eight accordion cards (professor, classroom, syllabus, a "did you know") each with a
+   five-question O.W.L. quiz, graded on the Hogwarts scale (O · E · A pass, P · D · T fail).
+   Copy is original; facts were checked against the Harry Potter Wiki (harrypotter.fandom.com).
+   Storage (shared origin → prefixed): hp-club-topic (last topic), hp_club-classes
+   {classId:{best,total,attempts}}. Plain ES2017. */
+
+var CLUB_TOPICS = [
+  { id: 'guides', name: 'Discussion Guides', icon: 'forum', meta: 'Coming soon', ready: false,
+    blurb: 'Questions and talking points for every book, written for members reading the series together.' },
+  { id: 'classes', name: 'Classes', icon: 'school', meta: '8 subjects', ready: true },
+  { id: 'notes', name: 'Notes', icon: 'edit_note', meta: 'Coming soon', ready: false,
+    blurb: 'A place to keep your own notes on each book and chapter as you read.' },
+  { id: 'homework', name: 'Homework', icon: 'assignment', meta: 'Coming soon', ready: false,
+    blurb: 'Reading assignments and small tasks between meetings.' }
+];
+
+var CLUB_GRADES = [
+  { min: 0.9, letter: 'O', name: 'Outstanding', pass: true, note: 'Top marks. Professor McGonagall would allow you into her N.E.W.T. class without a second glance.' },
+  { min: 0.75, letter: 'E', name: 'Exceeds Expectations', pass: true, note: 'A strong pass, and enough to carry on to N.E.W.T. level.' },
+  { min: 0.55, letter: 'A', name: 'Acceptable', pass: true, note: 'A pass. Revise the syllabus above and have another go.' },
+  { min: 0.4, letter: 'P', name: 'Poor', pass: false, note: 'Not quite. Read the class notes again before you retake it.' },
+  { min: 0.2, letter: 'D', name: 'Dreadful', pass: false, note: 'Hermione would lend you her notes. Have another go.' },
+  { min: 0, letter: 'T', name: 'Troll', pass: false, note: 'Even Crabbe and Goyle did better. Try again.' }
+];
+
+/* Each class: at-a-glance facts, three syllabus bands, one "did you know", five questions
+   ({q, a:[choices], c: index of the correct one, why}). */
+var CLASSES = [
+  { id: 'transfiguration', name: 'Transfiguration', icon: 'auto_fix_high',
+    teacher: 'Professor Minerva McGonagall', room: 'Classroom 1B, off the Middle Courtyard', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'A Beginner’s Guide to Transfiguration, Emeric Switch',
+    summary: 'The art of changing one thing into another: an object, an animal, even a person. It is exacting work. Wand movement, incantation and concentration all have to be right, and Professor McGonagall has no patience for anyone treating it as a game. Before her, the subject was taught by a younger Albus Dumbledore.',
+    syllabus: [
+      ['Years 1–2', 'A match into a needle, a beetle into a button, and the theory behind it all, including Gamp’s Law of Elemental Transfiguration.'],
+      ['Years 3–5', 'Teapots into tortoises, a lecture on Animagi with a live demonstration, Switching Spells, and the Vanishing Spell that sits on the O.W.L.'],
+      ['N.E.W.T.', 'Nonverbal casting, conjuring birds from thin air, and the first steps of human Transfiguration.']
+    ],
+    know: 'Professor McGonagall is herself a registered Animagus. She turns into a tabby cat with square markings around the eyes, exactly where her spectacles sit.',
+    quiz: [
+      { q: 'What is the very first thing first-years try to transfigure?', a: ['A teacup into a rat', 'A match into a needle', 'A beetle into a button', 'A desk into a pig'], c: 1, why: 'Only Hermione managed it in the first lesson; her match went silver and pointed.' },
+      { q: 'Which law sets the limits of what Transfiguration can do?', a: ['Golpalott’s Third Law', 'The Statute of Secrecy', 'Gamp’s Law of Elemental Transfiguration', 'The Werewolf Code of Conduct'], c: 2, why: 'Gamp’s Law is why food cannot simply be conjured from nothing.' },
+      { q: 'What animal does Professor McGonagall become as an Animagus?', a: ['A barn owl', 'A tabby cat', 'A silver doe', 'A black dog'], c: 1, why: 'She opened Harry’s story sitting on a wall in Privet Drive, reading a map.' },
+      { q: 'What did the fifth-year O.W.L. practical include?', a: ['Making something Vanish', 'Turning into an animal', 'Conjuring a Patronus', 'Brewing a Shrinking Solution'], c: 0, why: 'Vanishing is fifth-year work: snails first, then mice, and the harder invertebrates for the O.W.L.' },
+      { q: 'What grade did McGonagall require before she would take a student on at N.E.W.T. level?', a: ['Acceptable', 'Exceeds Expectations', 'Outstanding', 'Any pass'], c: 1, why: 'An E or better. Neville did not make the cut; Harry, Ron and Hermione did.' }
+    ] },
+  { id: 'charms', name: 'Charms', icon: 'auto_awesome',
+    teacher: 'Professor Filius Flitwick', room: 'Classroom 2E, third-floor Charms corridor', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'The Standard Book of Spells, Miranda Goshawk (one grade per year)',
+    summary: 'Charms add properties to things: they lift, light, lock, mend and cheer. Professor Flitwick, a former duelling champion by reputation, teaches from a stack of books behind his desk, pairs students up to practise on one another, and has been known to let a class play games when nobody can concentrate.',
+    syllabus: [
+      ['Years 1–2', 'Wingardium Leviosa with its swish and flick, Lumos and Nox, Alohomora, the Mending Charm, and the Disarming Charm that Harry would rely on for years.'],
+      ['Years 3–5', 'Cheering Charms, Banishing and Summoning, and Silencing Charms practised on bullfrogs and ravens ahead of the O.W.L.'],
+      ['N.E.W.T.', 'Nonverbal spells, Aguamenti, and charms cast under pressure.']
+    ],
+    know: 'Neville’s grandmother failed her own Charms O.W.L. and called the subject a soft option ever after, which did Neville’s confidence no favours.',
+    quiz: [
+      { q: 'What is the wand movement for the Levitation Charm?', a: ['Flick and jab', 'Swish and flick', 'Circle and tap', 'Point and hold'], c: 1, why: 'Swish and flick, and it is Levi-O-sa, not Levio-SA.' },
+      { q: 'Who wrote The Standard Book of Spells?', a: ['Bathilda Bagshot', 'Emeric Switch', 'Miranda Goshawk', 'Arsenius Jigger'], c: 2, why: 'One grade per year, from Grade 1 in first year to Grade 7.' },
+      { q: 'Which charm brought Harry his Firebolt in the first task of the Triwizard Tournament?', a: ['The Banishing Charm', 'The Summoning Charm', 'The Levitation Charm', 'The Seize and Pull Charm'], c: 1, why: 'Accio Firebolt. He and Hermione drilled it for hours, and Professor Flitwick later called it perfect.' },
+      { q: 'Where is the Charms classroom?', a: ['In the dungeons', 'At the top of a tower', 'On the third floor', 'Out by the greenhouses'], c: 2, why: 'Classroom 2E on the third-floor Charms corridor.' },
+      { q: 'Which of these is NOT taught in Charms?', a: ['The Cheering Charm', 'The Mending Charm', 'The Vanishing Spell', 'The Summoning Charm'], c: 2, why: 'Vanishing is Transfiguration, not Charms.' }
+    ] },
+  { id: 'potions', name: 'Potions', icon: 'science',
+    teacher: 'Professor Severus Snape, then Professor Horace Slughorn', room: 'The dungeons', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'Magical Drafts and Potions, Arsenius Jigger; later Advanced Potion-Making, Libatius Borage',
+    summary: 'Cold dungeons, pickled things in jars, and the subtle science of bottling fame and brewing glory. Under Snape the class ran on fear and favoured Slytherin. Slughorn was kinder, took students with an E rather than demanding an O, and handed out prizes.',
+    syllabus: [
+      ['Years 1–2', 'A Cure for Boils (Neville melted a cauldron), the Forgetfulness Potion, Swelling Solution, and the twelve uses of dragon’s blood.'],
+      ['Years 3–5', 'Shrinking Solution, Wit-Sharpening Potion, the Draught of Peace and the Strengthening Solution; the O.W.L. paper asked about Polyjuice.'],
+      ['N.E.W.T.', 'The Draught of Living Death, Amortentia, Golpalott’s Third Law of antidotes, and, for the best brewer, a small bottle of Felix Felicis.']
+    ],
+    know: 'Only twelve students in Harry’s year reached N.E.W.T. Potions. Harry got in on an E because Slughorn set the bar lower than Snape had, and then borrowed a very well-annotated second-hand textbook.',
+    quiz: [
+      { q: 'Where are Potions lessons held?', a: ['The North Tower', 'The greenhouses', 'The dungeons', 'The Great Hall'], c: 2, why: 'Colder than the rest of the castle, and lined with pickled animals in glass jars.' },
+      { q: 'Where would you look for a bezoar?', a: ['Inside a dragon’s egg', 'In the stomach of a goat', 'Under a Mandrake leaf', 'At the bottom of the lake'], c: 1, why: 'A stone from a goat’s stomach that will save you from most poisons, as Ron found out.' },
+      { q: 'Powdered root of asphodel added to an infusion of wormwood makes what?', a: ['Polyjuice Potion', 'Veritaserum', 'The Draught of Living Death', 'Pepperup Potion'], c: 2, why: 'A sleeping draught so powerful it is known as the Draught of Living Death. Snape’s first question to Harry.' },
+      { q: 'What prize did Slughorn offer in Harry’s first sixth-year lesson?', a: ['A signed textbook', 'Fifty house points', 'A bottle of Felix Felicis', 'A seat in the Slug Club'], c: 2, why: 'Liquid luck, for the best Draught of Living Death. Harry won it with the Prince’s help.' },
+      { q: 'Who annotated the second-hand copy of Advanced Potion-Making Harry used?', a: ['Horace Slughorn', 'The Half-Blood Prince', 'Libatius Borage', 'Tom Riddle'], c: 1, why: 'The Half-Blood Prince: a young Severus Snape, as Harry learns at the end of the sixth book.' }
+    ] },
+  { id: 'history', name: 'History of Magic', icon: 'history_edu',
+    teacher: 'Professor Cuthbert Binns', room: 'Classroom 4F, first floor', years: 'Years 1–5 (written O.W.L. only), optional after',
+    book: 'A History of Magic, Bathilda Bagshot',
+    summary: 'Goblin rebellions, giant wars and the Statute of Secrecy, delivered in a drone that has put generations of students to sleep. Professor Binns is the only ghost on the staff. The story goes that he nodded off by the staffroom fire one evening and got up the next morning without his body.',
+    syllabus: [
+      ['Years 1–2', 'Emeric the Evil, Uric the Oddball, the Warlock Convention of 1289 and the medieval Assembly of European Wizards.'],
+      ['Years 3–5', 'The witch-hunts, the goblin rebellions of 1612 and 1752, the giant wars and the International Statute of Wizarding Secrecy.'],
+      ['N.E.W.T.', 'The history of wandlore, the Wizards’ Council, and how Gringotts, Azkaban and St Mungo’s came to be.']
+    ],
+    know: 'It was Binns, of all people, who told the second-years the legend of the Chamber of Secrets, after Hermione asked. He got her name wrong while doing it and called her Miss Grant.',
+    quiz: [
+      { q: 'What is unusual about Professor Binns?', a: ['He is a ghost', 'He is a house-elf', 'He is an Animagus', 'He is a portrait'], c: 0, why: 'He floats in through the blackboard and has never, as far as anyone knows, noticed that he died.' },
+      { q: 'Who wrote A History of Magic?', a: ['Miranda Goshawk', 'Bathilda Bagshot', 'Phyllida Spore', 'Quentin Trimble'], c: 1, why: 'Bathilda Bagshot, who also happened to be the Dumbledores’ neighbour in Godric’s Hollow.' },
+      { q: 'Which topic turns up most often in Binns’s lectures?', a: ['Dragon breeding', 'Goblin rebellions', 'Quidditch history', 'Wand-making'], c: 1, why: 'Goblin rebellions, endlessly. Ron was still muddling up Elfric the Eager and Uric the Oddball at exam time.' },
+      { q: 'According to the legend Binns told, which founder built the Chamber of Secrets?', a: ['Godric Gryffindor', 'Helga Hufflepuff', 'Rowena Ravenclaw', 'Salazar Slytherin'], c: 3, why: 'Slytherin, before he left the school, sealing a monster inside it that only his heir could control.' },
+      { q: 'What kind of exam is the History of Magic O.W.L.?', a: ['Written only', 'Practical only', 'Written and practical', 'An oral exam'], c: 0, why: 'A written paper, during which Harry fell asleep and saw Sirius in the Department of Mysteries.' }
+    ] },
+  { id: 'dada', name: 'Defence Against the Dark Arts', icon: 'shield',
+    teacher: 'A new professor every year', room: 'Classroom 3C, third floor', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'The Dark Forces: A Guide to Self-Protection, Quentin Trimble',
+    summary: 'Curses, counter-curses, dark creatures and how to duel. The post has been jinxed since Dumbledore turned Tom Riddle down for it, so no teacher lasts longer than a year, and Harry’s seven ranged from the brilliant to the fraudulent to the outright dangerous.',
+    syllabus: [
+      ['Years 1–2', 'Quirrell’s stammering theory, then Lockhart’s year of storytelling, one disastrous lesson with Cornish pixies and a single Duelling Club meeting.'],
+      ['Years 3–4', 'Lupin’s boggarts, Red Caps, hinkypunks and grindylows, followed by the false Moody’s demonstration of the three Unforgivable Curses on spiders.'],
+      ['Years 5–7', 'Umbridge’s theory-only textbook, which drove students into Dumbledore’s Army; then Snape’s nonverbal spells; then, under the Carrows, the subject became the Dark Arts themselves.']
+    ],
+    know: 'The O.W.L. written paper asked for the five signs that identify a werewolf. The examiner gave Harry a bonus point for producing a full Patronus.',
+    quiz: [
+      { q: 'Why did Hogwarts need a new Defence teacher every single year?', a: ['The pay was terrible', 'The post was jinxed after Dumbledore refused Tom Riddle', 'The Ministry rotated them', 'The classroom was haunted'], c: 1, why: 'Voldemort jinxed the job when Dumbledore turned him down. The curse only lifted with his death.' },
+      { q: 'What creature did Professor Lupin bring to his first practical lesson?', a: ['A grindylow', 'A boggart', 'A hinkypunk', 'A Cornish pixie'], c: 1, why: 'A boggart in the staffroom wardrobe, banished with Riddikulus. Snape ended up in Neville’s grandmother’s clothes.' },
+      { q: 'Which teacher demonstrated the Unforgivable Curses on spiders?', a: ['Remus Lupin', 'Gilderoy Lockhart', 'The false Mad-Eye Moody', 'Severus Snape'], c: 2, why: 'Barty Crouch Junior, disguised as Moody, taught fourth-years what is normally kept for the sixth year.' },
+      { q: 'What was Umbridge’s set textbook?', a: ['Confronting the Faceless', 'Defensive Magical Theory', 'The Dark Forces: A Guide to Self-Protection', 'Gadding with Ghouls'], c: 1, why: 'Wilbert Slinkhard’s Defensive Magical Theory, read in silence, wands away.' },
+      { q: 'Who taught Defence in Harry’s third year?', a: ['Quirinus Quirrell', 'Remus Lupin', 'Dolores Umbridge', 'Gilderoy Lockhart'], c: 1, why: 'Lupin, whom Hermione called the only one of their teachers who knew what he was doing.' }
+    ] },
+  { id: 'astronomy', name: 'Astronomy', icon: 'nightlight',
+    teacher: 'Professor Aurora Sinistra', room: 'The top of the Astronomy Tower', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'Your own telescope, bought in Diagon Alley',
+    summary: 'The one class held at midnight. Students climb the tallest tower with their telescopes to learn the names of the stars and the movements of the planets, and to fill in star charts by hand. It is real astronomy, not to be confused with the fortune-telling upstairs in Divination.',
+    syllabus: [
+      ['Years 1–2', 'Wednesday nights at midnight: constellations, the planets and a map of Jupiter.'],
+      ['Years 3–5', 'Star charts, lunar phases and the moons of Jupiter, on which fifth-years write an essay.'],
+      ['N.E.W.T.', 'Space weather, meteor showers, rogue planets and the darker corners of the sky.']
+    ],
+    know: 'Harry’s O.W.L. practical, at eleven at night on top of the tower, was interrupted by six Stunners: Umbridge’s raid on Hagrid’s cabin, during which Professor McGonagall was hit four times in the chest.',
+    quiz: [
+      { q: 'When do first-years have Astronomy?', a: ['Monday afternoons', 'Friday mornings', 'Wednesday at midnight', 'Sunday at dawn'], c: 2, why: 'Midnight on Wednesdays, at the top of the tallest tower.' },
+      { q: 'Who teaches Astronomy at Hogwarts?', a: ['Professor Sinistra', 'Professor Trelawney', 'Professor Vector', 'Professor Sprout'], c: 0, why: 'Aurora Sinistra, whose lessons are among the few Harry never complains about.' },
+      { q: 'Which of Jupiter’s moons is covered in ice?', a: ['Io', 'Europa', 'Ganymede', 'Callisto'], c: 1, why: 'Europa is the icy one; Io has the volcanoes. Ron had them the wrong way round in his essay.' },
+      { q: 'What did students have to do in the Astronomy O.W.L. practical?', a: ['Predict an eclipse', 'Fill in a blank star chart', 'Name every moon of Saturn', 'Draw the phases of the moon'], c: 1, why: 'A blank chart, filled in from a few hours of watching the real sky.' },
+      { q: 'What is Astronomy careful not to be mistaken for?', a: ['Arithmancy', 'Herbology', 'Astrology', 'Alchemy'], c: 2, why: 'Astrology belongs to Divination, and not everyone on the staff thinks much of it.' }
+    ] },
+  { id: 'herbology', name: 'Herbology', icon: 'potted_plant',
+    teacher: 'Professor Pomona Sprout', room: 'The greenhouses behind the castle', years: 'Years 1–5, N.E.W.T. option in 6 and 7',
+    book: 'One Thousand Magical Herbs and Fungi, Phyllida Spore',
+    summary: 'Plants and fungi, magical and mundane: how to grow them, handle them and use them, and which ones will kill you. Professor Sprout, Head of Hufflepuff, teaches in earth-stained robes with dragon-hide gloves close to hand. It was the one subject Neville was better at than anyone.',
+    syllabus: [
+      ['Years 1–2', 'Greenhouse One for the harmless plants, then Greenhouse Three and the repotting of Mandrakes, earmuffs firmly on.'],
+      ['Years 3–5', 'Bubotubers and their pus, Bouncing Bulbs, Fanged Geraniums, and the Venomous Tentacula, which bites.'],
+      ['N.E.W.T.', 'Snargaluff stumps, which fight back, and the rarer plants nobody has managed to tame.']
+    ],
+    know: 'Gillyweed was known for years before anyone discovered what it does. The witch who first ate it nearly suffocated on dry land and survived by plunging her head into a bucket of water.',
+    quiz: [
+      { q: 'Professor Sprout is Head of which house?', a: ['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'], c: 1, why: 'Hufflepuff, whose common room is near the kitchens and whose Head is never far from a greenhouse.' },
+      { q: 'Why do students wear earmuffs to repot Mandrakes?', a: ['The soil is noisy', 'The greenhouse is cold', 'A Mandrake’s cry can kill', 'Professor Sprout shouts'], c: 2, why: 'A mature Mandrake’s scream is fatal; the seedlings only knock you out for a few hours.' },
+      { q: 'What does Devil’s Snare shrink away from?', a: ['Cold water', 'Light and warmth', 'Loud noise', 'Salt'], c: 1, why: 'Hermione remembered it likes the dark and damp, then remembered she was a witch and made fire.' },
+      { q: 'Which plant let Harry breathe underwater in the second task?', a: ['Gillyweed', 'Dittany', 'Mandrake', 'Mimbulus mimbletonia'], c: 0, why: 'Gillyweed, for about an hour of gills and webbed feet. Dobby fetched it; Neville knew what it did.' },
+      { q: 'What did Neville’s Mimbulus mimbletonia do when prodded?', a: ['Sang', 'Squirted Stinksap', 'Bit him', 'Glowed'], c: 1, why: 'Stinksap over everyone in the compartment, just as Cho Chang walked past.' }
+    ] },
+  { id: 'flying', name: 'Flying', sprite: 'hp-snitch',
+    teacher: 'Madam Rolanda Hooch', room: 'The lawn below the castle', years: 'First year only (optional after)',
+    book: 'A school broom, old and inclined to drift left',
+    summary: 'The only lesson that is all body and no theory. First-years line up beside a row of battered school brooms, hold out a hand and command them up, then learn to mount, kick off, hover and land. Madam Hooch, yellow-eyed and whistle-ready, has no time for showing off.',
+    syllabus: [
+      ['Lesson 1', 'Say "Up!" with feeling, grip the handle properly, kick off hard, hover, and lean forward to come down.'],
+      ['Later', 'Laps, weaving, rolls and dives for anyone who keeps flying after first year, most of them hoping for a place on a house team.'],
+      ['Advanced', 'Formation flying, the Sloth Grip Roll and the dive-and-pull-up behind the Wronski Feint, for the truly committed.']
+    ],
+    know: 'Harry’s first lesson ended with Neville in the hospital wing, Malfoy fifty feet up with a Remembrall, and Professor McGonagall marching Harry off, not to be expelled, but to become the youngest house Seeker in a century.',
+    quiz: [
+      { q: 'What do you say to make a school broom jump into your hand?', a: ['"Accio!"', '"Up!"', '"Rise!"', '"Come!"'], c: 1, why: 'Just "Up!", said with feeling. Harry’s obeyed at once; Hermione’s rolled over on the grass.' },
+      { q: 'Who teaches Flying?', a: ['Professor McGonagall', 'Madam Hooch', 'Oliver Wood', 'Madam Pomfrey'], c: 1, why: 'Madam Hooch, who also referees the school’s Quidditch matches.' },
+      { q: 'In which year is Flying compulsory?', a: ['Every year', 'First year only', 'Fifth year', 'Never; it is a club'], c: 1, why: 'First-years must take it and may not bring their own brooms. After that it is optional.' },
+      { q: 'What did Neville drop that Malfoy flew off with?', a: ['His wand', 'A Remembrall', 'A Chocolate Frog card', 'His glasses'], c: 1, why: 'The Remembrall his grandmother had sent him that morning, glowing red because he had forgotten something.' },
+      { q: 'What happened after Harry caught the Remembrall in a dive?', a: ['He was expelled', 'He lost fifty points', 'He was made Gryffindor Seeker', 'He was given detention'], c: 2, why: 'McGonagall took him straight to Oliver Wood. The rule about first-years and brooms was quietly bent.' }
+    ] }
+];
+
+var CLUB_RESULTS_KEY = 'hp_club-classes';
+var clubTopic = null;
+var _quiz = {};                       // classId → { i, score, done, picked }
+
+function clubEsc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function classById(id) { for (var i = 0; i < CLASSES.length; i++) if (CLASSES[i].id === id) return CLASSES[i]; return null; }
+function loadClubResults() { try { return JSON.parse(localStorage.getItem(CLUB_RESULTS_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function saveClubResult(id, score, total) {
+  var map = loadClubResults(), prev = map[id] || { best: 0, total: total, attempts: 0 };
+  map[id] = { best: Math.max(prev.best || 0, score), total: total, attempts: (prev.attempts || 0) + 1, last: score };
+  try { localStorage.setItem(CLUB_RESULTS_KEY, JSON.stringify(map)); } catch (e) {}
+}
+function gradeFor(score, total) {
+  var r = total ? score / total : 0;
+  for (var i = 0; i < CLUB_GRADES.length; i++) if (r >= CLUB_GRADES[i].min) return CLUB_GRADES[i];
+  return CLUB_GRADES[CLUB_GRADES.length - 1];
+}
+function classIconHtml(c) {
+  return c.sprite ? '<svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#' + c.sprite + '"/></svg>'
+                  : '<span class="material-symbols-rounded" aria-hidden="true">' + c.icon + '</span>';
+}
+
+/* ── Topic strip + panel ───────────────────────────────────────────────── */
+function renderClubTopics() {
+  var host = document.getElementById('clubTopics'); if (!host) return;
+  host.innerHTML = CLUB_TOPICS.map(function (t) {
+    var sel = clubTopic === t.id;
+    return '<button class="book-tile club-tile" type="button" role="tab" data-topic="' + t.id + '" aria-selected="' + (sel ? 'true' : 'false') + '" onclick="selectClubTopic(\'' + t.id + '\')">' +
+      '<span class="material-symbols-rounded" aria-hidden="true">' + t.icon + '</span>' +
+      '<span class="book-tile-title">' + clubEsc(t.name) + '</span>' +
+      '<span class="book-tile-meta">' + clubEsc(t.meta) + '</span></button>';
+  }).join('');
+}
+function selectClubTopic(id) {
+  var topic = null; CLUB_TOPICS.forEach(function (t) { if (t.id === id) topic = t; });
+  if (!topic) return;
+  clubTopic = id;
+  try { localStorage.setItem('hp-club-topic', id); } catch (e) {}
+  document.querySelectorAll('.club-tile').forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('data-topic') === id ? 'true' : 'false'); });
+  var panel = document.getElementById('clubPanel'); if (!panel) return;
+  if (topic.id === 'classes') renderClasses(panel);
+  else panel.innerHTML = '<div class="club-intro club-soon"><span class="material-symbols-rounded" aria-hidden="true">' + topic.icon + '</span>' +
+    '<h3 class="club-intro-title">' + clubEsc(topic.name) + '</h3><p>' + clubEsc(topic.blurb || '') + '</p><span class="chip">Coming soon</span></div>';
+  var picker = document.getElementById('clubTopics'), tile = picker && picker.querySelector('.club-tile[data-topic="' + id + '"]');
+  if (picker && tile) {
+    var left = tile.offsetLeft - 8, right = tile.offsetLeft + tile.offsetWidth + 8;
+    if (left < picker.scrollLeft) picker.scrollLeft = left;
+    else if (right > picker.scrollLeft + picker.clientWidth) picker.scrollLeft = right - picker.clientWidth;
+  }
+}
+
+/* ── Classes panel ─────────────────────────────────────────────────────── */
+function renderClasses(panel) {
+  var results = loadClubResults();
+  var html = '<div class="club-intro"><div class="eyebrow">Hogwarts Curriculum</div><h3 class="club-intro-title">The First-Year Timetable</h3>' +
+    '<p>Every first-year takes the same eight subjects: Transfiguration, Charms, Potions, History of Magic, Defence Against the Dark Arts, Astronomy, Herbology and Flying. Open a class for the professor, the classroom and what is on the syllabus.</p>' +
+    '<p>Each one ends with a five-question O.W.L. Grades run from Outstanding to Troll, and your best result stays on the card.</p></div>' +
+    '<div class="class-list">' + CLASSES.map(function (c) {
+      var r = results[c.id], g = r ? gradeFor(r.best, r.total) : null;
+      return '<article class="class-card" id="class-' + c.id + '">' +
+        '<button class="class-head" type="button" aria-expanded="false" aria-controls="class-body-' + c.id + '" onclick="toggleClass(\'' + c.id + '\')">' +
+        '<span class="class-icon">' + classIconHtml(c) + '</span>' +
+        '<span class="class-text"><span class="class-name">' + clubEsc(c.name) + '</span><span class="class-teacher">' + clubEsc(c.teacher) + '</span></span>' +
+        '<span class="class-grade' + (g ? '' : ' class-grade--none') + '" title="' + (g ? clubEsc(g.name) : '') + '" aria-label="' + (g ? 'Best O.W.L. grade ' + clubEsc(g.name) : '') + '">' + (g ? g.letter : '') + '</span>' +
+        '<span class="material-symbols-rounded class-chevron" aria-hidden="true">expand_more</span></button>' +
+        '<div class="class-body" id="class-body-' + c.id + '" role="region" aria-label="' + clubEsc(c.name) + '">' +
+        '<p class="class-summary">' + clubEsc(c.summary) + '</p>' +
+        '<dl class="class-facts"><dt>Professor</dt><dd>' + clubEsc(c.teacher) + '</dd><dt>Where</dt><dd>' + clubEsc(c.room) + '</dd><dt>When</dt><dd>' + clubEsc(c.years) + '</dd><dt>Bring</dt><dd>' + clubEsc(c.book) + '</dd></dl>' +
+        '<div class="class-sub">On the syllabus</div><ul class="class-syllabus">' + c.syllabus.map(function (s) { return '<li><b>' + clubEsc(s[0]) + '</b><span>' + clubEsc(s[1]) + '</span></li>'; }).join('') + '</ul>' +
+        '<div class="class-know"><b>Did you know</b>' + clubEsc(c.know) + '</div>' +
+        '<div class="quiz" id="quiz-' + c.id + '"></div>' +
+        '</div></article>';
+    }).join('') + '</div>' +
+    '<p class="club-foot">Facts checked against the Harry Potter Wiki (harrypotter.fandom.com); the words here are the club’s own. Your results are kept on this device only.</p>';
+  panel.innerHTML = html;
+  CLASSES.forEach(function (c) { renderQuiz(c.id); });
+}
+function toggleClass(id) {
+  var card = document.getElementById('class-' + id); if (!card) return;
+  var open = !card.classList.contains('open');
+  document.querySelectorAll('.class-card.open').forEach(function (o) { o.classList.remove('open'); var b = o.querySelector('.class-head'); if (b) b.setAttribute('aria-expanded', 'false'); });
+  if (open) {
+    card.classList.add('open');
+    var btn = card.querySelector('.class-head'); if (btn) btn.setAttribute('aria-expanded', 'true');
+    var top = card.getBoundingClientRect().top + window.pageYOffset - (56 + 12);
+    try { window.scrollTo(0, Math.max(0, top)); } catch (e) {}
+  }
+}
+
+/* ── Quiz ──────────────────────────────────────────────────────────────── */
+function renderQuiz(id) {
+  var c = classById(id), host = document.getElementById('quiz-' + id); if (!c || !host) return;
+  var s = _quiz[id], results = loadClubResults(), prev = results[id];
+  if (!s) {
+    host.innerHTML = '<div class="quiz-start"><p>' + (prev ? 'Best so far: ' + prev.best + ' of ' + prev.total + ' (' + clubEsc(gradeFor(prev.best, prev.total).name) + '). ' : '') +
+      'Five questions, one right answer each.</p><button class="btn btn-metal" type="button" onclick="startQuiz(\'' + id + '\')">' + (prev ? 'Retake the O.W.L.' : 'Take the O.W.L.') + ' <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button></div>';
+    return;
+  }
+  if (s.done) {
+    var g = gradeFor(s.score, c.quiz.length);
+    host.innerHTML = '<div class="quiz-result" role="status"><div class="quiz-result-grade' + (g.pass ? '' : ' is-fail') + '">' + g.letter + '</div>' +
+      '<div class="quiz-result-name">' + clubEsc(g.name) + '</div><div class="quiz-result-score">' + s.score + ' of ' + c.quiz.length + '</div><p>' + clubEsc(g.note) + '</p>' +
+      '<button class="btn" type="button" onclick="startQuiz(\'' + id + '\')">Try again <span class="material-symbols-rounded" aria-hidden="true">refresh</span></button></div>';
+    return;
+  }
+  var q = c.quiz[s.i], answered = s.picked !== null;
+  host.innerHTML = '<div class="quiz-progress"><span>Question ' + (s.i + 1) + ' of ' + c.quiz.length + '</span><span>' + s.score + ' right</span></div>' +
+    '<p class="quiz-q">' + clubEsc(q.q) + '</p><div class="quiz-opts" role="group" aria-label="Answers">' +
+    q.a.map(function (opt, k) {
+      var cls = 'quiz-opt' + (answered && k === q.c ? ' is-right' : '') + (answered && k === s.picked && k !== q.c ? ' is-wrong' : '');
+      return '<button class="' + cls + '" type="button"' + (answered ? ' disabled' : '') + ' onclick="answerQuiz(\'' + id + '\',' + k + ')"><span class="quiz-key">' + String.fromCharCode(65 + k) + '</span><span>' + clubEsc(opt) + '</span></button>';
+    }).join('') + '</div>' +
+    (answered ? '<div class="quiz-why' + (s.picked === q.c ? '' : ' is-wrong') + '" role="status"><b>' + (s.picked === q.c ? 'Correct.' : 'Not quite.') + '</b> ' + clubEsc(q.why) + '</div>' +
+      '<div class="quiz-actions"><button class="btn btn-metal" type="button" onclick="nextQuiz(\'' + id + '\')">' + (s.i + 1 < c.quiz.length ? 'Next question' : 'See your grade') + ' <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button></div>' : '');
+}
+function startQuiz(id) {
+  _quiz[id] = { i: 0, score: 0, done: false, picked: null };
+  renderQuiz(id);
+  var q = document.getElementById('quiz-' + id);
+  if (q) { var top = q.getBoundingClientRect().top + window.pageYOffset - (56 + 16); try { window.scrollTo(0, Math.max(0, top)); } catch (e) {} }
+}
+function answerQuiz(id, k) {
+  var s = _quiz[id], c = classById(id); if (!s || !c || s.done || s.picked !== null) return;
+  s.picked = k;
+  if (k === c.quiz[s.i].c) s.score++;
+  renderQuiz(id);
+}
+function nextQuiz(id) {
+  var s = _quiz[id], c = classById(id); if (!s || !c || s.picked === null) return;
+  if (s.i + 1 < c.quiz.length) { s.i++; s.picked = null; renderQuiz(id); return; }
+  s.done = true;
+  saveClubResult(id, s.score, c.quiz.length);
+  renderQuiz(id);
+  var card = document.getElementById('class-' + id), g = gradeFor(s.score, c.quiz.length), r = loadClubResults()[id];
+  if (card && r) {
+    var badge = card.querySelector('.class-grade'), best = gradeFor(r.best, r.total);
+    if (badge) { badge.textContent = best.letter; badge.classList.remove('class-grade--none'); badge.setAttribute('title', best.name); badge.setAttribute('aria-label', 'Best O.W.L. grade ' + best.name); }
+  }
+  var q = document.getElementById('quiz-' + id);
+  if (q) { var top = q.getBoundingClientRect().top + window.pageYOffset - (56 + 16); try { window.scrollTo(0, Math.max(0, top)); } catch (e) {} }
+  void g;
+}
+
+/* ── Init ──────────────────────────────────────────────────────────────── */
+function initClub() {
+  if (!document.getElementById('clubTopics')) return;
+  var stored = null; try { stored = localStorage.getItem('hp-club-topic'); } catch (e) {}
+  var ok = CLUB_TOPICS.some(function (t) { return t.id === stored; });
+  clubTopic = ok ? stored : 'classes';         // Classes is the only built topic for now
+  renderClubTopics();
+  selectClubTopic(clubTopic);
 }
 </script>
 </body>
