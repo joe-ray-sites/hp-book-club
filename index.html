@@ -1990,6 +1990,105 @@ html.house-page-open body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .quest-stage-in { animation: none; } .quest-step, .quest-letter { transition: none; } }
 
 
+/* ── Club › Spells (SW v13): sticky category switcher, spell cards, cast animation, drill ── */
+.spell-cats {
+  position: sticky; top: calc(56px + env(safe-area-inset-top, 0px) + 8px); z-index: 20;
+  display: flex; gap: 4px; padding: 4px; margin: 0 0 12px; border-radius: 30px;
+  background: var(--md-sys-color-surface); border: 1.5px solid var(--md-sys-color-primary);
+  box-shadow: 0 10px 26px -10px rgba(0,0,0,0.32);
+}
+.spell-cat {
+  flex: 1 1 0; min-width: 0; min-height: 44px; padding: 5px 4px; border-radius: 24px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  background: transparent; color: var(--md-sys-color-on-surface); border: 1.5px solid transparent;
+  -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s;
+}
+.spell-cat-name { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.spell-cat-count { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); }
+.spell-cat[aria-selected="true"] { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.spell-cat[aria-selected="true"] .spell-cat-count { color: var(--md-sys-color-on-primary); opacity: 0.8; }
+.spell-cat:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+
+.spell-intro-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.spell-drill-btn { min-height: 40px; padding: 8px 16px; font-size: 13px; }
+.spell-intro--dark { background: var(--hp-chrome); color: var(--hp-on-chrome); }
+.spell-intro--dark .eyebrow { color: var(--hp-chrome-accent); }
+.spell-intro--dark p { color: var(--hp-on-chrome); opacity: 0.92; }
+.spell-intro--dark .chip { background: transparent; border-color: var(--hp-chrome-accent); color: var(--hp-chrome-accent); }
+.spell-decree { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; margin: 12px 0 0; font-family: var(--font-sans); font-size: 14px; line-height: 1.45; }
+.spell-decree dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hp-chrome-accent); padding-top: 2px; }
+.spell-decree dd { margin: 0; color: var(--hp-on-chrome); }
+
+/* Cards (on .class-card). --spark is each spell's light colour, set inline from the data; --i is the
+   syllable index for the cast animation. Both default here so the stylesheet stands on its own. */
+.spell-card, .drill { --spark: transparent; position: relative; }
+.spell-head { align-items: center; }
+.spell-spark { position: relative; width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--md-sys-color-surface-container); border: 1.5px solid var(--md-sys-color-outline-variant); }
+.spell-spark-core { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.85), var(--spark, var(--md-sys-color-on-surface-variant)) 55%, transparent 75%); box-shadow: 0 0 10px 1px var(--spark, transparent); }
+.spell-spark--none .spell-spark-core { width: 10px; height: 10px; background: var(--md-sys-color-outline); box-shadow: none; }
+.spell-inc { font-family: var(--font-serif); font-size: 20px; font-weight: 700; line-height: 1.2; display: block; letter-spacing: 0.01em; }
+.spell-tick { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.spell-tick .material-symbols-rounded { font-size: 18px; }
+.spell-tick--none { visibility: hidden; }
+.spell-body { padding-top: 12px; }
+.spell-say { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.04em; color: var(--md-sys-color-on-surface-variant); margin: 2px 0 8px; }
+.spell-word { white-space: nowrap; }
+.spell-syl { --i: 0; display: inline-block; padding: 1px 2px; border-radius: 4px; }
+.spell-syl.is-stressed { font-weight: 700; color: var(--md-sys-color-primary); }
+.spell-dash { opacity: 0.5; }
+.spell-src { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; border-radius: 10px; border: 1px solid var(--md-sys-color-outline); color: var(--md-sys-color-on-surface-variant); }
+.spell-light-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); margin-bottom: 4px; }
+.spell-light-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; background: var(--spark, transparent); border: 1.5px solid var(--md-sys-color-outline-variant); box-shadow: 0 0 6px var(--spark, transparent); }
+.spell-p { font-family: var(--font-sans); font-size: 15px; line-height: 1.55; margin: 0; }
+.spell-meaning { font-family: var(--font-serif); font-style: italic; font-size: 16px; }
+.spell-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.spell-steps li { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 10px; font-family: var(--font-sans); font-size: 15px; line-height: 1.5; }
+.spell-steps b { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--md-sys-color-secondary); padding-top: 4px; }
+.spell-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.spell-actions .btn { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+.spell-learn-btn[aria-pressed="true"] { background: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); }
+
+/* Cast it: the spark bursts, the syllables light in turn, the name lifts */
+.spell-card.is-casting .spell-spark-core { animation: spellBurst 1.3s ease-out both; }
+.spell-card.is-casting .spell-spark { animation: spellRing 1.3s ease-out both; }
+.spell-card.is-casting .spell-syl { animation: spellSyl 0.55s ease both; animation-delay: calc(var(--i) * 0.22s + 0.15s); }
+.spell-card.is-casting .spell-inc { animation: spellName 1.3s ease both; }
+.spell-card.is-casting::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: radial-gradient(circle at 36px 40px, var(--spark, var(--md-sys-color-primary)) 0%, transparent 60%); animation: spellWash 1.3s ease-out both; }
+@keyframes spellBurst { 0% { transform: scale(1); } 30% { transform: scale(1.6); } 100% { transform: scale(1); } }
+@keyframes spellRing { 0% { box-shadow: 0 0 0 0 var(--spark, var(--md-sys-color-primary)); } 100% { box-shadow: 0 0 0 26px transparent; } }
+@keyframes spellSyl { 0% { background: transparent; transform: translateY(0); } 40% { background: var(--md-sys-color-primary-container); transform: translateY(-3px); } 100% { background: transparent; transform: translateY(0); } }
+@keyframes spellName { 0% { letter-spacing: 0.01em; } 35% { letter-spacing: 0.08em; } 100% { letter-spacing: 0.01em; } }
+@keyframes spellWash { 0% { opacity: 0.35; } 100% { opacity: 0; } }
+
+/* Forbidden: dark plates */
+.spell-card--dark { background: var(--hp-chrome); color: var(--hp-on-chrome); }
+.spell-card--dark.open { border-color: var(--hp-chrome-accent); }
+.spell-card--dark .class-teacher, .spell-card--dark .class-chevron, .spell-card--dark .spell-say, .spell-card--dark .spell-light-row, .spell-card--dark .spell-src { color: var(--hp-chrome-muted); border-color: var(--hp-chrome-muted); }
+.spell-card--dark .class-sub, .spell-card--dark .spell-syl.is-stressed, .spell-card--dark .spell-steps b { color: var(--hp-chrome-accent); }
+.spell-card--dark .class-body { border-top-color: rgba(255,255,255,0.14); }
+.spell-card--dark .spell-spark { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.22); }
+.spell-card--dark .spell-spark--none .spell-spark-core { background: var(--hp-chrome-muted); }
+.spell-card--dark .class-know { background: rgba(255,255,255,0.08); color: var(--hp-on-chrome); }
+.spell-card--dark .class-know b { color: var(--hp-chrome-accent); }
+.spell-card--dark .spell-tick { background: var(--hp-chrome-accent); color: var(--hp-chrome); }
+.spell-card--dark .spell-learn-btn { background: transparent; color: var(--hp-on-chrome); border-color: var(--hp-chrome-muted); box-shadow: none; }
+.spell-card--dark .spell-learn-btn[aria-pressed="true"] { background: var(--hp-chrome-accent); color: var(--hp-chrome); border-color: var(--hp-chrome-accent); }
+
+/* Drill (in the generic sheet) */
+.drill { display: flex; flex-direction: column; gap: 10px; }
+.drill-count { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-on-surface-variant); }
+.drill-does { font-family: var(--font-serif); font-size: 19px; line-height: 1.45; margin: 0; }
+.drill-answer { margin-top: 6px; padding-top: 14px; border-top: 1px dashed var(--md-sys-color-outline-variant); }
+.drill-inc { font-size: 28px; margin-bottom: 4px; }
+.drill .spell-actions { margin-top: 8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spell-card.is-casting .spell-spark-core, .spell-card.is-casting .spell-spark, .spell-card.is-casting .spell-syl, .spell-card.is-casting .spell-inc, .spell-card.is-casting::after { animation: none; }
+  .spell-card.is-casting .spell-syl.is-stressed { background: var(--md-sys-color-primary-container); }
+  .spell-cat { transition: none; }
+}
+
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -2261,6 +2360,34 @@ html[data-mono="1"] .quest-video-mark { color: #FFF; }
 html[data-mono="1"] .quest-letter { background: #FFF; color: #000; border-color: #000; }
 html[data-mono="1"] .quest-letter:active { background: #000; color: #FFF; }
 html[data-mono="1"] .quest-answer { background: #FFF; border-color: #000; }
+html[data-mono="1"] .spell-cats { background: #FFF; border-color: #000; box-shadow: none; }
+html[data-mono="1"] .spell-cat, html[data-mono="1"] .spell-cat-count { color: #000; }
+html[data-mono="1"] .spell-cat[aria-selected="true"], html[data-mono="1"] .spell-cat[aria-selected="true"] .spell-cat-count { background: #000; color: #FFF; opacity: 1; }
+html[data-mono="1"] .spell-intro--dark { background: #000; color: #FFF; border-color: #000; }
+html[data-mono="1"] .spell-intro--dark .eyebrow, html[data-mono="1"] .spell-intro--dark p, html[data-mono="1"] .spell-decree dt, html[data-mono="1"] .spell-decree dd { color: #FFF; opacity: 1; }
+html[data-mono="1"] .spell-intro--dark .chip { background: #FFF; color: #000; border-color: #FFF; }
+html[data-mono="1"] .spell-spark { background: #FFF; border-color: #000; }
+html[data-mono="1"] .spell-spark-core, html[data-mono="1"] .spell-light-dot { background: #000; box-shadow: none; filter: none; }
+html[data-mono="1"] .spell-spark--none .spell-spark-core { background: #FFF; border: 2px solid #000; }
+html[data-mono="1"] .spell-tick { background: #000; color: #FFF; }
+html[data-mono="1"] .spell-say, html[data-mono="1"] .spell-light-row, html[data-mono="1"] .spell-src, html[data-mono="1"] .spell-steps b, html[data-mono="1"] .drill-count { color: #000; border-color: #000; }
+html[data-mono="1"] .spell-syl.is-stressed { color: #000; text-decoration: underline; text-underline-offset: 3px; }
+html[data-mono="1"] .spell-learn-btn[aria-pressed="true"] { background: #000; color: #FFF; border-color: #000; }
+html[data-mono="1"] .spell-card.is-casting::after { display: none; }
+html[data-mono="1"] .spell-card.is-casting .spell-syl { animation-name: none; }
+html[data-mono="1"] .spell-card.is-casting .spell-spark { box-shadow: none; animation: none; }
+html[data-mono="1"] .spell-card--dark { background: #000; color: #FFF; border-color: #FFF; }
+html[data-mono="1"] .spell-card--dark.open { border: 2px solid #FFF; }
+html[data-mono="1"] .spell-card--dark .class-teacher, html[data-mono="1"] .spell-card--dark .class-chevron, html[data-mono="1"] .spell-card--dark .spell-say, html[data-mono="1"] .spell-card--dark .spell-light-row, html[data-mono="1"] .spell-card--dark .class-sub, html[data-mono="1"] .spell-card--dark .spell-syl.is-stressed, html[data-mono="1"] .spell-card--dark .spell-steps b, html[data-mono="1"] .spell-card--dark .spell-p { color: #FFF; }
+html[data-mono="1"] .spell-card--dark .class-body { border-top-color: #FFF; }
+html[data-mono="1"] .spell-card--dark .spell-spark { background: #000; border-color: #FFF; }
+html[data-mono="1"] .spell-card--dark .spell-spark-core, html[data-mono="1"] .spell-card--dark .spell-light-dot { background: #FFF; }
+html[data-mono="1"] .spell-card--dark .class-know { background: #000; color: #FFF; border: 1.5px solid #FFF; }
+html[data-mono="1"] .spell-card--dark .class-know b { color: #FFF; }
+html[data-mono="1"] .spell-card--dark .spell-tick { background: #FFF; color: #000; }
+html[data-mono="1"] .spell-card--dark .spell-learn-btn { background: #000; color: #FFF; border-color: #FFF; }
+html[data-mono="1"] .spell-card--dark .spell-learn-btn[aria-pressed="true"] { background: #FFF; color: #000; }
+html[data-mono="1"] .drill-answer { border-color: #000; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -3957,8 +4084,7 @@ var CLUB_TOPICS = [
   { id: 'guides', name: 'Discussion Guides', icon: 'forum', meta: '7 books', ready: true },
   { id: 'classes', name: 'Classes', icon: 'school', meta: '8 subjects', ready: true },
   { id: 'notes', name: 'Notes', icon: 'edit_note', meta: '3 levels', ready: true },
-  { id: 'homework', name: 'Homework', icon: 'assignment', meta: 'Coming soon', ready: false,
-    blurb: 'Reading assignments and small tasks between meetings.' }
+  { id: 'spells', name: 'Spells', icon: 'auto_fix_high', meta: '4 kinds', ready: true }
 ];
 
 var CLUB_GRADES = [
@@ -4154,6 +4280,7 @@ function selectClubTopic(id) {
   if (topic.id === 'classes') renderClasses(panel);
   else if (topic.id === 'guides') renderGuides(panel);
   else if (topic.id === 'notes') renderNotes(panel);
+  else if (topic.id === 'spells') renderSpells(panel);
   else panel.innerHTML = '<div class="club-intro club-soon"><span class="material-symbols-rounded" aria-hidden="true">' + topic.icon + '</span>' +
     '<h3 class="club-intro-title">' + clubEsc(topic.name) + '</h3><p>' + clubEsc(topic.blurb || '') + '</p><span class="chip">Coming soon</span></div>';
   var picker = document.getElementById('clubTopics'), tile = picker && picker.querySelector('.club-tile[data-topic="' + id + '"]');
@@ -4261,9 +4388,10 @@ function initClub() {
   if (!document.getElementById('clubTopics')) return;
   var stored = null; try { stored = localStorage.getItem('hp-club-topic'); } catch (e) {}
   var ok = CLUB_TOPICS.some(function (t) { return t.id === stored; });
-  clubTopic = ok ? stored : 'guides';          // first tile; Homework is still a stub
+  clubTopic = ok ? stored : 'guides';          // first tile
   if (typeof initGuides === 'function') initGuides();
   if (typeof initNotes === 'function') initNotes();
+  if (typeof initSpells === 'function') initSpells();
   renderClubTopics();
   selectClubTopic(clubTopic);
 }
@@ -5311,6 +5439,606 @@ function initPlay() {
   playGame = PLAY_GAMES.some(function (g) { return g.id === stored; }) ? stored : PLAY_GAMES[0].id;
   renderPlayGames();
   selectPlayGame(playGame);
+}
+
+
+/* spells.js — Club › Spells. Harry Potter Book Club.
+   Four categories (Defensive · Offensive · Curses · Forbidden) behind a sticky switcher. Every spell
+   is a card: the incantation, its common name and type, a light-colour spark, then — opened — how to
+   say it (stress in capitals), what it does, what the words mean, how to cast it in three steps,
+   where it is seen in the books, what counters it, and a "did you know". "Cast it" plays the
+   syllables in the spell's light; "Learned" ticks it; "Drill me" runs flash cards for the category.
+   Facts (incantation, pronunciation, type, light, etymology, first uses) were checked against the
+   Harry Potter Wiki (harrypotter.fandom.com, CC BY-SA) through its MediaWiki API; the words here are
+   the club's own. Storage: hp_club-spells {learned:{id:1}}, hp-club-spell-cat. Plain ES2017. */
+
+var SPELL_CATS = [
+  { id: 'def', name: 'Defensive', eyebrow: 'Defence Against the Dark Arts', title: 'Defensive spells',
+    blurb: 'Shields, counters, guardians and cures: the spells that keep you and your friends standing. Most of what the D.A. practised in the Room of Requirement lives here.' },
+  { id: 'off', name: 'Offensive', eyebrow: 'Duelling Club', title: 'Offensive spells',
+    blurb: 'Charms, jinxes and hexes for ending a duel or making a point. None of these do lasting harm when cast properly, which is exactly why Harry preferred them.' },
+  { id: 'cur', name: 'Curses', eyebrow: 'Curses and Counter-Curses', title: 'Curses',
+    blurb: 'The heavier magic: spells that break, bind, burn or bleed. Some are schoolyard nasties, some are Dark. Every one has a counter or a cost, and both are noted.' },
+  { id: 'unf', name: 'Forbidden', eyebrow: 'Ministry of Magic · Classified 1717', title: 'The Unforgivable Curses',
+    blurb: 'Three curses so terrible that using any one of them on another person earns a life sentence in Azkaban. They are here to be understood, not practised: knowing what they are is how the story’s heroes learned to stand against them.' }
+];
+
+/* Light colours are the colours the books give each spell — samples baked into the spark, the same
+   exception as the house and highlighter swatches. Mono mode greys them per element. */
+var SPELL_LIGHTS = {
+  red: '#C62828', scarlet: '#B71C1C', orange: '#EF6C00', gold: '#F9A825', green: '#2E7D32', turquoise: '#00897B',
+  blue: '#1E88E5', icy: '#4FC3F7', violet: '#6A1B9A', purple: '#7B1FA2', pink: '#EC407A', silver: '#B0BEC5',
+  white: '#ECEFF1', grey: '#9E9E9E', fire: '#E65100', none: ''
+};
+
+/* Fields: id, cat, inc (incantation), name, type, say (stress in CAPITALS), light (key in
+   SPELL_LIGHTS) + lightName, does, meaning, move (aim / wand), tip (intent), seen, counter, know,
+   src ('film' | 'game' when the incantation is not from the books), by (creator). */
+var SPELLS = [
+  /* ── Defensive ─────────────────────────────────────────────────────────── */
+  { id: 'protego', cat: 'def', inc: 'Protego', name: 'Shield Charm', type: 'Charm', say: 'pro-TAY-goh', light: 'none', lightName: 'Invisible; it shows only the spell it catches',
+    does: 'Throws up an invisible wall in front of you. Jinxes and hexes bounce off it, sometimes straight back at the caster, and it will stop a flying object or a charging body too. A strong Shield Charm can cover more than one person.',
+    meaning: 'Latin protego: “I cover, I protect.”',
+    move: 'Raise the wand in front of you like a small door between you and what is coming, and hold it there.',
+    tip: 'Cast it the instant you see a wand rise. A shield thrown after the flash is too late.',
+    seen: 'Goblet of Fire, where Harry learns it for the third task. By Order of the Phoenix the whole D.A. is throwing shields in the Room of Requirement.',
+    counter: 'Nothing gets through a good one except the Unforgivable Curses, which no shield can stop.',
+    know: 'Fred and George sold Shield Hats, Shield Cloaks and Shield Gloves, and the Ministry bought five hundred of the hats for its staff.' },
+  { id: 'protego-maxima', cat: 'def', inc: 'Protego Maxima', name: 'The great Shield', type: 'Charm', say: 'pro-TAY-goh MAKS-ee-ma', light: 'icy', lightName: 'Blue-white haze',
+    does: 'A wider, stronger shield that covers a whole place rather than one person. Layered with Fianto Duri and Repello Inimicum it wrapped Hogwarts in a shimmering dome before the battle.',
+    meaning: 'Latin protego + maxima: “I protect to the greatest degree.”',
+    move: 'Point the wand at the sky and sweep it slowly, as if drawing a dome over everything you love.',
+    tip: 'This is a group spell. Several casters, backs to the castle, saying the words together.',
+    seen: 'Deathly Hallows, as Flitwick, McGonagall and Mrs Weasley raise the defences of the castle at midnight.',
+    counter: 'Voldemort broke it. It took him most of an hour and everything he had.' },
+  { id: 'protego-totalum', cat: 'def', inc: 'Protego Totalum', name: 'Shield over an area', type: 'Charm', say: 'pro-TAY-goh TOH-tuh-luhm', light: 'none', lightName: 'A faint haze',
+    does: 'Shields a patch of ground for hours at a time. Anyone wandering past sees nothing, and anything short of the very darkest curses cannot cross the line.',
+    meaning: 'Latin protego + totus: “I protect the whole.”',
+    move: 'Raise the wand and turn a slow full circle, enclosing the ground you are guarding.',
+    tip: 'Part of a nightly routine. Hermione cast it with Salvio Hexia and Cave Inimicum around every camp of the Horcrux hunt.',
+    seen: 'Deathly Hallows, from the first night in the woods onward.' },
+  { id: 'protego-horribilis', cat: 'def', inc: 'Protego Horribilis', name: 'Shield against the horrible', type: 'Charm', say: 'pro-TAY-goh hor-i-BIL-lis', light: 'none', lightName: 'None recorded',
+    does: 'A powerful barrier raised specifically against Dark magic, thrown up around a place rather than a person.',
+    meaning: 'Latin protego + horribilis: “I protect against the dreadful.”',
+    move: 'Arm fully extended, wand pointed straight up.',
+    tip: 'Flitwick’s spell of choice when there were minutes left. Say it like you mean the whole castle.',
+    seen: 'Deathly Hallows, from the ramparts on the night of the battle.' },
+  { id: 'expelliarmus', cat: 'def', inc: 'Expelliarmus', name: 'Disarming Charm', type: 'Charm', say: 'ex-PEL-lee-AR-muss', light: 'scarlet', lightName: 'Scarlet',
+    does: 'Rips whatever the other person is holding out of their grip. Usually that is a wand, and a wizard without a wand is out of the duel. A strong one throws the person backwards as well.',
+    meaning: 'Latin expellere, “drive out,” and arma, “weapon”: drive out the weapon.',
+    move: 'A sharp forward flick from the shoulder, wand pointed at the other person’s wand hand.',
+    tip: 'Aim at the hand, not the chest. The point is the wand, not the wizard.',
+    seen: 'Chamber of Secrets, at the Duelling Club, when Snape blasts Lockhart clean off the stage. It became Harry’s signature move, and the last spell of the whole story.',
+    counter: 'A Shield Charm, or a good grip and a sidestep.',
+    know: 'Lupin warned Harry that the Death Eaters had learned to recognise him by it. Harry kept using it anyway.' },
+  { id: 'expecto-patronum', cat: 'def', inc: 'Expecto Patronum', name: 'Patronus Charm', type: 'Charm', say: 'ex-PEK-toh pa-TRO-num', light: 'silver', lightName: 'Silver',
+    does: 'Conjures a guardian of silver light, shaped from your happiest feelings and usually taking the form of an animal. It is the only defence against Dementors, and a full Patronus can carry a message across the country.',
+    meaning: 'Latin expecto, “I await,” and patronus, “protector” (in old Latin, “father”).',
+    move: 'Wand held out and swept forward once as you speak. The light streams from the tip and takes shape in front of you.',
+    tip: 'The words are the easy part. You must hold one very happy memory with all your might while the cold closes in. Pick the memory before you need it.',
+    seen: 'Prisoner of Azkaban, in Lupin’s lessons in the empty History of Magic classroom, and then on the far bank of the lake.',
+    counter: 'Dementors have no answer to it. A weak or false memory gives only a wisp of silver.',
+    know: 'Harry’s is a stag, like his father’s Animagus form. Snape’s was a doe, like Lily’s.' },
+  { id: 'riddikulus', cat: 'def', inc: 'Riddikulus', name: 'Boggart-Banishing Spell', type: 'Charm', say: 'ri-di-KULL-lus', light: 'none', lightName: 'None, with a crack like a whip',
+    does: 'Forces a Boggart out of the shape of your worst fear and into something you find funny. The laugh that follows is what finishes it.',
+    meaning: 'From “ridiculous,” by way of Latin ridere, “to laugh.”',
+    move: 'Point directly at the Boggart and say it firmly.',
+    tip: 'Decide on the funny picture before the wardrobe opens. The word only works if the laugh is ready behind it.',
+    seen: 'Prisoner of Azkaban, in the staffroom, where Neville puts Snape in his grandmother’s hat.',
+    know: 'Boggarts are weakest in a crowd, because they cannot settle on one fear among many.' },
+  { id: 'finite', cat: 'def', inc: 'Finite Incantatem', name: 'General Counter-Spell', type: 'Counter-spell', say: 'fi-NEE-tay in-can-TAH-tem', light: 'none', lightName: 'None',
+    does: 'Ends the effect of a spell: halts a jinx, cancels a charm, stops a shower of conjured snakes mid-fall. It will not undo damage already done.',
+    meaning: 'Latin finire, “to end,” and incantationem: end the enchantment.',
+    move: 'A short downward cut, as if closing a book.',
+    tip: '“Finite” on its own handles small jinxes. Use the full form for anything stubborn.',
+    seen: 'Chamber of Secrets, when Snape tidies up after Harry and Draco at the Duelling Club.' },
+  { id: 'impedimenta', cat: 'def', inc: 'Impedimenta', name: 'Impediment Jinx', type: 'Jinx', say: 'im-PED-i-MEN-ta', light: 'turquoise', lightName: 'Turquoise',
+    does: 'Slows or freezes whatever is coming at you, a person or a creature, for a few seconds. It is a jinx used defensively: it buys the time to run or to follow with a Stunner.',
+    meaning: 'Latin impedimentum, “a hindrance.”',
+    move: 'A jab toward the target’s feet.',
+    tip: 'Seconds, not minutes. Have the next move ready before you say it.',
+    seen: 'Goblet of Fire, in Harry’s training for the third task and then on the Blast-Ended Skrewt in the maze.' },
+  { id: 'salvio-hexia', cat: 'def', inc: 'Salvio Hexia', name: 'Hex deflection', type: 'Charm', say: 'SAL-vee-oh HEK-see-uh', light: 'none', lightName: 'A faint haze',
+    does: 'Turns hexes aside from an area. One layer of a well-protected camp.',
+    meaning: 'Latin salvus, “safe,” joined to hex.',
+    move: 'Wand pointed at the ground, the other palm held out flat, walking the boundary.',
+    tip: 'Cast it in a ring, not at a point. Its job is the line, not the tent.',
+    seen: 'Deathly Hallows, every evening of the hunt.' },
+  { id: 'repello-muggletum', cat: 'def', inc: 'Repello Muggletum', name: 'Muggle-Repelling Charm', type: 'Charm', say: 'ruh-PEL-oh MUH-guhl-tuhm', light: 'none', lightName: 'A faint haze',
+    does: 'Any Muggle who comes near suddenly remembers something urgent to do and turns around. It hides Hogwarts, guarded the Quidditch World Cup, and screened the trio’s camps.',
+    meaning: 'Latin repello, “I drive back,” and Muggle.',
+    move: 'Raise the wand over the ground to be hidden.',
+    tip: 'Kind rather than cruel: nobody is hurt, they simply remember an appointment.',
+    seen: 'Goblet of Fire, at the World Cup; Deathly Hallows, around the tent.' },
+  { id: 'cave-inimicum', cat: 'def', inc: 'Cave Inimicum', name: 'Enemy-warding charm', type: 'Charm', say: 'CAH-vay uh-NIM-i-kuhm', light: 'none', lightName: 'A faint haze',
+    does: 'Draws a boundary that hides you. Those outside cannot see you or hear you, and if it is well cast, cannot smell you either.',
+    meaning: 'Latin cave inimicum: “beware of the enemy.”',
+    move: 'Sweep the wand along the line you mean to hide behind.',
+    tip: 'Hermione’s honest note on it: at the very least you will know they are coming.',
+    seen: 'Deathly Hallows, in the woods and the Forest of Dean.' },
+  { id: 'fianto-duri', cat: 'def', inc: 'Fianto Duri', name: 'Shield-hardening charm', type: 'Charm', say: 'fee-AHN-toe DYOU-ree', light: 'icy', lightName: 'Blue-white',
+    does: 'Hardens a magical defence that is already standing, so a shield holds against far more than it would alone.',
+    meaning: 'Latin fiant duri: “let them be made hard.”',
+    move: 'Point skyward, said right after the shield goes up.',
+    tip: 'Never on its own. It strengthens what is already there.',
+    seen: 'Deathly Hallows, in the last minutes before the battle.' },
+  { id: 'homenum-revelio', cat: 'def', inc: 'Homenum Revelio', name: 'Human-presence-revealing Spell', type: 'Charm', say: 'hoh-MUN-num reh-VEH-lee-oh', light: 'none', lightName: 'None; a swooping feeling',
+    does: 'Tells you whether anyone is hidden nearby. To the person found, it feels like something swooping low over them.',
+    meaning: 'Latin hominum, “of people,” and revelo, “I reveal.”',
+    move: 'A wide upward arc, as if lifting a sheet.',
+    tip: 'Cast it on entering any house you do not trust. Hermione did in the hall of Grimmauld Place.',
+    seen: 'Deathly Hallows, at number twelve, and again at the Lovegoods’.' },
+  { id: 'muffliato', cat: 'def', inc: 'Muffliato', name: 'Muffling charm', type: 'Charm', say: 'muff-LEE-ah-toe', light: 'none', lightName: 'None',
+    does: 'Fills the ears of anyone nearby with a buzzing so that you can talk without being overheard.',
+    meaning: 'From “muffle,” to deaden a sound.',
+    move: 'Point at the people you wish to keep out of the conversation.',
+    tip: 'A Half-Blood Prince invention. Hermione disapproved of it all year, then used it around the tent every night.',
+    seen: 'Half-Blood Prince, where Harry tries it on Ron and Hermione; Deathly Hallows, on the run.', by: 'Severus Snape' },
+  { id: 'episkey', cat: 'def', inc: 'Episkey', name: 'Healing charm', type: 'Healing spell', say: 'eh-PIS-kee', light: 'none', lightName: 'None',
+    does: 'Mends small injuries: a broken nose, a split lip, a broken toe. The injury goes very hot, then very cold, and is fixed.',
+    meaning: 'Greek episkevi, “repair.”',
+    move: 'Point at the injury from close by.',
+    tip: 'Tonks fixed Harry’s nose on the Hogwarts Express in one word. Check it is straight afterwards.',
+    seen: 'Half-Blood Prince, in the train corridor; later Harry does Demelza Robins’ lip after Quidditch practice.' },
+  { id: 'rennervate', cat: 'def', inc: 'Rennervate', name: 'Reviving Spell', type: 'Charm', say: 'REN-ner-VAH-tay', light: 'red', lightName: 'Red, or none',
+    does: 'Wakes someone who has been Stunned or knocked out. The natural end to a duel: revive the one you dropped.',
+    meaning: 'From “re-energise.” Early printings had it as Enervate, which means the opposite, and it was renamed.',
+    move: 'Point at the chest.',
+    tip: 'It will not wake someone who is simply asleep, and it will not cure a Stunner that hit four times.',
+    seen: 'Goblet of Fire, when Amos Diggory revives Winky in the wood after the Dark Mark, and Dumbledore revives Krum.' },
+  { id: 'vulnera-sanentur', cat: 'def', inc: 'Vulnera Sanentur', name: 'Wound-healing counter-curse', type: 'Healing spell', say: 'VUL-ner-ah sah-NEN-tour', light: 'none', lightName: 'None',
+    does: 'Closes deep cuts. Sung almost like a song, three times over: the first slows the bleeding, the second clears the wound, the third knits it. It is the cure for Sectumsempra.',
+    meaning: 'Latin vulnera sanentur: “may the wounds be healed.”',
+    move: 'Trace the wand slowly along each wound while you speak.',
+    tip: 'Only the curse’s inventor knew it. It is why Snape, not Madam Pomfrey, was the one who could save Draco.',
+    seen: 'Half-Blood Prince, in the flooded bathroom.', by: 'Severus Snape' },
+  { id: 'arresto-momentum', cat: 'def', inc: 'Arresto Momentum', name: 'Slowing Charm', type: 'Charm', say: 'ah-REST-oh mo-MEN-tum', light: 'none', lightName: 'None, or blue',
+    does: 'Slows a falling or speeding thing to a gentle stop.',
+    meaning: 'Arrest the momentum: bring the movement to a halt.',
+    move: 'Point at the falling object and lift, as if catching it in the palm.',
+    tip: 'Dumbledore slowed Harry’s fifty-foot fall from his broom with it. In the book he does it silently; the words are heard in the film.',
+    seen: 'Prisoner of Azkaban, the Quidditch match in the storm.', src: 'film' },
+  { id: 'liberacorpus', cat: 'def', inc: 'Liberacorpus', name: 'Counter to the Dangling Jinx', type: 'Counter-jinx', say: 'lib-er-ah-COR-pus', light: 'white', lightName: 'A flash',
+    does: 'Lets down someone who has been hoisted into the air by the ankle with Levicorpus.',
+    meaning: 'Latin liberare, “to free,” and corpus, “body.”',
+    move: 'A jerk of the wand upward, oddly enough.',
+    tip: 'Learn the pair together. Harry found the jinx in the Prince’s book before he found the counter.',
+    seen: 'Half-Blood Prince, in the dormitory, getting Ron down from the ceiling.', by: 'Severus Snape' },
+  { id: 'anapneo', cat: 'def', inc: 'Anapneo', name: 'Airway-clearing charm', type: 'Healing spell', say: 'ah-NAP-nee-oh', light: 'none', lightName: 'None',
+    does: 'Clears the airway of someone who is choking by vanishing whatever is stuck.',
+    meaning: 'Greek anapneo: “I breathe.”',
+    move: 'Point at the throat.',
+    tip: 'Slughorn did it mid-anecdote on Marcus Belby without getting up.',
+    seen: 'Half-Blood Prince, in the Slug Club compartment.' },
+  { id: 'ferula', cat: 'def', inc: 'Ferula', name: 'Bandaging Charm', type: 'Healing spell', say: 'fer-ROOL-lah', light: 'none', lightName: 'None',
+    does: 'Conjures bandages and a splint around a broken limb, and eases the pain while it does.',
+    meaning: 'Latin ferula, a rod: the splint.',
+    move: 'Tap the injury once.',
+    tip: 'Lupin’s field dressing for Ron’s leg in the Shrieking Shack.',
+    seen: 'Prisoner of Azkaban, under the Whomping Willow.' },
+
+  /* ── Offensive ─────────────────────────────────────────────────────────── */
+  { id: 'stupefy', cat: 'off', inc: 'Stupefy', name: 'Stunning Spell', type: 'Charm', say: 'STEW-puh-fye', light: 'red', lightName: 'Red',
+    does: 'A jet of red light that knocks the target out cold. The duel-ender: quick, clean, no lasting harm, which is why Aurors and the D.A. reach for it first.',
+    meaning: 'Latin stupere, “to be stunned.”',
+    move: 'A straight jab at the chest.',
+    tip: 'One is plenty. Several at once can kill: McGonagall took four to the chest and nearly did not recover.',
+    seen: 'Goblet of Fire, from the Ministry wizards in the wood after the Dark Mark; the D.A.’s favourite ever after.',
+    counter: 'A Shield Charm blocks it; Rennervate undoes it.' },
+  { id: 'incarcerous', cat: 'off', inc: 'Incarcerous', name: 'Binding spell', type: 'Conjuration', say: 'in-KAR-ser-us', light: 'none', lightName: 'None',
+    does: 'Thick ropes fly from the wand and bind whatever you are pointing at.',
+    meaning: 'From Latin incarcerare, “to imprison.”',
+    move: 'Flick toward the target as if throwing a coil of rope.',
+    tip: 'Umbridge used it on a centaur, which went about as well as you would expect.',
+    seen: 'Order of the Phoenix, in the Forbidden Forest.',
+    counter: 'Diffindo cuts the ropes; Relashio loosens them.' },
+  { id: 'confundo', cat: 'off', inc: 'Confundo', name: 'Confundus Charm', type: 'Charm', say: 'con-FUN-doe', light: 'pink', lightName: 'Pink',
+    does: 'Muddles a mind. The target agrees with nonsense, forgets what they were doing or lumbers off in the wrong direction. It works on anything with a mind to confuse, including the Goblet of Fire.',
+    meaning: 'Latin confundere, “to mix up, to perplex.”',
+    move: 'A small circling motion at the head.',
+    tip: 'Hermione’s quiet answer to Cormac McLaggen at Keeper try-outs. Nobody noticed but Harry.',
+    seen: 'Half-Blood Prince, at the Quidditch pitch; Deathly Hallows, on the goblins at Gringotts.' },
+  { id: 'rictusempra', cat: 'off', inc: 'Rictusempra', name: 'Tickling Charm', type: 'Charm', say: 'ric-tuh-SEM-pra', light: 'silver', lightName: 'Silver',
+    does: 'Doubles the target up laughing until they are too weak to fight.',
+    meaning: 'Latin rictus, “an open mouth,” and semper, “always”: always laughing.',
+    move: 'A quick flick at the ribs.',
+    tip: 'Harry’s very first duelling spell, aimed at Draco with the whole school watching.',
+    seen: 'Chamber of Secrets, at the Duelling Club.' },
+  { id: 'tarantallegra', cat: 'off', inc: 'Tarantallegra', name: 'Dancing Feet Spell', type: 'Charm', say: 'ta-RON-ta-LEG-gra', light: 'purple', lightName: 'Red or purple',
+    does: 'Sets the legs dancing wildly and will not let them stop.',
+    meaning: 'The tarantella, a fast Italian dance, and allegro, “quick and lively.”',
+    move: 'Point at the feet.',
+    tip: 'Draco’s reply to the Tickling Charm. Snape had to end both.',
+    seen: 'Chamber of Secrets, at the Duelling Club; Dolohov used it on Neville in the Ministry.',
+    counter: 'Finite Incantatem.' },
+  { id: 'levicorpus', cat: 'off', inc: 'Levicorpus', name: 'Dangling Jinx', type: 'Jinx', say: 'leh-vee-COR-pus', light: 'white', lightName: 'A flash of light',
+    does: 'Hoists the target into the air by one ankle and leaves them hanging there.',
+    meaning: 'Latin levare, “to lift,” and corpus, “body.”',
+    move: 'A flick upward. It was designed to be cast silently, with no word at all.',
+    tip: 'Harry read it in the Prince’s book and tried it in his head while looking at Ron. It worked immediately.',
+    seen: 'Half-Blood Prince, in the dormitory; and in Order of the Phoenix, in Snape’s worst memory, where James used it on him.',
+    counter: 'Liberacorpus.', by: 'Severus Snape' },
+  { id: 'langlock', cat: 'off', inc: 'Langlock', name: 'Tongue-gluing jinx', type: 'Jinx', say: 'LANG-lock', light: 'none', lightName: 'None',
+    does: 'Glues the tongue to the roof of the mouth: no talking, and no spoken spells.',
+    meaning: 'French langue, “tongue,” and lock.',
+    move: 'Point at the mouth.',
+    tip: 'It works on Peeves, which made Harry briefly the most popular person in the castle.',
+    seen: 'Half-Blood Prince, in the corridors, on Peeves and then on Filch.', by: 'Severus Snape' },
+  { id: 'oppugno', cat: 'off', inc: 'Oppugno', name: 'Oppugno Jinx', type: 'Jinx', say: 'oh-PUG-noh', light: 'none', lightName: 'None',
+    does: 'Sends something under your control to attack: a flock of conjured birds, for instance.',
+    meaning: 'Latin oppugno: “I attack.”',
+    move: 'Point at the target after conjuring whatever you mean to send.',
+    tip: 'Hermione’s canaries, and Ron’s scratched hands. Cast in anger, remembered for years.',
+    seen: 'Half-Blood Prince, in an empty classroom after the Quidditch match.' },
+  { id: 'silencio', cat: 'off', inc: 'Silencio', name: 'Silencing Charm', type: 'Charm', say: 'si-LEN-see-oh', light: 'none', lightName: 'None',
+    does: 'Takes away the target’s voice.',
+    meaning: 'Latin silentium, “silence.”',
+    move: 'A sharp jab. It is difficult to get right, and a bad one makes the target swell up and bellow.',
+    tip: 'Fifth-year Charms work: ravens are harder to silence than frogs.',
+    seen: 'Order of the Phoenix, in Charms class; Hermione silences a Death Eater in the Ministry, mid-curse.' },
+  { id: 'obscuro', cat: 'off', inc: 'Obscuro', name: 'Blindfolding charm', type: 'Charm', say: 'ob-SKOO-roh', light: 'none', lightName: 'None',
+    does: 'Conjures a blindfold over the target’s eyes.',
+    meaning: 'Latin obscurus, “dark, hidden.”',
+    move: 'A flick across the eyes.',
+    tip: 'Hermione used it on a portrait, so Phineas Nigellus could not see where they were camped.',
+    seen: 'Deathly Hallows, in the tent.' },
+  { id: 'densaugeo', cat: 'off', inc: 'Densaugeo', name: 'Tooth-growing hex', type: 'Hex', say: 'den-SAU-jee-oh', light: 'violet', lightName: 'Violet',
+    does: 'Makes the front teeth grow, fast, past the chin and onward.',
+    meaning: 'Latin dens, “tooth,” and augeo, “I grow.”',
+    move: 'Point at the mouth.',
+    tip: 'It hit Hermione by ricochet. Madam Pomfrey shrank her teeth back, and Hermione let her go a little past where they had been.',
+    seen: 'Goblet of Fire, in the Entrance Hall.' },
+  { id: 'diffindo', cat: 'off', inc: 'Diffindo', name: 'Severing Charm', type: 'Charm', say: 'deef-IN-doe', light: 'pink', lightName: 'Light green, pink or red',
+    does: 'Cuts cleanly: a bag, a rope, a knot, a strap.',
+    meaning: 'Latin diffindo: “I split.”',
+    move: 'A single slicing stroke.',
+    tip: 'It cuts exactly what it touches, so aim with care. Harry used it to rip Cedric’s bag so he could warn him about the dragons.',
+    seen: 'Goblet of Fire, in a corridor before the first task.' },
+  { id: 'incendio', cat: 'off', inc: 'Incendio', name: 'Fire-Making Spell', type: 'Charm', say: 'in-SEN-dee-oh', light: 'orange', lightName: 'Orange and red',
+    does: 'A jet of flame from the wand tip.',
+    meaning: 'Latin incendium, “fire.”',
+    move: 'Point and push.',
+    tip: 'Mr Weasley lit the Dursleys’ boarded-up fireplace with it, having first blown the boards off.',
+    seen: 'Goblet of Fire, in the living room at Privet Drive.',
+    counter: 'Aguamenti, the water-making charm.' },
+  { id: 'relashio', cat: 'off', inc: 'Relashio', name: 'Revulsion Jinx', type: 'Jinx', say: 'ruh-LASH-ee-oh', light: 'gold', lightName: 'Sparks; boiling water underwater',
+    does: 'Forces a grip to let go. Cast underwater it fires a jet of boiling water instead of sparks.',
+    meaning: 'French relâcher, “to release.”',
+    move: 'A sharp downward flick.',
+    tip: 'Harry’s answer to the grindylows at the bottom of the lake.',
+    seen: 'Goblet of Fire, in the second task.' },
+  { id: 'glisseo', cat: 'off', inc: 'Glisseo', name: 'Sliding Spell', type: 'Transfiguration', say: 'glis-EH-oh', light: 'none', lightName: 'None',
+    does: 'Turns a staircase into a smooth slide.',
+    meaning: 'French glisser, “to slide.”',
+    move: 'A sweep down the length of the stairs.',
+    tip: 'Hermione’s escape from a pack of Death Eaters mid-battle, with Harry and Ron sliding after her.',
+    seen: 'Deathly Hallows, in the castle.' },
+  { id: 'duro', cat: 'off', inc: 'Duro', name: 'Hardening Charm', type: 'Charm', say: 'DYOO-roh', light: 'none', lightName: 'None',
+    does: 'Turns an object to stone.',
+    meaning: 'Latin duro: “I harden.”',
+    move: 'Point at the object.',
+    tip: 'Hermione turned a tapestry to stone behind her; two Death Eaters ran straight into it.',
+    seen: 'Deathly Hallows, in the castle.' },
+  { id: 'deprimo', cat: 'off', inc: 'Deprimo', name: 'Floor-blasting charm', type: 'Charm', say: 'deh-PREEM-oh', light: 'none', lightName: 'None',
+    does: 'Blasts a hole in the floor.',
+    meaning: 'Latin deprimo, “I press down.”',
+    move: 'Point straight down.',
+    tip: 'Hermione’s exit from the Lovegoods’ house, with Death Eaters on the stairs.',
+    seen: 'Deathly Hallows, at the Lovegoods’.' },
+  { id: 'serpensortia', cat: 'off', inc: 'Serpensortia', name: 'Snake Summons Spell', type: 'Conjuration', say: 'ser-pen-SOR-she-uh', light: 'white', lightName: 'White',
+    does: 'A live snake shoots from the end of the wand.',
+    meaning: 'Latin serpens, “serpent,” and ortus, “arisen.”',
+    move: 'A flick like cracking a whip.',
+    tip: 'Draco cast it on Snape’s whispered advice. It is how the whole school found out Harry could speak to snakes.',
+    seen: 'Chamber of Secrets, at the Duelling Club.',
+    counter: 'Snape vanished it with a single spell.' },
+  { id: 'obliviate', cat: 'off', inc: 'Obliviate', name: 'Memory Charm', type: 'Charm', say: 'oh-BLI-vee-ate', light: 'green', lightName: 'Green',
+    does: 'Erases chosen memories. In skilled hands, one afternoon; in unskilled hands, a career.',
+    meaning: 'Latin oblivisci, “to forget.”',
+    move: 'Point at the temple.',
+    tip: 'Lockhart built his whole life on it, and lost his own memory when it rebounded through Ron’s broken wand.',
+    seen: 'Chamber of Secrets, in the tunnel beneath the school.' },
+  { id: 'legilimens', cat: 'off', inc: 'Legilimens', name: 'Legilimency Spell', type: 'Charm', say: 'leh-JILL-ih-mens', light: 'none', lightName: 'None',
+    does: 'Lets the caster into another person’s mind: memories, feelings, thoughts.',
+    meaning: 'Latin legere, “to read,” and mens, “mind.”',
+    move: 'Point directly at the eyes.',
+    tip: 'It is resisted with Occlumency, the emptying of the mind. Harry never got the hang of it.',
+    seen: 'Order of the Phoenix, in Snape’s office, every Monday evening.',
+    counter: 'Occlumency; Harry once threw Snape out with a Shield Charm.' },
+  { id: 'waddiwasi', cat: 'off', inc: 'Waddiwasi', name: 'Projectile Jinx', type: 'Jinx', say: 'wah-deh-WAH-see', light: 'none', lightName: 'None',
+    does: 'Fires a small wad of something at high speed. Chewing gum, up a poltergeist’s nostril, for instance.',
+    meaning: 'Swedish vadd, “wadding,” and French vas-y, “go on.”',
+    move: 'Point at the wad, then at the target.',
+    tip: 'Lupin’s introduction to his students, before a word of the lesson.',
+    seen: 'Prisoner of Azkaban, in a corridor on the way to the staffroom.' },
+  { id: 'ventus', cat: 'off', inc: 'Ventus', name: 'Windy Spell', type: 'Charm', say: 'VEN-tuss', light: 'grey', lightName: 'Grey',
+    does: 'A spiralling jet of wind strong enough to stop a person and blow them backwards.',
+    meaning: 'Latin ventus: “wind.”',
+    move: 'Whirl the tip as you speak.',
+    tip: 'Not from the books: the games and later films gave it its name.',
+    seen: 'The games and the Fantastic Beasts films.', src: 'game' },
+  { id: 'bombarda', cat: 'off', inc: 'Bombarda', name: 'Bombardment Spell', type: 'Charm', say: 'bom-BAR-da', light: 'orange', lightName: 'A flash',
+    does: 'A small explosion: enough to blow open a lock or blast bars from a window.',
+    meaning: 'From “bombard.”',
+    move: 'A thrust at the lock.',
+    tip: 'Hermione blows open Sirius’s cell with it in the film; in the book she uses Alohomora.',
+    seen: 'The Prisoner of Azkaban film.', src: 'film' },
+  { id: 'everte-statum', cat: 'off', inc: 'Everte Statum', name: 'Knockback charm', type: 'Charm', say: 'ee-VER-tay STAH-tum', light: 'orange', lightName: 'Orange',
+    does: 'Throws the target backwards off their feet with a short, sharp sting.',
+    meaning: 'Latin everte, “throw out,” and statum, “standing.”',
+    move: 'Point and push from the elbow.',
+    tip: 'Draco’s opening move at the Duelling Club in the film, where the book has Tarantallegra.',
+    seen: 'The Chamber of Secrets film.', src: 'film' },
+
+  /* ── Curses ────────────────────────────────────────────────────────────── */
+  { id: 'reducto', cat: 'cur', inc: 'Reducto', name: 'Reductor Curse', type: 'Curse', say: 're-DUCK-toh', light: 'blue', lightName: 'Blue',
+    does: 'Blasts solid objects to pieces: a hedge, a wall, a shelf of glass spheres.',
+    meaning: 'Latin reduco, “I bring down.”',
+    move: 'A punching jab at the thing you want gone.',
+    tip: 'Aimed at things, not people. Harry practised it on desks for the third task.',
+    seen: 'Goblet of Fire, in the maze; Order of the Phoenix, in the Hall of Prophecy, where Ginny brought down a whole shelf with it.' },
+  { id: 'confringo', cat: 'cur', inc: 'Confringo', name: 'Blasting Curse', type: 'Curse', say: 'con-FRING-go', light: 'fire', lightName: 'Fiery orange',
+    does: 'The target explodes in a burst of flame.',
+    meaning: 'Latin confringo: “I shatter.”',
+    move: 'A sharp thrust.',
+    tip: 'Harry blew up the falling sidecar with it to slow the Death Eaters chasing him; Hermione fired it at Nagini.',
+    seen: 'Deathly Hallows, in the sky over Little Whinging and in the house at Godric’s Hollow.' },
+  { id: 'expulso', cat: 'cur', inc: 'Expulso', name: 'Expulso Curse', type: 'Curse', say: 'ecks-SPUHL-soh', light: 'blue', lightName: 'Blue',
+    does: 'An explosion of pressure that hurls furniture and people across a room.',
+    meaning: 'Latin expulso, “I drive out.”',
+    move: 'Point at the space you want cleared.',
+    tip: 'Dolohov’s, in a Muggle café, minutes after the wedding.',
+    seen: 'Deathly Hallows, on Tottenham Court Road.' },
+  { id: 'sectumsempra', cat: 'cur', inc: 'Sectumsempra', name: 'Laceration Curse', type: 'Curse', say: 'SEC-tum-SEM-pra', light: 'white', lightName: 'A flash of white',
+    does: 'Slashes the target as if with an invisible sword. The wounds keep bleeding, and only its counter-curse will close them.',
+    meaning: 'Latin sectum, “cut,” and semper, “always.”',
+    move: 'A slashing motion.',
+    tip: 'Marked “For Enemies” in the Prince’s handwriting. Harry used it without knowing what it did, and never forgave himself.',
+    seen: 'Half-Blood Prince, in Moaning Myrtle’s bathroom; Snape cut off George’s ear with it by accident in Deathly Hallows.',
+    counter: 'Vulnera Sanentur. A Shield Charm will block it in the first place.', by: 'Severus Snape' },
+  { id: 'fiendfyre', cat: 'cur', inc: 'Fiendfyre', name: 'The cursed fire', type: 'Curse', say: 'FEEND-fire', light: 'fire', lightName: 'Fire, shaped like beasts',
+    does: 'Cursed fire that hunts. It takes the forms of serpents, chimaeras and dragons, burns nearly anything it touches, and is one of the few things that can destroy a Horcrux.',
+    meaning: 'Fiend and fire: the fire of a demon.',
+    move: 'The books never give the incantation. Crabbe learned it from the Carrows, and could not control it.',
+    tip: 'Almost impossible to master and impossible to put out. The person who cast it was the one it killed.',
+    seen: 'Deathly Hallows, in the Room of Requirement, where it destroyed the diadem.',
+    counter: 'None known. Run.', know: 'A wand made for a shop years later gave it the words Pestis Incendium, “fire plague.” The books never did.' },
+  { id: 'locomotor-mortis', cat: 'cur', inc: 'Locomotor Mortis', name: 'Leg-Locker Curse', type: 'Curse', say: 'LOH-koh-moh-tor MOR-tis', light: 'purple', lightName: 'Red or purple',
+    does: 'Locks the legs together so the victim can only hop.',
+    meaning: 'Locomotion, and Latin mortis, “of death”: the death of movement.',
+    move: 'Point at the knees.',
+    tip: 'Draco put it on Neville, who bunny-hopped all the way up to Gryffindor Tower rather than ask for help.',
+    seen: 'Philosopher’s Stone, outside the library.',
+    counter: 'The counter-curse is in Curses and Counter-Curses; Hermione performed it.' },
+  { id: 'petrificus-totalus', cat: 'cur', inc: 'Petrificus Totalus', name: 'Full Body-Bind Curse', type: 'Curse', say: 'pe-TRI-fi-cus to-TAH-lus', light: 'white', lightName: 'White, or none',
+    does: 'Arms snap to the sides, legs lock together, and the victim falls stiff as a board, awake and unable to move.',
+    meaning: 'Latin petra, “rock,” and totus, “whole”: wholly turned to stone.',
+    move: 'Point at the whole body.',
+    tip: 'Hermione’s on Neville, the night they went for the Stone. Ten points to Gryffindor for standing up to your friends.',
+    seen: 'Philosopher’s Stone, in the common room; Draco used it on Harry on the train in Half-Blood Prince.',
+    counter: 'Finite Incantatem, or it simply wears off.' },
+  { id: 'furnunculus', cat: 'cur', inc: 'Furnunculus', name: 'Pimple Jinx', type: 'Curse', say: 'fur-NUN-kyoo-lus', light: 'gold', lightName: 'Gold',
+    does: 'Boils erupt all over the target’s skin.',
+    meaning: 'Latin furunculus, “a boil.”',
+    move: 'Point at the face.',
+    tip: 'Harry’s curse and Draco’s Densaugeo met in mid-air and ricocheted: Goyle got the boils, Hermione got the teeth.',
+    seen: 'Goblet of Fire, in the Entrance Hall.',
+    counter: 'Boil-Cure Potion, the first potion first-years brew.' },
+  { id: 'mimblewimble', cat: 'cur', inc: 'Mimblewimble', name: 'Tongue-Tying Curse', type: 'Curse', say: 'MIM-bull-wim-bull', light: 'purple', lightName: 'Blue or purple',
+    does: 'Ties the tongue in a knot so no spell and no secret can be spoken.',
+    meaning: 'A mumble made into a word: the sound of someone who cannot speak.',
+    move: 'Point at the mouth.',
+    tip: 'Moody set one on the doorway of Grimmauld Place against Snape. Harry’s tongue curled back on itself when he crossed it.',
+    seen: 'Deathly Hallows, in the hall of number twelve. The incantation itself comes from the games.', src: 'game' },
+  { id: 'flagrante', cat: 'cur', inc: 'Flagrante', name: 'Flagrante Curse', type: 'Curse', say: 'flah-GRAHN-tay', light: 'none', lightName: 'None until it is touched',
+    does: 'Makes an object burn whoever touches it.',
+    meaning: 'Latin flagro: “I burn.”',
+    move: 'Tap the object once.',
+    tip: 'The Lestrange vault: every goblet and coin they brushed against scorched them.',
+    seen: 'Deathly Hallows, at Gringotts.' },
+  { id: 'geminio', cat: 'cur', inc: 'Geminio', name: 'Gemino Curse', type: 'Curse', say: 'juh-MIN-ee-oh', light: 'none', lightName: 'None',
+    does: 'Copies an object. As a charm, a single perfect double; as a curse, every copy multiplies again until a room fills to the ceiling.',
+    meaning: 'Latin geminare, “to double.”',
+    move: 'Flick at the object.',
+    tip: 'Hermione duplicated the locket on Umbridge’s desk; the cursed version in the vault nearly buried the three of them in burning gold.',
+    seen: 'Deathly Hallows, at the Ministry and at Gringotts.' },
+  { id: 'morsmordre', cat: 'cur', inc: 'Morsmordre', name: 'The Dark Mark', type: 'Dark charm', say: 'morz-MOR-druh', light: 'green', lightName: 'Green',
+    does: 'Casts the skull and serpent into the sky: the Death Eaters’ sign, left over the houses where they killed.',
+    meaning: 'Latin mors, “death,” and mordere, “to bite”: death-eater.',
+    move: 'Wand pointed at the sky.',
+    tip: 'Cast with Harry’s own stolen wand at the World Cup, by a man everyone believed was dead.',
+    seen: 'Goblet of Fire, in the wood after the final; Half-Blood Prince, over the Astronomy Tower.',
+    counter: 'An Eradication Spell wipes it from the sky.', by: 'Lord Voldemort' },
+
+  /* ── Forbidden ─────────────────────────────────────────────────────────── */
+  { id: 'avada-kedavra', cat: 'unf', inc: 'Avada Kedavra', name: 'The Killing Curse', type: 'Unforgivable', say: 'a-VAH-dah ke-DAH-vra', light: 'green', lightName: 'A blinding flash of green',
+    does: 'Kills instantly. No wound, no mark, only a rushing sound and a jet of green light. There is no counter-curse.',
+    meaning: 'Aramaic, “let the thing be destroyed.” It is the root of abracadabra, which was once said to destroy an illness. Rowling turned the cure into the curse.',
+    move: 'Moody told the fourth years that the whole class could point their wands at him and say it, and he doubted he would get so much as a nosebleed. It needs powerful magic and a killer’s intent behind it.',
+    tip: 'Understanding it is the point. Nobody at this table is casting anything.',
+    seen: 'Goblet of Fire: Frank Bryce in the first chapter, the spider in Moody’s classroom, Cedric in the graveyard. Then Dumbledore on the tower, and Harry in the forest.',
+    counter: 'Only what is solid: a statue, a headstone, a duck behind a fountain. Priori Incantatem locked it once. The only thing that ever truly turned it aside was a mother’s sacrifice.',
+    know: 'Harry is the only known person to survive it, twice, and the second time he chose to walk into it.' },
+  { id: 'crucio', cat: 'unf', inc: 'Crucio', name: 'The Cruciatus Curse', type: 'Unforgivable', say: 'KROO-see-oh', light: 'none', lightName: 'None',
+    does: 'Pain beyond anything, with no wound to show for it. Held long enough, it destroys the mind.',
+    meaning: 'Latin crucio, “I torture,” from crux, a cross, the same root as “excruciating.”',
+    move: 'Bellatrix explained it to Harry after he tried it on her: you have to mean it, to really want to cause pain and enjoy it. Righteous anger does not last.',
+    tip: 'That failure is the most important thing about the curse. Harry could not truly cast it because he did not truly want to.',
+    seen: 'Goblet of Fire, on a spider and then in the graveyard; Order of the Phoenix, in the Ministry atrium; Deathly Hallows, in the Carrows’ detentions.',
+    counter: 'None. Something solid between you and the wand, or endurance. Neville’s parents endured it past the point of return.',
+    know: 'Frank and Alice Longbottom were tortured into madness with it by Bellatrix Lestrange and Barty Crouch Junior. That is why Neville was raised by his grandmother.' },
+  { id: 'imperio', cat: 'unf', inc: 'Imperio', name: 'The Imperius Curse', type: 'Unforgivable', say: 'im-PEER-ee-oh', light: 'none', lightName: 'None',
+    does: 'Total control. The victim feels a floating, wonderful calm, and does whatever the voice in their head tells them to. Many Death Eaters claimed after the first war that they had only ever acted under it.',
+    meaning: 'Latin imperium, “command, authority.”',
+    move: 'A soft word and a pointed wand. It is the quietest of the three.',
+    tip: 'It is the one Unforgivable that can be fought. Harry threw it off in Moody’s class with nothing but a small voice in the back of his head asking, why?',
+    seen: 'Goblet of Fire, on the fourth years one by one; Deathly Hallows, when Yaxley put it on Pius Thicknesse and the Ministry fell without a fight.',
+    counter: 'Strength of will. Notice the calm, question the order, and refuse.',
+    know: 'Barty Crouch Senior kept his own son under it for years. Harry used it himself, at Gringotts, and did not enjoy how easy it was.' }
+];
+
+var SPELLS_KEY = 'hp_club-spells';
+var spellCat = 'def';
+var spellLearned = {};
+var _drill = null;
+
+function spellEsc(s) { return clubEsc(s); }
+function spellsIn(cat) { return SPELLS.filter(function (s) { return s.cat === cat; }); }
+function spellById(id) { var f = null; SPELLS.forEach(function (s) { if (s.id === id) f = s; }); return f; }
+function loadSpellState() { try { var v = JSON.parse(localStorage.getItem(SPELLS_KEY) || '{}'); spellLearned = (v && v.learned && typeof v.learned === 'object') ? v.learned : {}; } catch (e) { spellLearned = {}; } }
+function saveSpellState() { try { localStorage.setItem(SPELLS_KEY, JSON.stringify({ learned: spellLearned })); } catch (e) {} }
+function learnedIn(cat) { return spellsIn(cat).filter(function (s) { return spellLearned[s.id]; }).length; }
+
+/* "ex-PEL-lee-AR-muss" → syllable spans, the stressed (capital) ones marked. */
+function sayHtml(say) {
+  return say.split(' ').map(function (word) {
+    return '<span class="spell-word">' + word.split('-').map(function (syl, i) {
+      var stressed = syl === syl.toUpperCase() && /[A-Z]/.test(syl);
+      return '<span class="spell-syl' + (stressed ? ' is-stressed' : '') + '" style="--i:' + i + '">' + spellEsc(syl) + '</span>';
+    }).join('<span class="spell-dash">-</span>') + '</span>';
+  }).join(' ');
+}
+function sparkStyle(s) { var hex = SPELL_LIGHTS[s.light] || ''; return hex ? ' style="--spark:' + hex + '"' : ''; }
+
+function renderSpells(panel, keepScroll) {
+  var y = window.pageYOffset, cat = null;
+  SPELL_CATS.forEach(function (c) { if (c.id === spellCat) cat = c; });
+  if (!cat) { cat = SPELL_CATS[0]; spellCat = cat.id; }
+  var list = spellsIn(cat.id), learned = learnedIn(cat.id);
+  var html = '<div class="spell-cats" role="tablist" aria-label="Kind of spell">' + SPELL_CATS.map(function (c) {
+    return '<button class="spell-cat" type="button" role="tab" data-cat="' + c.id + '" aria-selected="' + (c.id === spellCat ? 'true' : 'false') + '" onclick="selectSpellCat(\'' + c.id + '\')">' +
+      '<span class="spell-cat-name">' + spellEsc(c.name) + '</span><span class="spell-cat-count">' + spellsIn(c.id).length + '</span></button>';
+  }).join('') + '</div>';
+  html += '<div class="club-intro spell-intro' + (cat.id === 'unf' ? ' spell-intro--dark' : '') + '"><div class="eyebrow">' + spellEsc(cat.eyebrow) + '</div><h3 class="club-intro-title">' + spellEsc(cat.title) + '</h3><p>' + spellEsc(cat.blurb) + '</p>';
+  if (cat.id === 'unf') {
+    html += '<dl class="spell-decree"><dt>Classified</dt><dd>1717, by the Ministry of Magic, with the strictest penalties attached to their use.</dd>' +
+      '<dt>Penalty</dt><dd>Use on another human being: life in Azkaban, unless the caster was under the Imperius Curse.</dd>' +
+      '<dt>Taught</dt><dd>To fourth-years, on three spiders, by a Death Eater wearing Mad-Eye Moody’s face. The Ministry had not approved the lesson.</dd>' +
+      '<dt>Exception</dt><dd>During the first war Barty Crouch Senior authorised Aurors to use them against Death Eaters. Sirius said it made some of them as bad as the other side.</dd></dl>';
+  }
+  html += '<div class="spell-intro-row"><span class="chip">' + learned + ' of ' + list.length + ' learned</span>' +
+    '<button class="btn btn-metal spell-drill-btn" type="button" onclick="openSpellDrill(\'' + cat.id + '\')"><span class="material-symbols-rounded" aria-hidden="true">style</span><span>Drill me</span></button></div></div>';
+  html += '<div class="class-list spell-list">' + list.map(renderSpellCard).join('') + '</div>';
+  html += '<p class="club-foot">Incantations, pronunciations, colours and first appearances checked against the Harry Potter Wiki (harrypotter.fandom.com); the words here are the club’s own. What you have learned is kept on this device.</p>';
+  panel.innerHTML = html;
+  if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
+}
+
+function renderSpellCard(s) {
+  var learned = !!spellLearned[s.id], dark = s.cat === 'unf';
+  var badge = s.src === 'film' ? '<span class="spell-src">Film</span>' : s.src === 'game' ? '<span class="spell-src">Games</span>' : '';
+  return '<article class="class-card spell-card' + (dark ? ' spell-card--dark' : '') + (learned ? ' is-learned' : '') + '" id="spell-' + s.id + '"' + sparkStyle(s) + '>' +
+    '<button class="class-head spell-head" type="button" aria-expanded="false" aria-controls="spell-body-' + s.id + '" onclick="toggleSpell(\'' + s.id + '\')">' +
+    '<span class="spell-spark' + (SPELL_LIGHTS[s.light] ? '' : ' spell-spark--none') + '" aria-hidden="true"><span class="spell-spark-core"></span></span>' +
+    '<span class="class-text"><span class="spell-inc">' + spellEsc(s.inc) + '</span><span class="class-teacher">' + spellEsc(s.name) + ' · ' + spellEsc(s.type) + '</span></span>' +
+    '<span class="spell-tick' + (learned ? '' : ' spell-tick--none') + '" aria-label="' + (learned ? 'Learned' : '') + '"><span class="material-symbols-rounded" aria-hidden="true">check</span></span>' +
+    '<span class="material-symbols-rounded class-chevron" aria-hidden="true">expand_more</span></button>' +
+    '<div class="class-body spell-body" id="spell-body-' + s.id + '" role="region" aria-label="' + spellEsc(s.inc) + '">' +
+    '<div class="spell-say" aria-label="Pronunciation ' + spellEsc(s.say) + '">' + sayHtml(s.say) + badge + '</div>' +
+    '<div class="spell-light-row"><span class="spell-light-dot" aria-hidden="true"></span><span>' + spellEsc(s.lightName) + '</span></div>' +
+    '<div class="class-sub">What it does</div><p class="spell-p">' + spellEsc(s.does) + '</p>' +
+    '<div class="class-sub">What the words mean</div><p class="spell-p spell-meaning">' + spellEsc(s.meaning) + '</p>' +
+    '<div class="class-sub">How to cast it</div><ol class="spell-steps">' +
+    '<li><b>Aim</b><span>' + spellEsc(s.move) + '</span></li>' +
+    '<li><b>Say</b><span>' + spellEsc(s.inc) + ', with the weight on the capital syllables above. Clearly, once.</span></li>' +
+    '<li><b>Mean it</b><span>' + spellEsc(s.tip) + '</span></li></ol>' +
+    '<div class="class-sub">Seen in</div><p class="spell-p">' + spellEsc(s.seen) + '</p>' +
+    (s.counter ? '<div class="class-sub">' + (dark ? 'Defence' : 'Countered by') + '</div><p class="spell-p">' + spellEsc(s.counter) + '</p>' : '') +
+    (s.by ? '<div class="class-sub">Invented by</div><p class="spell-p">' + spellEsc(s.by) + '</p>' : '') +
+    (s.know ? '<div class="class-know"><b>Did you know</b>' + spellEsc(s.know) + '</div>' : '') +
+    '<div class="spell-actions">' +
+    (dark ? '' : '<button class="btn btn-house" type="button" onclick="castSpell(\'' + s.id + '\')"><span class="material-symbols-rounded" aria-hidden="true">auto_fix_high</span><span>Cast it</span></button>') +
+    '<button class="btn spell-learn-btn" type="button" aria-pressed="' + (learned ? 'true' : 'false') + '" onclick="toggleSpellLearned(\'' + s.id + '\')"><span class="material-symbols-rounded" aria-hidden="true">' + (learned ? 'check_circle' : 'radio_button_unchecked') + '</span><span>' + (learned ? 'Learned' : 'Mark as learned') + '</span></button>' +
+    '</div></div></article>';
+}
+
+function selectSpellCat(id) {
+  spellCat = id;
+  try { localStorage.setItem('hp-club-spell-cat', id); } catch (e) {}
+  var panel = document.getElementById('clubPanel'); if (!panel) return;
+  renderSpells(panel, true);
+  var intro = panel.querySelector('.spell-intro');
+  if (intro) { try { window.scrollTo(0, Math.max(0, intro.getBoundingClientRect().top + window.pageYOffset - (56 + 8 + 56 + 12))); } catch (e) {} }
+}
+function toggleSpell(id) {
+  var card = document.getElementById('spell-' + id); if (!card) return;
+  var open = !card.classList.contains('open');
+  document.querySelectorAll('.spell-card.open').forEach(function (o) { o.classList.remove('open'); var b = o.querySelector('.class-head'); if (b) b.setAttribute('aria-expanded', 'false'); });
+  if (open) {
+    card.classList.add('open');
+    var btn = card.querySelector('.class-head'); if (btn) btn.setAttribute('aria-expanded', 'true');
+    var top = card.getBoundingClientRect().top + window.pageYOffset - (56 + 8 + 56 + 12);
+    try { window.scrollTo(0, Math.max(0, top)); } catch (e) {}
+  }
+}
+function castSpell(id) {
+  var card = document.getElementById('spell-' + id); if (!card) return;
+  card.classList.remove('is-casting'); void card.offsetWidth;          // restart the animation
+  card.classList.add('is-casting');
+  clearTimeout(card._castT);
+  card._castT = setTimeout(function () { card.classList.remove('is-casting'); }, 1800);
+}
+function toggleSpellLearned(id) {
+  if (spellLearned[id]) delete spellLearned[id]; else spellLearned[id] = 1;
+  saveSpellState();
+  var card = document.getElementById('spell-' + id), s = spellById(id);
+  if (card && s) {
+    var wasOpen = card.classList.contains('open');
+    var tmp = document.createElement('div'); tmp.innerHTML = renderSpellCard(s);
+    var fresh = tmp.firstChild; card.replaceWith(fresh);
+    if (wasOpen) { fresh.classList.add('open'); var b = fresh.querySelector('.class-head'); if (b) b.setAttribute('aria-expanded', 'true'); }
+  }
+  var chip = document.querySelector('.spell-intro-row .chip');
+  if (chip) chip.textContent = learnedIn(spellCat) + ' of ' + spellsIn(spellCat).length + ' learned';
+}
+
+/* ── Drill: flash cards in the generic sheet ─────────────────────────────── */
+function openSpellDrill(cat) {
+  var list = spellsIn(cat).slice();
+  for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = list[i]; list[i] = list[j]; list[j] = t; }
+  _drill = { cat: cat, list: list, i: 0, shown: false, right: 0 };
+  var name = ''; SPELL_CATS.forEach(function (c) { if (c.id === cat) name = c.name; });
+  openSheet({ title: 'Drill · ' + name, html: '' });
+  renderDrill();
+}
+function renderDrill() {
+  var body = document.getElementById('hp-sheet-body'); if (!body || !_drill) return;
+  var d = _drill;
+  if (d.i >= d.list.length) {
+    body.innerHTML = '<div class="drill"><div class="eyebrow">Drill complete</div><h3 class="club-intro-title">' + d.right + ' of ' + d.list.length + ' known</h3>' +
+      '<p class="spell-p">' + (d.right === d.list.length ? 'Outstanding. Flitwick would have you demonstrating for the class.' : d.right >= d.list.length * 0.7 ? 'Exceeds Expectations. A few more evenings with the spellbook and you have the set.' : 'Acceptable, and honest. Open the ones you missed and read the casting steps aloud.') + '</p>' +
+      '<div class="spell-actions"><button class="btn btn-house" type="button" onclick="openSpellDrill(\'' + d.cat + '\')"><span class="material-symbols-rounded" aria-hidden="true">replay</span><span>Again</span></button>' +
+      '<button class="btn" type="button" onclick="closeSheet()"><span>Done</span></button></div></div>';
+    return;
+  }
+  var s = d.list[d.i];
+  body.innerHTML = '<div class="drill"' + sparkStyle(s) + '><div class="drill-count">' + (d.i + 1) + ' of ' + d.list.length + '</div>' +
+    '<div class="eyebrow">What spell is this?</div><p class="drill-does">' + spellEsc(s.does) + '</p>' +
+    '<div class="spell-light-row"><span class="spell-light-dot" aria-hidden="true"></span><span>' + spellEsc(s.lightName) + ' · ' + spellEsc(s.type) + '</span></div>' +
+    (d.shown ? '<div class="drill-answer"><div class="spell-inc drill-inc">' + spellEsc(s.inc) + '</div><div class="spell-say">' + sayHtml(s.say) + '</div><div class="class-teacher">' + spellEsc(s.name) + '</div></div>' +
+      '<div class="spell-actions"><button class="btn btn-house" type="button" onclick="drillAnswer(true)"><span class="material-symbols-rounded" aria-hidden="true">check</span><span>Knew it</span></button>' +
+      '<button class="btn" type="button" onclick="drillAnswer(false)"><span class="material-symbols-rounded" aria-hidden="true">close</span><span>Not yet</span></button></div>'
+      : '<div class="spell-actions"><button class="btn btn-metal" type="button" onclick="drillReveal()"><span class="material-symbols-rounded" aria-hidden="true">visibility</span><span>Reveal</span></button></div>') +
+    '</div>';
+  body.scrollTop = 0;
+}
+function drillReveal() { if (_drill) { _drill.shown = true; renderDrill(); } }
+function drillAnswer(knew) {
+  if (!_drill) return;
+  var s = _drill.list[_drill.i];
+  if (knew) { _drill.right++; if (!spellLearned[s.id]) { spellLearned[s.id] = 1; saveSpellState(); } }
+  _drill.i++; _drill.shown = false;
+  renderDrill();
+  if (_drill.i >= _drill.list.length) {           // refresh the page behind the sheet
+    var panel = document.getElementById('clubPanel');
+    if (panel && typeof clubTopic !== 'undefined' && clubTopic === 'spells') renderSpells(panel, true);
+  }
+}
+
+function initSpells() {
+  loadSpellState();
+  var stored = null; try { stored = localStorage.getItem('hp-club-spell-cat'); } catch (e) {}
+  spellCat = SPELL_CATS.some(function (c) { return c.id === stored; }) ? stored : 'def';
 }
 </script>
 </body>
