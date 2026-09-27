@@ -2089,6 +2089,298 @@ html.house-page-open body { overflow: hidden; }
 }
 
 
+/* ── Play › Ultimate Quiz (SW v15): Great Hall plate, wax seal, candle progress, parchment cards ── */
+.uq {
+  position: relative; overflow: hidden; isolation: isolate;
+  border-radius: 20px; padding: 22px 14px 18px; margin-bottom: 14px;
+  background: var(--hp-chrome); color: var(--hp-on-chrome);
+  box-shadow: var(--md-sys-elevation-2);
+}
+/* The enchanted ceiling: two twinkling star layers and slow house-colour glows */
+.uq-sky { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.uq-sky::before, .uq-sky::after { content: ""; position: absolute; inset: 0; }
+.uq-sky::before {
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, rgba(255,255,255,0.85), transparent 60%),
+    radial-gradient(1px 1px at 28% 62%, rgba(255,255,255,0.7), transparent 60%),
+    radial-gradient(1.4px 1.4px at 44% 12%, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1px 1px at 63% 40%, rgba(255,255,255,0.65), transparent 60%),
+    radial-gradient(1.3px 1.3px at 81% 22%, rgba(255,255,255,0.85), transparent 60%),
+    radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,0.6), transparent 60%),
+    radial-gradient(1.2px 1.2px at 8% 84%, rgba(255,255,255,0.7), transparent 60%),
+    radial-gradient(1px 1px at 55% 88%, rgba(255,255,255,0.55), transparent 60%);
+  animation: uqTwinkle 4.6s ease-in-out infinite;
+}
+.uq-sky::after {
+  background:
+    radial-gradient(60% 45% at 10% 0%, var(--hp-house-2), transparent 70%),
+    radial-gradient(55% 40% at 100% 30%, var(--hp-metal-bg), transparent 70%),
+    radial-gradient(70% 50% at 50% 110%, var(--hp-house), transparent 70%);
+  opacity: 0.45; filter: blur(18px);
+  animation: uqDrift 24s ease-in-out infinite alternate;
+}
+@keyframes uqTwinkle { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes uqDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(4%, -3%) scale(1.08); } }
+
+.uq-head { text-align: center; padding: 2px 6px 4px; }
+.uq-crest { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; }
+.uq-bar { height: 1px; width: 44px; background: linear-gradient(90deg, transparent, var(--hp-chrome-accent)); }
+.uq-bar--r { background: linear-gradient(90deg, var(--hp-chrome-accent), transparent); }
+.uq-crest-mark { width: 28px; height: 28px; color: var(--hp-chrome-accent); }
+.uq-eyebrow { color: var(--hp-chrome-accent); letter-spacing: 0.3em; margin-bottom: 10px; }
+.uq-title { font-family: var(--font-serif); font-size: 28px; line-height: 1.15; font-weight: 700; margin: 0; color: var(--hp-on-chrome); letter-spacing: 0.01em; text-shadow: 0 2px 14px rgba(0,0,0,0.35); }
+.uq-sub { margin: 12px auto 0; max-width: 300px; font-family: var(--font-serif); font-size: 16px; font-style: italic; line-height: 1.45; color: var(--hp-chrome-muted); }
+.uq-foot { margin-top: 18px; text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--hp-chrome-muted); }
+
+/* Candles: lit for a right answer, snuffed (a wisp of smoke) for a wrong one, pulsing for the current */
+.uq-candles { display: none; justify-content: center; align-items: flex-end; gap: 8px; height: 34px; margin: 20px 0 0; }
+.uq-candles.is-on { display: flex; }
+.uq-candles.is-tight { gap: 4px; }
+.uq-cnd { position: relative; flex: 0 0 auto; width: 5px; height: 16px; border-radius: 1.5px; background: linear-gradient(180deg, var(--hp-on-chrome), var(--hp-chrome-muted)); opacity: 0.3; transition: opacity 0.3s; }
+.uq-cnd::after { content: ""; position: absolute; left: 50%; top: -10px; width: 7px; height: 11px; transform: translateX(-50%) scale(0); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 50% 70%, var(--hp-on-chrome), var(--hp-metal) 55%, transparent 80%); transition: transform 0.3s cubic-bezier(.3,1.6,.5,1); }
+.uq-cnd.is-lit { opacity: 1; }
+.uq-cnd.is-lit::after { transform: translateX(-50%) scale(1); box-shadow: 0 0 12px 3px var(--hp-metal); animation: uqFlick 1.1s ease-in-out infinite; }
+.uq-cnd.is-out { opacity: 0.6; }
+.uq-cnd.is-out::after { width: 3px; height: 10px; top: -12px; transform: translateX(-50%) scale(1); border-radius: 2px; background: linear-gradient(0deg, var(--hp-chrome-muted), transparent); opacity: 0.7; }
+.uq-cnd.is-now { animation: uqPulse 1.8s ease-in-out infinite; }
+@keyframes uqFlick { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.15, 0.92); } }
+@keyframes uqPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.95; } }
+
+/* Parchment card with a double metal rule and corners */
+.uq-card { position: relative; margin-top: 16px; padding: 5px; border-radius: 6px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); box-shadow: 0 22px 50px -14px rgba(0,0,0,0.7), 0 0 0 1px var(--hp-metal); animation: uqRise 0.5s cubic-bezier(.2,.8,.3,1) both; }
+.uq-card::before, .uq-card::after { content: ""; position: absolute; pointer-events: none; border: 1px solid var(--md-sys-color-outline-variant); }
+.uq-card::before { inset: 5px; border-radius: 3px; }
+.uq-card::after { inset: 9px; border-radius: 2px; opacity: 0.6; }
+@keyframes uqRise { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
+.uq-inner { position: relative; padding: 22px 18px 18px; }
+.uq-corner { position: absolute; width: 16px; height: 16px; border-color: var(--md-sys-color-secondary); opacity: 0.8; z-index: 1; }
+.uq-c-tl { top: 9px; left: 9px; border-top: 2px solid; border-left: 2px solid; }
+.uq-c-tr { top: 9px; right: 9px; border-top: 2px solid; border-right: 2px solid; }
+.uq-c-bl { bottom: 9px; left: 9px; border-bottom: 2px solid; border-left: 2px solid; }
+.uq-c-br { bottom: 9px; right: 9px; border-bottom: 2px solid; border-right: 2px solid; }
+.uq-qhead { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; }
+.uq-qnum { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--md-sys-color-secondary); }
+.uq-ln { flex: 1; height: 1px; background: linear-gradient(90deg, var(--md-sys-color-outline-variant), transparent); }
+.uq-question { font-family: var(--font-serif); font-size: 20px; line-height: 1.36; font-weight: 600; margin: 0 0 18px; }
+
+/* Seal */
+.uq-sealbox { display: flex; flex-direction: column; align-items: center; margin-top: 26px; }
+.uq-seal { position: relative; width: 124px; height: 124px; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent; animation: uqBob 3.4s ease-in-out infinite; }
+.uq-seal:focus-visible { outline: 3px solid var(--hp-chrome-accent); outline-offset: 8px; }
+.uq-half { position: absolute; inset: 0; transition: transform 0.85s cubic-bezier(.3,.9,.4,1), opacity 0.85s; }
+.uq-half--l { clip-path: polygon(0 0, 53% 0, 46% 28%, 55% 54%, 47% 100%, 0 100%); }
+.uq-half--r { clip-path: polygon(53% 0, 100% 0, 100% 100%, 47% 100%, 55% 54%, 46% 28%); }
+.uq-face { position: absolute; inset: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 34% 28%, rgba(255,255,255,0.45), transparent 45%), radial-gradient(circle at 60% 75%, rgba(0,0,0,0.28), transparent 60%), var(--hp-metal); box-shadow: inset 0 -6px 14px rgba(0,0,0,0.35), inset 0 4px 10px rgba(255,255,255,0.3); }
+/* The drop shadow lives on an unclipped circle behind the halves: on the clipped faces it was cut to a
+   hard square, visible on the lighter house plates (Ravenclaw navy). */
+.uq-seal::before { content: ""; position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 12px 34px rgba(0,0,0,0.6); transition: opacity 0.5s; }
+.uq-seal.is-broken::before { opacity: 0; }
+.uq-seal-mark { width: 62px; height: 62px; color: var(--hp-metal-on); opacity: 0.85; }   /* the Hallows pressed into metal wax, in the dark house colour */
+.uq-glow { position: absolute; inset: -16px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, var(--hp-metal), transparent 65%); opacity: 0.35; animation: uqGlow 3.4s ease-in-out infinite; }
+.uq-seal.is-broken { animation: none; cursor: default; }
+.uq-seal.is-broken .uq-half--l { transform: translate(-64px, 26px) rotate(-32deg); opacity: 0; }
+.uq-seal.is-broken .uq-half--r { transform: translate(64px, 26px) rotate(32deg); opacity: 0; }
+.uq-seal.is-broken .uq-glow { opacity: 0; transition: opacity 0.4s; }
+@keyframes uqBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes uqGlow { 0%, 100% { opacity: 0.25; transform: scale(0.95); } 50% { opacity: 0.5; transform: scale(1.08); } }
+.uq-taphint { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: var(--hp-chrome-accent); margin: 26px 0 0; transition: opacity 0.4s; animation: uqGlowText 2.6s ease-in-out infinite; }
+@keyframes uqGlowText { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+.uq-startnote { margin: 14px auto 6px; max-width: 270px; text-align: center; font-family: var(--font-serif); font-size: 15px; font-style: italic; line-height: 1.45; color: var(--hp-chrome-muted); }
+
+/* Trial lengths */
+.uq-lengths { display: flex; flex-direction: column; gap: 10px; }
+.uq-len { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; text-align: left; padding: 12px 14px; border-radius: 6px; cursor: pointer; background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); border: 1.5px solid var(--md-sys-color-outline-variant); -webkit-tap-highlight-color: transparent; transition: transform 0.08s, border-color 0.2s, box-shadow 0.2s; }
+.uq-len:active { transform: scale(0.985); }
+.uq-len:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+@media (hover: hover) { .uq-len:hover { border-color: var(--md-sys-color-primary); } }
+.uq-len-n { min-width: 44px; text-align: center; font-family: var(--font-serif); font-size: 28px; font-weight: 700; line-height: 1; color: var(--md-sys-color-primary); }
+.uq-len-meta { flex: 1; min-width: 0; }
+.uq-len-lab { display: block; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.uq-len-desc { display: block; font-family: var(--font-serif); font-size: 15px; font-style: italic; line-height: 1.3; color: var(--md-sys-color-on-surface-variant); margin-top: 2px; }
+.uq-best { flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 10px; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border: 1px solid var(--md-sys-color-primary); }
+
+/* Options (same right/wrong language as the Classes quiz) */
+.uq-opts { display: flex; flex-direction: column; gap: 10px; }
+.uq-opt { position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; text-align: left; padding: 12px 14px; border-radius: 6px; cursor: pointer; font-family: var(--font-serif); font-size: 17px; line-height: 1.3; background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); border: 1.5px solid var(--md-sys-color-outline-variant); -webkit-tap-highlight-color: transparent; transition: transform 0.08s, background 0.3s, border-color 0.3s, opacity 0.3s; }
+.uq-opt:active { transform: scale(0.985); }
+.uq-opt:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.uq-opt[disabled] { cursor: default; }
+.uq-letter { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--md-sys-color-secondary); border: 1.5px solid var(--md-sys-color-secondary); background: var(--md-sys-color-surface); transition: 0.3s; }
+.uq-txt { flex: 1; min-width: 0; }
+.uq-opt.is-right { background: var(--md-sys-color-primary-container); border-color: var(--md-sys-color-primary); }
+.uq-opt.is-right .uq-letter { background: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.uq-opt.is-wrong { border-color: var(--md-sys-color-error); animation: uqShake 0.4s; }
+.uq-opt.is-wrong .uq-letter { background: var(--md-sys-color-error); border-color: var(--md-sys-color-error); color: var(--md-sys-color-on-primary); }
+.uq-opt.is-dim { opacity: 0.45; }
+.uq-sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.7) 50%, transparent 65%); transform: translateX(-120%); }
+.uq-opt.is-right .uq-sheen { animation: uqSweep 0.75s ease-out 0.05s; }
+@keyframes uqShake { 0%, 100% { transform: translateX(0); } 18% { transform: translateX(-6px); } 38% { transform: translateX(5px); } 58% { transform: translateX(-3px); } 78% { transform: translateX(2px); } }
+@keyframes uqSweep { to { transform: translateX(120%); } }
+.uq-next { margin-top: 16px; visibility: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.35s, transform 0.35s; }
+.uq-next.is-shown { visibility: visible; opacity: 1; transform: none; }
+.uq-status { min-height: 1.2em; margin: 10px 0 0; text-align: center; font-family: var(--font-sans); font-size: 14px; color: var(--md-sys-color-on-surface-variant); }
+.uq-spark { position: fixed; z-index: 60; width: 5px; height: 5px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, var(--hp-on-chrome), var(--hp-metal)); box-shadow: 0 0 8px 2px var(--hp-metal); }
+
+/* Result */
+.uq-result { text-align: center; padding: 4px 2px 0; }
+.uq-emblem { width: 80px; height: 80px; display: block; margin: 0 auto 6px; }
+.uq-emblem path, .uq-emblem circle { fill: none; stroke: var(--md-sys-color-secondary); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 300; stroke-dashoffset: 300; animation: uqDraw 1.5s ease-out 0.2s forwards; }
+@keyframes uqDraw { to { stroke-dashoffset: 0; } }
+.uq-score { font-family: var(--font-serif); font-size: 60px; font-weight: 700; line-height: 1; color: var(--md-sys-color-primary); }
+.uq-score-of { font-size: 20px; font-weight: 400; color: var(--md-sys-color-on-surface-variant); }
+.uq-verdict { font-family: var(--font-serif); font-size: 21px; font-weight: 700; margin: 14px 0 6px; }
+.uq-verdict-sub { font-family: var(--font-serif); font-size: 16px; font-style: italic; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin: 0 0 14px; }
+.uq-best-chip { margin: 0 auto 16px; }
+.uq-btnrow { display: flex; flex-direction: column; gap: 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .uq-sky::before, .uq-sky::after, .uq-seal, .uq-glow, .uq-taphint, .uq-cnd, .uq-cnd::after, .uq-card, .uq-opt, .uq-sheen, .uq-next, .uq-half { animation: none !important; transition: none !important; }
+  .uq-emblem path, .uq-emblem circle { animation: none; stroke-dashoffset: 0; }
+}
+
+
+/* ── Play › The Puzzle Room (SW v16): door plate, wordsearch, crossword, Arithmancy ── */
+.pz-head { position: relative; overflow: hidden; isolation: isolate; border-radius: 20px; padding: 22px 18px 18px; margin-bottom: 12px; background: var(--hp-chrome); color: var(--hp-on-chrome); box-shadow: var(--md-sys-elevation-2); }
+/* The door that appears in the wall: an arch drawn in the house metal, fading in */
+.pz-door { position: absolute; right: -14px; bottom: -20px; width: 150px; height: 190px; z-index: -1; border: 3px solid var(--hp-metal); border-bottom: 0; border-radius: 75px 75px 0 0; opacity: 0.22; animation: pzDoor 3.2s ease-out both; }
+.pz-door::before { content: ""; position: absolute; left: 50%; top: 26px; bottom: 0; width: 2px; background: var(--hp-metal); }
+.pz-door::after { content: ""; position: absolute; left: calc(50% + 12px); top: 52%; width: 9px; height: 9px; border-radius: 50%; background: var(--hp-metal); }
+@keyframes pzDoor { from { opacity: 0; transform: translateY(12px); } to { opacity: 0.22; transform: none; } }
+.pz-head-eyebrow { color: var(--hp-chrome-accent); margin-bottom: 6px; }
+.pz-head-title { font-family: var(--font-serif); font-size: 28px; font-weight: 700; line-height: 1.1; margin: 0 0 8px; color: var(--hp-on-chrome); }
+.pz-head-lead { font-family: var(--font-serif); font-size: 16px; font-style: italic; line-height: 1.45; color: var(--hp-chrome-muted); margin: 0 0 14px; max-width: 30em; }
+.pz-head-chip { background: transparent; border-color: var(--hp-chrome-accent); color: var(--hp-chrome-accent); }
+
+.pz-card { padding-bottom: 14px; }
+.pz-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.pz-chips .chip { cursor: pointer; }
+.pz-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pz-title .club-intro-title { margin: 0; }
+.pz-timer { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--md-sys-color-primary); font-variant-numeric: tabular-nums; }
+.pz-timer .material-symbols-rounded { font-size: 18px; }
+.pz-best { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--md-sys-color-on-surface-variant); margin-left: 4px; }
+.pz-blurb { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: var(--md-sys-color-on-surface-variant); margin: 8px 0 14px; }
+.pz-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.pz-actions .btn { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+.pz-clear { margin-left: auto; }
+.ws-status { min-height: 1.3em; margin: 10px 0 0; font-family: var(--font-sans); font-size: 14px; line-height: 1.4; text-align: center; color: var(--md-sys-color-on-surface-variant); }
+
+/* Wordsearch */
+.ws-grid { --cols: 11; position: relative; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); border-radius: 12px; padding: 4px; background: var(--md-sys-color-surface-container); border: 1.5px solid var(--md-sys-color-outline-variant); touch-action: none; -webkit-user-select: none; user-select: none; cursor: pointer; }
+.ws-cell { position: relative; z-index: 1; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: clamp(15px, 4.4vw, 22px); font-weight: 700; color: var(--md-sys-color-on-surface); border-radius: 50%; transition: color 0.3s, background 0.3s; }
+.ws-lines { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); z-index: 0; pointer-events: none; }
+.ws-lines line { stroke-linecap: round; stroke-width: 0.74; }
+.ws-found { stroke: var(--md-sys-color-primary); opacity: 0.28; }
+.ws-active { stroke: var(--hp-metal); opacity: 0.55; }
+.ws-miss { stroke: var(--md-sys-color-error); opacity: 0.35; }
+.ws-cell.is-secret { color: var(--hp-metal-on); background: var(--hp-metal); animation: wsSecret 0.5s ease both; }
+@keyframes wsSecret { 0% { transform: scale(0.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.ws-cell.is-hint { animation: wsHint 1.8s ease; }
+@keyframes wsHint { 0%, 100% { box-shadow: none; } 20%, 60% { box-shadow: 0 0 0 3px var(--hp-metal), 0 0 14px 2px var(--hp-metal); } }
+.ws-words { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.ws-words li { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px; border-radius: 12px; background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); border: 1px solid var(--md-sys-color-outline-variant); transition: background 0.2s, color 0.2s; }
+.ws-words li.is-found { background: transparent; color: var(--md-sys-color-on-surface-variant); text-decoration: line-through; text-decoration-color: var(--md-sys-color-primary); text-decoration-thickness: 2px; border-color: transparent; }
+.ws-secret { margin-top: 16px; padding: 12px 12px 10px; border-radius: 12px; border: 1.5px dashed var(--md-sys-color-outline-variant); text-align: center; }
+.ws-secret .eyebrow { margin-bottom: 8px; }
+.ws-slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; }
+.ws-slot-word { display: inline-flex; gap: 2px; }
+.ws-slot { width: 18px; height: 26px; display: inline-flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid var(--md-sys-color-outline); font-family: var(--font-serif); font-size: 18px; font-weight: 700; color: var(--md-sys-color-primary); line-height: 1; padding-bottom: 2px; }
+.ws-secret-note { font-family: var(--font-serif); font-size: 15px; font-style: italic; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 10px 0 0; }
+.ws-secret.is-open { border-style: solid; border-color: var(--hp-metal); background: var(--hp-metal-bg); }
+
+/* Crossword */
+.cw-grid { --cols: 12; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 8px; background: var(--md-sys-color-surface-container); }
+.cw-block { aspect-ratio: 1; }
+.cw-cell { position: relative; aspect-ratio: 1; padding: 0; border: 1.5px solid var(--md-sys-color-outline); border-radius: 3px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; }
+.cw-cell:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 1px; z-index: 2; }
+.cw-cell.is-key { background: var(--hp-metal-bg); border-color: var(--hp-metal); }
+.cw-cell.is-word { background: var(--md-sys-color-primary-container); }
+.cw-cell.is-key.is-word { background: var(--md-sys-color-primary-container); box-shadow: inset 0 0 0 2px var(--hp-metal); }
+.cw-cell.is-sel { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-primary); }
+.cw-cell.is-sel .cw-num, .cw-cell.is-sel .cw-key { color: var(--md-sys-color-on-primary); }
+.cw-num { position: absolute; left: 2px; top: 1px; font-family: var(--font-mono); font-size: clamp(7px, 2vw, 10px); font-weight: 600; line-height: 1; color: var(--md-sys-color-on-surface-variant); }
+.cw-key { position: absolute; right: 2px; bottom: 1px; font-family: var(--font-mono); font-size: clamp(7px, 2vw, 10px); font-weight: 700; line-height: 1; color: var(--md-sys-color-secondary); }
+.cw-letter { font-family: var(--font-serif); font-size: clamp(13px, 4vw, 20px); font-weight: 700; text-transform: uppercase; line-height: 1; }
+.cw-cell.is-wrong .cw-letter { color: var(--md-sys-color-error); text-decoration: line-through; }
+.cw-cell.is-sel.is-wrong .cw-letter { color: var(--md-sys-color-on-primary); }
+.cw-cell.is-revealed::after { content: ""; position: absolute; right: 0; top: 0; border-style: solid; border-width: 0 7px 7px 0; border-color: transparent var(--md-sys-color-secondary) transparent transparent; }
+.cw-cell.is-solved { border-color: var(--md-sys-color-primary); }
+.cw-cell.is-solved.is-key { background: var(--hp-metal); color: var(--hp-metal-on); }
+.cw-cell.is-solved.is-key .cw-key, .cw-cell.is-solved.is-key .cw-num { color: var(--hp-metal-on); }
+.cw-bar { display: flex; align-items: center; gap: 4px; margin: 10px 0 8px; padding: 4px; border-radius: 12px; background: var(--md-sys-color-primary-container); }
+.cw-bar .icon-btn { width: 44px; height: 44px; color: var(--md-sys-color-primary); background: transparent; border: 0; cursor: pointer; }
+.cw-bar-text { flex: 1; min-width: 0; text-align: center; font-family: var(--font-sans); font-size: 15px; line-height: 1.35; }
+.cw-bar-text b { display: block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--md-sys-color-primary); }
+.cw-kbd { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 6px; }
+.cw-kbd-row { display: flex; justify-content: center; gap: 4px; }
+.cw-key-btn { flex: 1 1 0; max-width: 44px; min-width: 0; height: 44px; padding: 0; border-radius: 8px; border: 1px solid var(--md-sys-color-outline-variant); background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); font-family: var(--font-mono); font-size: 15px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.cw-key-btn:active { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.cw-key-btn:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 1px; }
+.cw-key-back { flex: 1.5 1 0; max-width: 64px; }
+.cw-key-back .material-symbols-rounded { font-size: 20px; }
+.cw-pass { margin-top: 12px; padding: 12px; border-radius: 12px; text-align: center; border: 1.5px dashed var(--hp-metal); background: var(--hp-metal-bg-2); }
+.cw-pass .eyebrow { margin-bottom: 8px; }
+.cw-pass-slots { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
+.cw-pass-slot { position: relative; width: 30px; height: 36px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 20px; font-weight: 700; background: var(--md-sys-color-surface); border: 1.5px solid var(--hp-metal); color: var(--md-sys-color-on-surface); }
+.cw-pass-slot i { position: absolute; left: 3px; top: 1px; font-family: var(--font-mono); font-style: normal; font-size: 9px; font-weight: 600; color: var(--md-sys-color-secondary); }
+.cw-pass-note { font-family: var(--font-serif); font-size: 15px; font-style: italic; line-height: 1.45; color: var(--md-sys-color-on-surface-variant); margin: 10px 0 0; }
+.cw-pass.is-open { border-style: solid; background: var(--hp-metal-bg); }
+.cw-pass.is-open .cw-pass-slot { background: var(--hp-metal); color: var(--hp-metal-on); }
+.cw-pass.is-open .cw-pass-slot i { color: var(--hp-metal-on); }
+.cw-pass.is-open .cw-pass-note { color: var(--md-sys-color-on-surface); font-weight: 600; }
+.cw-pass.is-celebrate .cw-pass-slot { animation: cwSlot 0.6s ease both; }
+.cw-pass.is-celebrate .cw-pass-slot:nth-child(2) { animation-delay: 0.08s; } .cw-pass.is-celebrate .cw-pass-slot:nth-child(3) { animation-delay: 0.16s; }
+.cw-pass.is-celebrate .cw-pass-slot:nth-child(4) { animation-delay: 0.24s; } .cw-pass.is-celebrate .cw-pass-slot:nth-child(5) { animation-delay: 0.32s; }
+.cw-pass.is-celebrate .cw-pass-slot:nth-child(6) { animation-delay: 0.40s; } .cw-pass.is-celebrate .cw-pass-slot:nth-child(7) { animation-delay: 0.48s; }
+.cw-pass.is-celebrate .cw-pass-slot:nth-child(8) { animation-delay: 0.56s; }
+@keyframes cwSlot { 0% { transform: rotateY(90deg); } 100% { transform: none; } }
+.cw-clues { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 18px; margin-top: 16px; }
+@media (min-width: 560px) { .cw-clues { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.cw-clues-h { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--md-sys-color-primary); margin: 8px 0 6px; }
+.cw-clues-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.cw-clue { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 6px; width: 100%; min-height: 40px; padding: 7px 8px; border-radius: 8px; border: 0; background: transparent; text-align: left; cursor: pointer; font-family: var(--font-sans); font-size: 15px; line-height: 1.4; color: var(--md-sys-color-on-surface); -webkit-tap-highlight-color: transparent; }
+.cw-clue b { font-family: var(--font-mono); font-size: 13px; color: var(--md-sys-color-secondary); padding-top: 1px; }
+.cw-clue i { font-style: normal; color: var(--md-sys-color-on-surface-variant); font-size: 13px; }
+.cw-clue.is-on { background: var(--md-sys-color-primary-container); }
+.cw-clue:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 1px; }
+
+/* Arithmancy */
+.ar-meta { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.ar-lives { display: inline-flex; gap: 2px; }
+.ar-lives .material-symbols-rounded { font-size: 22px; color: var(--md-sys-color-primary); font-variation-settings: 'FILL' 1; transition: opacity 0.3s, transform 0.3s; }
+.ar-lives .material-symbols-rounded.is-spent { opacity: 0.25; transform: rotate(-20deg); font-variation-settings: 'FILL' 0; }
+.ar-meta-t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--md-sys-color-on-surface-variant); }
+.ar-chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ar-step { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--md-sys-color-surface-container); border: 1.5px solid transparent; }
+.ar-idx { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; background: var(--md-sys-color-surface); color: var(--md-sys-color-secondary); border: 1px solid var(--md-sys-color-outline-variant); }
+.ar-body { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ar-clue { font-family: var(--font-sans); font-size: 15px; line-height: 1.4; }
+.ar-fact { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em; color: var(--md-sys-color-secondary); }
+.ar-total { min-width: 44px; text-align: right; font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--md-sys-color-primary); font-variant-numeric: tabular-nums; }
+.ar-step.is-done .ar-idx { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); border-color: var(--md-sys-color-primary); }
+.ar-step.is-current { border-color: var(--md-sys-color-primary); background: var(--md-sys-color-surface); box-shadow: var(--md-sys-elevation-1); }
+.ar-step.is-future { opacity: 0.5; }
+.ar-step.is-future .ar-clue { filter: blur(3px); -webkit-user-select: none; user-select: none; }
+.ar-entry { min-width: 64px; height: 44px; padding: 0 10px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: flex-end; font-family: var(--font-serif); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--md-sys-color-primary-container); color: var(--md-sys-color-primary); border: 1.5px solid var(--md-sys-color-primary); }
+.ar-entry.is-wrong { border-color: var(--md-sys-color-error); animation: uqShake 0.4s; }
+.ar-pad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 320px; margin: 12px auto 0; }
+.ar-key { height: 52px; border-radius: 12px; border: 1px solid var(--md-sys-color-outline-variant); background: var(--md-sys-color-surface-container); color: var(--md-sys-color-on-surface); font-family: var(--font-serif); font-size: 24px; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; }
+.ar-key:active { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.ar-key:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
+.ar-key .material-symbols-rounded { font-size: 24px; }
+.ar-enter { background: var(--hp-house-2); color: var(--md-sys-color-on-primary); border-color: var(--hp-house); }
+.ar-result { margin-top: 12px; padding: 16px; border-radius: 12px; text-align: center; background: var(--hp-metal-bg); border: 1.5px solid var(--hp-metal); }
+.ar-result-n { font-family: var(--font-serif); font-size: 56px; font-weight: 700; line-height: 1.05; color: var(--md-sys-color-primary); }
+.ar-result p { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; margin: 6px 0 0; color: var(--md-sys-color-on-surface); }
+.ar-result.is-failed { background: var(--md-sys-color-surface-container); border-color: var(--md-sys-color-error); }
+.ar-result.is-failed .btn { margin-top: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-door, .ws-cell.is-secret, .ws-cell.is-hint, .cw-pass.is-celebrate .cw-pass-slot, .ar-entry.is-wrong { animation: none; }
+  .ws-cell.is-hint { box-shadow: 0 0 0 3px var(--hp-metal); }
+}
+
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -2388,6 +2680,77 @@ html[data-mono="1"] .spell-card--dark .spell-tick { background: #FFF; color: #00
 html[data-mono="1"] .spell-card--dark .spell-learn-btn { background: #000; color: #FFF; border-color: #FFF; }
 html[data-mono="1"] .spell-card--dark .spell-learn-btn[aria-pressed="true"] { background: #FFF; color: #000; }
 html[data-mono="1"] .drill-answer { border-color: #000; }
+html[data-mono="1"] .uq { background: #000; color: #FFF; box-shadow: none; border: 1px solid #000; }
+html[data-mono="1"] .uq-sky::after { display: none; }
+html[data-mono="1"] .uq-bar { background: #FFF; }
+html[data-mono="1"] .uq-crest-mark, html[data-mono="1"] .uq-eyebrow, html[data-mono="1"] .uq-title, html[data-mono="1"] .uq-sub, html[data-mono="1"] .uq-foot, html[data-mono="1"] .uq-taphint, html[data-mono="1"] .uq-startnote { color: #FFF; text-shadow: none; }
+html[data-mono="1"] .uq-cnd { background: #FFF; }
+html[data-mono="1"] .uq-cnd.is-lit::after { background: #FFF; box-shadow: 0 0 8px 2px #FFF; }
+html[data-mono="1"] .uq-cnd.is-out::after { background: linear-gradient(0deg, #FFF, transparent); }
+html[data-mono="1"] .uq-card { background: #FFF; color: #000; box-shadow: 0 0 0 2px #FFF; }
+html[data-mono="1"] .uq-card::before, html[data-mono="1"] .uq-card::after, html[data-mono="1"] .uq-corner { border-color: #000; }
+html[data-mono="1"] .uq-qnum, html[data-mono="1"] .uq-status, html[data-mono="1"] .uq-len-desc, html[data-mono="1"] .uq-len-n, html[data-mono="1"] .uq-score, html[data-mono="1"] .uq-score-of, html[data-mono="1"] .uq-verdict-sub { color: #000; }
+html[data-mono="1"] .uq-ln { background: #000; }
+html[data-mono="1"] .uq-face { background: #FFF; box-shadow: none; border: 3px solid #FFF; }
+html[data-mono="1"] .uq-seal::before { box-shadow: none; }
+html[data-mono="1"] .uq-seal-mark { color: #000; }
+html[data-mono="1"] .uq-glow { display: none; }
+html[data-mono="1"] .uq-len, html[data-mono="1"] .uq-opt { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .uq-letter { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .uq-best { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .uq-opt.is-right { background: #000; color: #FFF; border-color: #000; }
+html[data-mono="1"] .uq-opt.is-right .uq-letter { background: #FFF; color: #000; border-color: #FFF; }
+html[data-mono="1"] .uq-opt.is-wrong { background: #FFF; color: #000; border: 2px dashed #000; }
+html[data-mono="1"] .uq-opt.is-wrong .uq-letter { background: #FFF; color: #000; border: 2px dashed #000; }
+html[data-mono="1"] .uq-sheen { display: none; }
+html[data-mono="1"] .uq-spark { background: #FFF; box-shadow: 0 0 6px 2px #000; }
+html[data-mono="1"] .uq-emblem path, html[data-mono="1"] .uq-emblem circle { stroke: #000; }
+html[data-mono="1"] .pz-head { background: #000; color: #FFF; box-shadow: none; }
+html[data-mono="1"] .pz-door, html[data-mono="1"] .pz-door::before, html[data-mono="1"] .pz-door::after { border-color: #FFF; background-color: transparent; }
+html[data-mono="1"] .pz-door::before, html[data-mono="1"] .pz-door::after { background: #FFF; }
+html[data-mono="1"] .pz-head-eyebrow, html[data-mono="1"] .pz-head-title, html[data-mono="1"] .pz-head-lead { color: #FFF; }
+html[data-mono="1"] .pz-head-chip { background: #FFF; color: #000; border-color: #FFF; }
+html[data-mono="1"] .pz-timer, html[data-mono="1"] .pz-best, html[data-mono="1"] .pz-blurb, html[data-mono="1"] .ws-status, html[data-mono="1"] .ws-secret-note, html[data-mono="1"] .cw-pass-note, html[data-mono="1"] .ar-meta-t, html[data-mono="1"] .ar-fact, html[data-mono="1"] .ar-total, html[data-mono="1"] .cw-clue i, html[data-mono="1"] .cw-clue b, html[data-mono="1"] .cw-clues-h, html[data-mono="1"] .cw-bar-text b { color: #000; }
+html[data-mono="1"] .ws-grid { background: #FFF; border-color: #000; }
+html[data-mono="1"] .ws-cell { color: #000; }
+html[data-mono="1"] .ws-found { stroke: #000; opacity: 0.22; }
+html[data-mono="1"] .ws-active { stroke: #000; opacity: 0.45; }
+html[data-mono="1"] .ws-miss { stroke: #000; opacity: 0.15; stroke-dasharray: 0.2 0.2; }
+html[data-mono="1"] .ws-cell.is-secret { background: #000; color: #FFF; }
+html[data-mono="1"] .ws-cell.is-hint { animation: none; box-shadow: 0 0 0 3px #000; }
+html[data-mono="1"] .ws-words li { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .ws-words li.is-found { border-color: transparent; text-decoration-color: #000; }
+html[data-mono="1"] .ws-secret, html[data-mono="1"] .ws-secret.is-open { background: #FFF; border-color: #000; }
+html[data-mono="1"] .ws-slot { color: #000; border-color: #000; }
+html[data-mono="1"] .cw-grid { background: #000; }
+html[data-mono="1"] .cw-block { background: #000; }
+html[data-mono="1"] .cw-cell { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .cw-cell.is-key { background: #FFF; box-shadow: inset 0 0 0 3px #000; }
+html[data-mono="1"] .cw-cell.is-word { background: #FFF; box-shadow: inset 0 0 0 2px #000; }
+html[data-mono="1"] .cw-cell.is-sel, html[data-mono="1"] .cw-cell.is-solved.is-key { background: #000; color: #FFF; }
+html[data-mono="1"] .cw-num, html[data-mono="1"] .cw-key { color: #000; }
+html[data-mono="1"] .cw-cell.is-sel .cw-num, html[data-mono="1"] .cw-cell.is-sel .cw-key, html[data-mono="1"] .cw-cell.is-solved.is-key .cw-num, html[data-mono="1"] .cw-cell.is-solved.is-key .cw-key { color: #FFF; }
+html[data-mono="1"] .cw-cell.is-wrong .cw-letter { color: #000; }
+html[data-mono="1"] .cw-cell.is-revealed::after { border-color: transparent #000 transparent transparent; }
+html[data-mono="1"] .cw-bar { background: #FFF; border: 1.5px solid #000; }
+html[data-mono="1"] .cw-bar .icon-btn { color: #000; }
+html[data-mono="1"] .cw-key-btn, html[data-mono="1"] .ar-key { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .cw-key-btn:active, html[data-mono="1"] .ar-key:active, html[data-mono="1"] .ar-enter { background: #000; color: #FFF; }
+html[data-mono="1"] .cw-pass, html[data-mono="1"] .cw-pass.is-open { background: #FFF; border-color: #000; }
+html[data-mono="1"] .cw-pass-slot { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .cw-pass-slot i { color: #000; }
+html[data-mono="1"] .cw-pass.is-open .cw-pass-slot { background: #000; color: #FFF; }
+html[data-mono="1"] .cw-pass.is-open .cw-pass-slot i { color: #FFF; }
+html[data-mono="1"] .cw-clue.is-on { background: #000; color: #FFF; }
+html[data-mono="1"] .cw-clue.is-on b, html[data-mono="1"] .cw-clue.is-on i { color: #FFF; }
+html[data-mono="1"] .ar-lives .material-symbols-rounded { color: #000; }
+html[data-mono="1"] .ar-step { background: #FFF; border-color: #000; }
+html[data-mono="1"] .ar-step.is-current { border-width: 2px; box-shadow: none; }
+html[data-mono="1"] .ar-idx { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .ar-step.is-done .ar-idx { background: #000; color: #FFF; }
+html[data-mono="1"] .ar-entry { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .ar-result, html[data-mono="1"] .ar-result.is-failed { background: #FFF; border: 2px solid #000; }
+html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -2582,7 +2945,7 @@ html[data-mono="1"] .drill-answer { border-color: #000; }
       <div class="listen-head">
         <div class="eyebrow">Listen</div>
         <h2 class="display">Audiobooks</h2>
-        <p class="lead">Pick a book, then tap a chapter.</p>
+        <p class="lead">I solemnly swear that I am up to no good.</p>
       </div>
       <div class="book-picker" id="listenBooks" role="tablist" aria-label="Choose a book"></div>
       <div class="listen-player idle" id="listenNowPlaying">
@@ -2623,7 +2986,6 @@ html[data-mono="1"] .drill-answer { border-color: #000; }
         </div>
         <div class="listen-tracks" id="listenTracks" aria-label="Chapters"></div>
       </div>
-      <p class="listen-foot">The recordings stream from the club&rsquo;s own library online, so they need a connection. Your place in every chapter is kept on this device only.</p>
     </div>
   </section>
 
@@ -4295,8 +4657,7 @@ function selectClubTopic(id) {
 function renderClasses(panel) {
   var results = loadClubResults();
   var html = '<div class="club-intro"><div class="eyebrow">Hogwarts Curriculum</div><h3 class="club-intro-title">The First-Year Timetable</h3>' +
-    '<p>Every first-year takes the same eight subjects: Transfiguration, Charms, Potions, History of Magic, Defence Against the Dark Arts, Astronomy, Herbology and Flying. Open a class for the professor, the classroom and what is on the syllabus.</p>' +
-    '<p>Each one ends with a five-question O.W.L. Grades run from Outstanding to Troll, and your best result stays on the card.</p></div>' +
+    '<p>Every first-year takes the same eight subjects: Transfiguration, Charms, Potions, History of Magic, Defence Against the Dark Arts, Astronomy, Herbology and Flying. Open a class for the professor, the classroom and what is on the syllabus.</p></div>' +
     '<div class="class-list">' + CLASSES.map(function (c) {
       var r = results[c.id], g = r ? gradeFor(r.best, r.total) : null;
       return '<article class="class-card" id="class-' + c.id + '">' +
@@ -4312,8 +4673,7 @@ function renderClasses(panel) {
         '<div class="class-know"><b>Did you know</b>' + clubEsc(c.know) + '</div>' +
         '<div class="quiz" id="quiz-' + c.id + '"></div>' +
         '</div></article>';
-    }).join('') + '</div>' +
-    '<p class="club-foot">Facts checked against the Harry Potter Wiki (harrypotter.fandom.com); the words here are the club’s own. Your results are kept on this device only.</p>';
+    }).join('') + '</div>';
   panel.innerHTML = html;
   CLASSES.forEach(function (c) { renderQuiz(c.id); });
 }
@@ -4674,7 +5034,7 @@ function renderGuides(panel, keepScroll) {
       return '<button class="book-tile guide-book-tile" type="button" role="tab" data-book="' + n + '" aria-selected="' + (n === guideBook ? 'true' : 'false') + '" onclick="selectGuideBook(' + n + ')"><span class="book-tile-num">Book ' + n + '</span><span class="book-tile-title">' + clubEsc(guideBookTitle(n)) + '</span><span class="book-tile-meta">Chapters 1–5</span></button>';
     }).join('') + '</div>' +
     '<div class="club-intro guide-intro"><div class="eyebrow">' + clubEsc(age.name) + ' · ' + age.label + '</div><h3 class="club-intro-title">Harry Potter and the ' + clubEsc(guideBookTitle(guideBook)) + '</h3>' +
-    '<p>Three questions a chapter and one thing to try around the table. Tick a question once the group has talked it through; <em>Ask me one</em> picks from the ones you have not.</p></div>' +
+    '<p>It matters not what someone is born, but what they grow to be.</p></div>' +
     '<div class="class-list">' + chapters.map(function (ch) {
       var key = 'b' + guideBook + 'c' + ch.n, qs = guideQs(ch, guideAge) || [], open = _guideOpen === key;
       var done = qs.filter(function (_, i) { return marks[key + guideAge + i]; }).length;
@@ -4691,8 +5051,7 @@ function renderGuides(panel, keepScroll) {
         '<div class="class-know guide-spark"><b>Try this</b>' + clubEsc(ch.spark) + '</div>' +
         '<div class="quiz-actions guide-actions"><button class="btn btn-metal" type="button" onclick="askGuideOne(\'' + key + '\')">Ask me one <span class="material-symbols-rounded" aria-hidden="true">casino</span></button></div>' +
         '</div></article>';
-    }).join('') + '</div>' +
-    '<p class="club-foot">First pass: chapters 1–5 of each book. Question styles were informed by published reading-club guides; the questions here are the club’s own. Ticks are kept on this device only.</p>';
+    }).join('') + '</div>';
   panel.innerHTML = html;
   if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
 }
@@ -4775,7 +5134,6 @@ function renderNotes(panel, keepScroll) {
   }
   var html = '<div class="book-picker note-scope" role="tablist" aria-label="Choose where to write">' + tiles + '</div>';
   html += notesBook === 'all' ? renderNotesAll() : renderNotesBook(notesBook);
-  html += '<p class="club-foot">Notes save as you type and stay on this device only. Tap a written line to change it.</p>';
   panel.innerHTML = html;
   if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
   var picker = panel.querySelector('.note-scope'), tile = picker && picker.querySelector('.book-tile[aria-selected="true"]');
@@ -5230,7 +5588,9 @@ function initNotes() {
    hp_play-halfway { cur, rev: {n: stagesRevealed}, ans }; last game in hp-play-game. Plain ES2017. */
 
 var PLAY_GAMES = [
-  { id: 'halfway', num: 1, name: 'The Half-Way Quest', sub: 'Universal Surprise', icon: 'snitch', meta: '7 challenges + a puzzle', render: function (p) { renderHalfwayQuest(p); } }
+  { id: 'halfway', num: 1, name: 'The Half-Way Quest', sub: 'Universal Surprise', icon: 'snitch', meta: '7 challenges + a puzzle', render: function (p) { renderHalfwayQuest(p); } },
+  { id: 'quiz', num: 2, name: 'Ultimate Quiz', sub: 'Harry Potter Books', icon: 'quiz', meta: '25 questions · 4 trials', render: function (p) { renderUltimateQuiz(p); } },
+  { id: 'puzzles', num: 3, name: 'The Puzzle Room', sub: 'Room of Requirement', icon: 'extension', meta: 'Wordsearch · crossword · chains', render: function (p) { renderPuzzleRoom(p); } }
 ];
 var playGame = 'halfway';
 
@@ -5314,7 +5674,6 @@ function renderHalfwayQuest(panel, keepScroll) {
   var y = window.pageYOffset;
   var html = renderHwCover();
   if (hw.cur > 0) html += renderHwRail() + '<div id="hwStage">' + (hw.cur === 8 ? renderHwPuzzle() : renderHwChallenge(hw.cur)) + '</div>';
-  html += '<p class="club-foot">From the club’s half-way quest night, 2022. The clue videos play from the club’s Google Drive; your place in the quest is kept on this device.</p>';
   panel.innerHTML = html;
   if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
 }
@@ -5435,6 +5794,8 @@ function hwReset(n) {
 function initPlay() {
   if (!document.getElementById('playGames')) return;
   hwLoad();
+  if (typeof uqLoad === 'function') uqLoad();
+  if (typeof pzLoad === 'function') pzLoad();
   var stored = null; try { stored = localStorage.getItem('hp-play-game'); } catch (e) {}
   playGame = PLAY_GAMES.some(function (g) { return g.id === stored; }) ? stored : PLAY_GAMES[0].id;
   renderPlayGames();
@@ -5919,7 +6280,6 @@ function renderSpells(panel, keepScroll) {
   html += '<div class="spell-intro-row"><span class="chip">' + learned + ' of ' + list.length + ' learned</span>' +
     '<button class="btn btn-metal spell-drill-btn" type="button" onclick="openSpellDrill(\'' + cat.id + '\')"><span class="material-symbols-rounded" aria-hidden="true">style</span><span>Drill me</span></button></div></div>';
   html += '<div class="class-list spell-list">' + list.map(renderSpellCard).join('') + '</div>';
-  html += '<p class="club-foot">Incantations, pronunciations, colours and first appearances checked against the Harry Potter Wiki (harrypotter.fandom.com); the words here are the club’s own. What you have learned is kept on this device.</p>';
   panel.innerHTML = html;
   if (keepScroll) { try { window.scrollTo(0, y); } catch (e) {} }
 }
@@ -6040,6 +6400,702 @@ function initSpells() {
   var stored = null; try { stored = localStorage.getItem('hp-club-spell-cat'); } catch (e) {}
   spellCat = SPELL_CATS.some(function (c) { return c.id === stored; }) ? stored : 'def';
 }
+
+
+/* quiz.js — Play › Game 2: Harry Potter Books: Ultimate Quiz.
+   Ported from justinray7-droid.github.io/HP-Quiz-Public (single-page quiz, July 2026): the 25-question
+   bank, the four trial lengths, the break-the-seal start, the candle progress row, lock-on-tap answers,
+   the verdict ladder and the share line are that page's; the look is this app's (house chrome for the
+   Great Hall, parchment cards, Hallows seal in the house colour). Added here: options are shuffled on
+   every attempt (the source kept the answer in the same slot every time), and the best score per
+   trial length is kept. All 25 answers were checked against the novels on import.
+   Storage: hp_play-quiz { best: { "10": n, ... } }. Plain ES2017. */
+
+var UQ_BANK = [
+  { q: 'The Potters’ grave in Godric’s Hollow bears an inscription. Where is it drawn from?', o: ['A Ministry of Magic decree', 'A poem written by Dumbledore', 'The First Epistle to the Corinthians', 'The Tale of the Three Brothers'], a: 2 },
+  { q: 'What is the password to Dumbledore’s office for Harry’s first private lesson in Half-Blood Prince?', o: ['Sherbet Lemon', 'Cockroach Cluster', 'Acid Pops', 'Fizzing Whizzbee'], a: 2 },
+  { q: 'Who wrote A History of Magic, the textbook Harry consults about Godric’s Hollow?', o: ['Miranda Goshawk', 'Adalbert Waffling', 'Emeric Switch', 'Bathilda Bagshot'], a: 3 },
+  { q: 'What is Albus Dumbledore’s full name, in the correct order?', o: ['Albus Brian Wulfric Percival', 'Albus Percival Brian Wulfric', 'Albus Percival Wulfric Brian', 'Albus Wulfric Percival Brian'], a: 2 },
+  { q: 'In the books, what does Harry smell in the Amortentia potion?', o: ['Fresh grass, new parchment and perfume', 'Broom polish, parchment and spearmint', 'Treacle tart, a broom handle, and a flowery scent from the Burrow', 'Wood smoke, treacle and old books'], a: 2 },
+  { q: 'Which house-elf serves the Black family at Grimmauld Place?', o: ['Winky', 'Kreacher', 'Hokey', 'Dobby'], a: 1 },
+  { q: 'Snape refused N.E.W.T. Potions to anyone below which O.W.L. grade — the barrier to Harry’s Auror ambitions?', o: ['Exceeds Expectations', 'Acceptable', 'Poor', 'Outstanding'], a: 3 },
+  { q: 'What is the incantation Snape invented that Harry uses against Draco in the bathroom?', o: ['Langlock', 'Muffliato', 'Sectumsempra', 'Levicorpus'], a: 2 },
+  { q: 'What is the name of Bellatrix Lestrange’s husband?', o: ['Roland Lestrange', 'Rodolphus Lestrange', 'Rabastan Lestrange', 'Ranulf Lestrange'], a: 1 },
+  { q: 'In wizarding currency, how many Knuts make a single Sickle?', o: ['17', '29', '23', '13'], a: 1 },
+  { q: 'What does R.A.B., the initials in the fake locket’s note, stand for?', o: ['Regulus Alphard Black', 'Rodolphus Antares Black', 'Regulus Aquila Black', 'Regulus Arcturus Black'], a: 3 },
+  { q: 'Which Quidditch team does Ron Weasley support?', o: ['Ballycastle Bats', 'Wimbourne Wasps', 'Chudley Cannons', 'Puddlemere United'], a: 2 },
+  { q: 'In Half-Blood Prince, Tonks’s Patronus changes shape. What does it become?', o: ['A swan', 'A wolf', 'A hare', 'A jack russell terrier'], a: 1 },
+  { q: 'What is the name of Lord Voldemort’s mother?', o: ['Merope Gaunt', 'Morfin Gaunt', 'Cassandra Gaunt', 'Hepzibah Smith'], a: 0 },
+  { q: 'Along with Slytherin’s locket, what did Voldemort steal from Hepzibah Smith?', o: ['Ravenclaw’s diadem', 'Gryffindor’s sword', 'The Gaunt ring', 'Hufflepuff’s cup'], a: 3 },
+  { q: 'What are the names of Neville Longbottom’s parents?', o: ['Edgar and Alice', 'Frank and Amelia', 'Frank and Alice', 'Frank and Augusta'], a: 2 },
+  { q: 'What is the name of Aragog’s wife, who lives with him in the Forbidden Forest?', o: ['Ariana', 'Mosag', 'Arachne', 'Morag'], a: 1 },
+  { q: 'Where was Ravenclaw’s diadem hidden inside Hogwarts?', o: ['The Room of Requirement', 'The Chamber of Secrets', 'Beneath the Whomping Willow', 'The Astronomy Tower'], a: 0 },
+  { q: 'Reversed, the inscription on the Mirror of Erised reads:', o: ['I show not your face but your deepest fear', 'Your heart’s desire I show, and not your face', 'I show the desire of your heart, not your face', 'I show not your face but your heart’s desire'], a: 3 },
+  { q: 'Who is the Grey Lady, the ghost of Ravenclaw Tower, in life?', o: ['Helga Hufflepuff’s daughter', 'Myrtle Warren’s elder sister', 'Helena Ravenclaw, Rowena’s daughter', 'Rowena Ravenclaw herself'], a: 2 },
+  { q: 'In which Muggle village does the Riddle House stand?', o: ['Ottery St Catchpole', 'Little Hangleton', 'Great Hangleton', 'Little Whinging'], a: 1 },
+  { q: 'What does Dumbledore leave to Ron Weasley in his will?', o: ['The Deluminator', 'The first Snitch Harry caught', 'The Tales of Beedle the Bard', 'His pocket watch'], a: 0 },
+  { q: 'Who heads the Muggle-Born Registration Commission under Voldemort’s Ministry?', o: ['Pius Thicknesse', 'Corban Yaxley', 'Albert Runcorn', 'Dolores Umbridge'], a: 3 },
+  { q: 'How does Harry destroy the very first Horcrux he encounters?', o: ['The locket, with the sword of Gryffindor', 'The diary, with the sword of Gryffindor', 'The diary, with a basilisk fang', 'The ring, with the sword of Gryffindor'], a: 2 },
+  { q: 'What is Hermione Granger’s middle name, as given in Deathly Hallows?', o: ['Anne', 'Jean', 'Jane', 'Grace'], a: 1 }
+];
+var UQ_LENGTHS = [
+  { n: 10, lab: 'A Short Sitting', desc: 'The essentials. Over before your tea cools.' },
+  { n: 15, lab: 'The Standard Trial', desc: 'A fair measure of a careful reader.' },
+  { n: 20, lab: 'The Long Road', desc: 'Deeper cuts. Few finish this unscathed.' },
+  { n: 25, lab: 'The Full Trial', desc: 'Every question. For the truly devoted.' }
+];
+var UQ_KEY = 'hp_play-quiz';
+var UQ_LETTERS = ['A', 'B', 'C', 'D'];
+/* stage: 'seal' | 'length' | 'q' | 'result' — kept in memory so switching games and back resumes */
+var uq = { stage: 'seal', n: 0, qs: [], cur: 0, score: 0, results: [], picked: -1, best: {} };
+
+function uqLoad() { try { var v = JSON.parse(localStorage.getItem(UQ_KEY) || '{}'); uq.best = (v && v.best && typeof v.best === 'object') ? v.best : {}; } catch (e) { uq.best = {}; } }
+function uqSave() { try { localStorage.setItem(UQ_KEY, JSON.stringify({ best: uq.best })); } catch (e) {} }
+function uqVerdict(s, total) {
+  var p = s / total;
+  if (p === 1) return ['Order of Merlin, First Class', 'Not a page escaped you. Flawless recall of the canon.'];
+  if (p >= 0.8) return ['Prefect Material', 'A near-perfect memory. One or two slips, nothing more.'];
+  if (p >= 0.6) return ['O.W.L.s Passed', 'Solid knowledge — though a few chapters deserve revisiting.'];
+  if (p >= 0.4) return ['Acceptable', 'You know the films well. The books hold rather more than you’d think.'];
+  return ['Detention with Snape', 'Best crack those spines open again, dear reader.'];
+}
+function uqHallows(cls) { return '<svg class="' + cls + '" viewBox="0 0 100 100" aria-hidden="true"><use href="#hp-hallows"></use></svg>'; }
+
+function renderUltimateQuiz(panel) {
+  var html = '<article class="uq" id="uq"><div class="uq-sky" aria-hidden="true"></div>' +
+    '<header class="uq-head"><div class="uq-crest"><span class="uq-bar"></span>' + uqHallows('uq-crest-mark') + '<span class="uq-bar uq-bar--r"></span></div>' +
+    '<div class="eyebrow uq-eyebrow">Seven Novels · One Trial</div>' +
+    '<h3 class="uq-title">Harry Potter Books:<br>Ultimate Quiz</h3>' +
+    '<p class="uq-sub">Drawn from the pages themselves. The films will not save you.</p></header>' +
+    '<div class="uq-candles" id="uqCandles" aria-hidden="true"></div>' +
+    '<div class="uq-stage" id="uqStage"></div>' +
+    '<div class="uq-foot">Answers per the novels</div></article>';
+  panel.innerHTML = html;
+  uqRenderStage();
+}
+function uqRenderStage() {
+  var st = document.getElementById('uqStage'); if (!st) return;
+  uqCandles();
+  if (uq.stage === 'seal') st.innerHTML = uqSealHtml();
+  else if (uq.stage === 'length') st.innerHTML = uqLengthHtml();
+  else if (uq.stage === 'q') st.innerHTML = uqQuestionHtml();
+  else st.innerHTML = uqResultHtml();
+  if (uq.stage === 'result') uqCountUp();
+}
+function uqCard(inner) { return '<div class="uq-card"><span class="uq-corner uq-c-tl"></span><span class="uq-corner uq-c-tr"></span><span class="uq-corner uq-c-bl"></span><span class="uq-corner uq-c-br"></span><div class="uq-inner">' + inner + '</div></div>'; }
+
+function uqSealHtml() {
+  var face = '<span class="uq-face">' + uqHallows('uq-seal-mark') + '</span>';
+  return '<div class="uq-sealbox"><button class="uq-seal" id="uqSeal" type="button" onclick="uqBreakSeal()" aria-label="Break the seal to begin the quiz">' +
+    '<span class="uq-glow"></span><span class="uq-half uq-half--l">' + face + '</span><span class="uq-half uq-half--r">' + face + '</span></button>' +
+    '<p class="uq-taphint">Break the seal</p><p class="uq-startnote">One attempt per question. Your answer locks the moment you tap it.</p></div>';
+}
+function uqBreakSeal() {
+  var s = document.getElementById('uqSeal'); if (!s || s.classList.contains('is-broken')) return;
+  var r = s.getBoundingClientRect(); uqBurst(r.left + r.width / 2, r.top + r.height / 2, 22);
+  s.classList.add('is-broken');
+  var hint = document.querySelector('.uq-taphint'); if (hint) hint.style.opacity = '0';
+  setTimeout(function () { uq.stage = 'length'; uqRenderStage(); }, uqReduced() ? 0 : 700);
+}
+
+function uqLengthHtml() {
+  return uqCard('<div class="uq-qhead"><span class="uq-qnum">Choose your trial</span><span class="uq-ln"></span></div>' +
+    '<p class="uq-question">How many questions do you dare?</p><div class="uq-lengths">' + UQ_LENGTHS.map(function (L) {
+      var b = uq.best[L.n];
+      return '<button class="uq-len" type="button" onclick="uqBegin(' + L.n + ')"><span class="uq-len-n">' + L.n + '</span>' +
+        '<span class="uq-len-meta"><span class="uq-len-lab">' + clubEsc(L.lab) + '</span><span class="uq-len-desc">' + clubEsc(L.desc) + '</span></span>' +
+        (b != null ? '<span class="uq-best" title="Your best">' + b + '/' + L.n + '</span>' : '') + '</button>';
+    }).join('') + '</div>');
+}
+function uqShuffleOpts(item) {
+  var order = [0, 1, 2, 3];
+  for (var i = order.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = order[i]; order[i] = order[j]; order[j] = t; }
+  return { q: item.q, o: order.map(function (k) { return item.o[k]; }), a: order.indexOf(item.a) };
+}
+function uqBegin(n) {
+  uq.n = n; uq.qs = UQ_BANK.slice(0, n).map(uqShuffleOpts);
+  uq.cur = 0; uq.score = 0; uq.results = []; uq.picked = -1; uq.stage = 'q';
+  uqRenderStage(); uqScrollToStage();
+}
+
+function uqCandles() {
+  var host = document.getElementById('uqCandles'); if (!host) return;
+  if (uq.stage !== 'q' && uq.stage !== 'result') { host.innerHTML = ''; host.classList.remove('is-on'); return; }
+  host.classList.add('is-on');
+  host.classList.toggle('is-tight', uq.qs.length > 15);
+  host.innerHTML = uq.qs.map(function (_, i) {
+    var c = uq.results[i] === true ? ' is-lit' : uq.results[i] === false ? ' is-out' : (i === uq.cur && uq.stage === 'q' ? ' is-now' : '');
+    return '<span class="uq-cnd' + c + '"></span>';
+  }).join('');
+}
+function uqQuestionHtml() {
+  var item = uq.qs[uq.cur], locked = uq.picked >= 0, last = uq.cur === uq.qs.length - 1;
+  return uqCard('<div class="uq-qhead"><span class="uq-qnum">Question ' + (uq.cur + 1) + ' of ' + uq.qs.length + '</span><span class="uq-ln"></span></div>' +
+    '<p class="uq-question">' + clubEsc(item.q) + '</p><div class="uq-opts" role="group" aria-label="Answers">' + item.o.map(function (text, i) {
+      var cls = '';
+      if (locked) cls = i === item.a ? ' is-right' : (i === uq.picked ? ' is-wrong' : ' is-dim');
+      return '<button class="uq-opt' + cls + '" type="button"' + (locked ? ' disabled' : '') + ' onclick="uqChoose(' + i + ')"><span class="uq-letter">' + UQ_LETTERS[i] + '</span><span class="uq-txt">' + clubEsc(text) + '</span><span class="uq-sheen"></span></button>';
+    }).join('') + '</div>' +
+    '<button class="btn btn-house btn-block uq-next' + (locked ? ' is-shown' : '') + '" type="button" onclick="uqAdvance()"' + (locked ? '' : ' tabindex="-1" aria-hidden="true"') + '><span>' + (last ? 'Reveal your standing' : 'Next question') + '</span><span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></button>' +
+    '<p class="uq-status" role="status" aria-live="polite">' + (locked ? (uq.picked === item.a ? 'Correct.' : 'Not quite. The answer was ' + clubEsc(item.o[item.a]) + '.') : '') + '</p>');
+}
+function uqChoose(i) {
+  if (uq.stage !== 'q' || uq.picked >= 0) return;
+  var item = uq.qs[uq.cur], right = i === item.a;
+  uq.picked = i; uq.results[uq.cur] = right; if (right) uq.score++;
+  var st = document.getElementById('uqStage'); if (!st) return;
+  st.innerHTML = uqQuestionHtml(); uqCandles();
+  var opts = st.querySelectorAll('.uq-opt'), t = opts[item.a] && opts[item.a].getBoundingClientRect();
+  if (t) uqBurst(t.left + 34, t.top + t.height / 2, right ? 16 : 9);
+  if (navigator.vibrate) { try { navigator.vibrate(right ? 18 : [12, 40, 12]); } catch (e) {} }
+  var nx = st.querySelector('.uq-next'); if (nx) { try { nx.focus({ preventScroll: true }); } catch (e) {} }
+}
+function uqAdvance() {
+  if (uq.picked < 0) return;
+  if (uq.cur === uq.qs.length - 1) {
+    uq.stage = 'result';
+    var prev = uq.best[uq.n]; if (prev == null || uq.score > prev) { uq.best[uq.n] = uq.score; uqSave(); }
+  } else { uq.cur++; uq.picked = -1; }
+  uqRenderStage(); uqScrollToStage();
+}
+
+function uqResultHtml() {
+  var total = uq.qs.length, v = uqVerdict(uq.score, total), best = uq.best[uq.n];
+  var emblem = '<svg class="uq-emblem" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 18.42 L89.16 84.21 L10.84 84.21 Z"/><circle cx="50" cy="61.95" r="22.26"/><path d="M50 18.42 V84.21"/></svg>';
+  return uqCard('<div class="uq-result">' + emblem +
+    '<div class="uq-score"><span id="uqTally">' + (uqReduced() ? uq.score : 0) + '</span><span class="uq-score-of"> / ' + total + '</span></div>' +
+    '<p class="uq-verdict">' + clubEsc(v[0]) + '</p><p class="uq-verdict-sub">' + clubEsc(v[1]) + '</p>' +
+    (best != null ? '<div class="chip uq-best-chip">Best at ' + total + ': ' + best + '/' + total + '</div>' : '') +
+    '<div class="uq-btnrow"><button class="btn btn-house btn-block" type="button" onclick="uqShare(this)"><span class="share-btn-label">Share my standing</span><span class="material-symbols-rounded" aria-hidden="true">ios_share</span></button>' +
+    '<button class="btn btn-block" type="button" onclick="uqAnother()"><span>Choose another trial</span></button></div></div>');
+}
+function uqCountUp() {
+  var el = document.getElementById('uqTally'); if (!el || uqReduced() || uq.score === 0) { if (el) el.textContent = uq.score; }
+  else {
+    var v = 0, speed = Math.max(45, 420 / uq.qs.length);
+    var step = function () { if (v >= uq.score || !document.contains(el)) return; v++; el.textContent = v; setTimeout(step, speed); };
+    setTimeout(step, 450);
+  }
+  if (uq.score / uq.qs.length >= 0.8) setTimeout(function () {
+    var e = document.querySelector('.uq-emblem'); if (!e) return;
+    var r = e.getBoundingClientRect(); uqBurst(r.left + r.width / 2, r.top + r.height / 2, 30);
+  }, 900);
+}
+function uqAnother() { uq.stage = 'length'; uq.qs = []; uq.results = []; uqRenderStage(); uqScrollToStage(); }
+function uqShare(btn) {
+  var total = uq.qs.length, title = uqVerdict(uq.score, total)[0];
+  var url = location.origin + location.pathname;
+  var text = 'Harry Potter Books: Ultimate Quiz — I scored ' + uq.score + '/' + total + ' (' + title + '). Think you know the books better? ' + url;
+  if (typeof _shareOut === 'function') _shareOut('Harry Potter Books: Ultimate Quiz', text, btn);
+}
+
+function uqReduced() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+function uqBurst(cx, cy, count) {
+  if (uqReduced() || !Element.prototype.animate) return;
+  for (var i = 0; i < count; i++) {
+    var s = document.createElement('div'); s.className = 'uq-spark';
+    s.style.left = cx + 'px'; s.style.top = cy + 'px';
+    document.body.appendChild(s);
+    var ang = Math.random() * 6.284, dist = 28 + Math.random() * 72;
+    var anim = s.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+      { transform: 'translate(calc(-50% + ' + (Math.cos(ang) * dist) + 'px),calc(-50% + ' + (Math.sin(ang) * dist) + 'px)) scale(0)', opacity: 0 }],
+      { duration: 520 + Math.random() * 380, easing: 'cubic-bezier(.15,.7,.3,1)' });
+    anim.onfinish = (function (el) { return function () { el.remove(); }; })(s);
+  }
+}
+function uqScrollToStage() {
+  var el = document.getElementById('uqCandles'); if (!el) return;
+  var target = el.classList.contains('is-on') ? el : document.getElementById('uqStage');
+  var top = target.getBoundingClientRect().top + window.pageYOffset - (56 + 12);
+  if (target.getBoundingClientRect().top < 56 + 12 || target.getBoundingClientRect().top > window.innerHeight * 0.45) { try { window.scrollTo(0, Math.max(0, top)); } catch (e) {} }
+}
+
+
+/* @puzzles-data — generated by tools/puzzles.py (do not hand-edit; re-run and re-splice) */
+var PZ_DATA = {"ws":[{"id":"marauders","name":"Mischief Managed","blurb":"Twelve words from the Marauders’ world, hidden in every direction. Find them all and the parchment gives up its secret.","cols":11,"rows":11,"grid":["EMSWORMTAIL","DAGIPSOWLFE","ARNNMAINOLS","EAOYILDOSUW","MURELKTFGAR","SDPOTPEAOHA","GEWTRIMIAOM","ORUIPITOROT","HSNNNOGOOHO","DTPASSAGENS","STNEMHCRAPY"],"message":"I SOLEMNLY SWEAR THAT I AM UP TO NO GOOD","messageNote":"The words that wake the Map. Say them with your wand to the parchment.","words":[{"w":"ANIMAGUS","label":"Animagus","r":9,"c":3,"dr":-1,"dc":1},{"w":"FOOTPRINTS","label":"Footprints","r":1,"c":9,"dr":1,"dc":-1},{"w":"HOGSMEADE","label":"Hogsmeade","r":8,"c":0,"dr":-1,"dc":0},{"w":"MARAUDERS","label":"Marauders","r":0,"c":1,"dr":1,"dc":0},{"w":"MOONY","label":"Moony","r":6,"c":6,"dr":1,"dc":1},{"w":"PADFOOT","label":"Padfoot","r":1,"c":4,"dr":1,"dc":1},{"w":"PARCHMENT","label":"Parchment","r":10,"c":9,"dr":0,"dc":-1},{"w":"PASSAGE","label":"Passage","r":9,"c":2,"dr":0,"dc":1},{"w":"PRONGS","label":"Prongs","r":5,"c":2,"dr":-1,"dc":0},{"w":"SHRIEKING","label":"Shrieking","r":9,"c":10,"dr":-1,"dc":-1},{"w":"WILLOW","label":"Willow","r":1,"c":7,"dr":1,"dc":-1},{"w":"WORMTAIL","label":"Wormtail","r":0,"c":3,"dr":0,"dc":1}]},{"id":"honeydukes","name":"Honeydukes","blurb":"Twelve sweets from the shop in Hogsmeade. Clear the shelves and read what’s left over.","cols":11,"rows":11,"grid":["LCOCONUTICE","WLSPOPDICAS","JHITOFFEEDL","EEIUALASRBL","LTCZQEAOROA","LAWIZROAXNB","YGSAMBAIDBO","SUDULEEGMOC","LOBELECEUNO","UNSDOREISSH","GPMIREPPEPC"],"message":"ALAS EARWAX SAID DUMBLEDORE","messageNote":"His verdict on the first Every Flavour Bean he had risked in years.","words":[{"w":"ACIDPOPS","label":"Acid Pops","r":1,"c":9,"dr":0,"dc":-1},{"w":"BONBONS","label":"Bonbons","r":3,"c":9,"dr":1,"dc":0},{"w":"CHOCOBALLS","label":"Chocoballs","r":10,"c":10,"dr":-1,"dc":0},{"w":"COCONUTICE","label":"Coconut Ice","r":0,"c":1,"dr":0,"dc":1},{"w":"DROOBLES","label":"Droobles","r":2,"c":9,"dr":1,"dc":-1},{"w":"ICEMICE","label":"Ice Mice","r":9,"c":7,"dr":-1,"dc":-1},{"w":"JELLYSLUG","label":"Jelly Slug","r":2,"c":0,"dr":1,"dc":0},{"w":"NOUGAT","label":"Nougat","r":9,"c":1,"dr":-1,"dc":0},{"w":"PEPPERIMP","label":"Pepper Imp","r":10,"c":9,"dr":0,"dc":-1},{"w":"SUGARQUILL","label":"Sugar Quill","r":9,"c":9,"dr":-1,"dc":-1},{"w":"TOFFEE","label":"Toffee","r":2,"c":3,"dr":0,"dc":1},{"w":"WHIZZBEES","label":"Whizzbees","r":1,"c":0,"dr":1,"dc":1}]}],"cw":{"id":"stone","name":"The Philosopher’s Stone","blurb":"Every answer is from the first book. The numbered gold squares spell the password to Gryffindor Tower.","rows":12,"cols":12,"grid":["......CHESS.","P......A....","O.HEDWIG.Q..","T......R.U..","I..N...I.I..","OLLIVANDER.E","N..M..O..R.R","SCABBERS.E.I","...U..B..L.S","...S.NEVILLE","......R....D","GRINGOTTS..."],"password":"PIGSNOUT","passwordShow":"Pig snout","passwordNote":"The Fat Lady swings forward. You’re in.","key":[[1,0],[2,6],[11,0],[0,9],[9,5],[5,0],[3,9],[11,6]],"clues":[{"n":1,"d":"A","r":0,"c":6,"a":"CHESS","t":"Ron’s game, played life-size under the trapdoor"},{"n":4,"d":"A","r":2,"c":2,"a":"HEDWIG","t":"Snowy owl, a birthday present"},{"n":7,"d":"A","r":5,"c":0,"a":"OLLIVANDER","t":"Makers of fine wands since 382 B.C."},{"n":10,"d":"A","r":7,"c":0,"a":"SCABBERS","t":"Ron’s elderly rat"},{"n":11,"d":"A","r":9,"c":5,"a":"NEVILLE","t":"Earns the last ten points by standing up to his friends"},{"n":12,"d":"A","r":11,"c":0,"a":"GRINGOTTS","t":"The bank the goblins run"},{"n":2,"d":"D","r":0,"c":7,"a":"HAGRID","t":"Keeper of Keys and Grounds"},{"n":3,"d":"D","r":1,"c":0,"a":"POTIONS","t":"Snape’s subject, taught in a dungeon"},{"n":5,"d":"D","r":2,"c":9,"a":"QUIRRELL","t":"Stammering teacher in a purple turban"},{"n":6,"d":"D","r":4,"c":3,"a":"NIMBUS","t":"Harry’s first broom: a ___ Two Thousand"},{"n":8,"d":"D","r":5,"c":6,"a":"NORBERT","t":"Norwegian Ridgeback hatched on Hagrid’s table"},{"n":9,"d":"D","r":5,"c":11,"a":"ERISED","t":"The mirror of your deepest desire"}]},"ar":[{"id":"first","name":"First-year","blurb":"A warm-up from Professor Vector: facts you meet in the first book or two.","steps":[{"op":"start","n":7,"t":"Start with the number of Weasley children.","fact":"Bill, Charlie, Percy, Fred, George, Ron and Ginny","total":7},{"op":"+","n":9,"t":"Add the number of the platform the Hogwarts Express leaves from. Ignore the fraction.","fact":"Platform nine and three-quarters","total":16},{"op":"×","n":4,"t":"Multiply by the number of Hogwarts houses.","fact":"Gryffindor, Hufflepuff, Ravenclaw, Slytherin","total":64},{"op":"−","n":29,"t":"Subtract the number of Knuts in a Sickle.","fact":"Twenty-nine Knuts to the Sickle","total":35},{"op":"+","n":3,"t":"Add the number of heads on Fluffy.","fact":"Three heads, one very large dog","total":38},{"op":"÷","n":2,"t":"Divide by the number of Weasley twins.","fact":"Fred and George","total":19},{"op":"+","n":17,"t":"Add the number of Sickles in a Galleon.","fact":"Seventeen Sickles to the Galleon","total":36},{"op":"÷","n":3,"t":"Divide by the number of Chasers on a Quidditch team.","fact":"Three Chasers, two Beaters, a Keeper and a Seeker","total":12},{"op":"+","n":11,"t":"Add Harry’s age when Hagrid tells him he’s a wizard.","fact":"It was his eleventh birthday","total":23}]},{"id":"owl","name":"O.W.L.","blurb":"Bigger numbers and a vault or two. Keep a running total in your head, or on the back of a Chocolate Frog card.","steps":[{"op":"start","n":7,"t":"Start with the number of players on a Quidditch team.","fact":"Three Chasers, two Beaters, a Keeper, a Seeker","total":7},{"op":"×","n":4,"t":"Multiply by the number of balls in a Quidditch match.","fact":"The Quaffle, two Bludgers and the Snitch","total":28},{"op":"+","n":3,"t":"Add the number of Deathly Hallows.","fact":"The Elder Wand, the Resurrection Stone, the Cloak","total":31},{"op":"+","n":687,"t":"Add the number of Harry’s vault at Gringotts.","fact":"Vault six hundred and eighty-seven","total":718},{"op":"−","n":713,"t":"Subtract the number of the vault where the Philosopher’s Stone was hidden.","fact":"Vault seven hundred and thirteen","total":5},{"op":"×","n":17,"t":"Multiply by the age at which a witch or wizard comes of age.","fact":"Seventeen, when the Trace breaks","total":85},{"op":"+","n":4,"t":"Add Harry’s house number on Privet Drive.","fact":"Number four, Privet Drive","total":89},{"op":"−","n":3,"t":"Subtract the number of Unforgivable Curses.","fact":"Avada Kedavra, Crucio, Imperio","total":86},{"op":"÷","n":2,"t":"Divide by the number of Bludgers.","fact":"Two Bludgers, one for each side of the pitch","total":43}]},{"id":"newt","name":"N.E.W.T.","blurb":"For readers who finished all seven. Some of these take a moment’s thought.","steps":[{"op":"start","n":142,"t":"Start with the number of staircases at Hogwarts.","fact":"A hundred and forty-two","total":142},{"op":"−","n":2,"t":"Subtract the number of headmasters in the name of Harry’s second son.","fact":"Albus Severus","total":140},{"op":"÷","n":4,"t":"Divide by the number of Marauders who made the Map.","fact":"Moony, Wormtail, Padfoot and Prongs","total":35},{"op":"+","n":12,"t":"Add the number of uses of dragon’s blood Dumbledore discovered.","fact":"From his Chocolate Frog card","total":47},{"op":"×","n":3,"t":"Multiply by the number of Peverell brothers.","fact":"Antioch, Cadmus and Ignotus","total":141},{"op":"+","n":7,"t":"Add the price, in Galleons, of Harry’s first wand.","fact":"Seven gold Galleons at Ollivanders","total":148},{"op":"÷","n":4,"t":"Divide by the number of founders of Hogwarts.","fact":"Godric, Helga, Rowena and Salazar","total":37},{"op":"+","n":11,"t":"Add the length of Harry’s wand, in inches.","fact":"Eleven inches, holly and phoenix feather","total":48},{"op":"÷","n":6,"t":"Divide by the number of Weasley brothers.","fact":"Bill, Charlie, Percy, Fred, George and Ron","total":8}]}]};
+/* @/puzzles-data */
+
+
+/* puzzles.js — Play › Game 3: The Puzzle Room. Harry Potter Book Club.
+   Three original puzzle types, inspired by the formats in the Wizarding World puzzle collection
+   (themed wordsearches, themed crosswords, "Number Magic" running totals), each with a twist:
+     · Wordsearch — words run in all directions; when every word is found, the letters no word uses
+       light up in reading order and spell a line from the books.
+     · Crossword — a first-book criss-cross; the numbered gold squares spell a Gryffindor password,
+       filling in as you solve. Its own A–Z keyboard (no phone keyboard popping over the grid).
+     · Arithmancy — a running total: start from a canon number, apply one fact per step, three chances.
+   The puzzles themselves (PZ_DATA) are generated and validated by tools/puzzles.py. Progress, times
+   and best times are kept in hp_play-puzzles. Plain ES2017. */
+
+var PZ_KEY = 'hp_play-puzzles';
+var PZ_TABS = [
+  { id: 'ws', name: 'Wordsearch', count: function () { return PZ_DATA.ws.length; } },
+  { id: 'cw', name: 'Crossword', count: function () { return 1; } },
+  { id: 'ar', name: 'Arithmancy', count: function () { return PZ_DATA.ar.length; } }
+];
+var pz = { tab: 'ws', ws: 'marauders', ar: 'first', s: { ws: {}, cw: {}, ar: {} } };
+var _pzDrag = null, _pzTap = null, _pzCwSel = null, _pzTick = null, _pzTickN = 0, _pzArEntry = '', _pzClear = null;
+
+function pzLoad() {
+  try {
+    var v = JSON.parse(localStorage.getItem(PZ_KEY) || '{}');
+    if (v && typeof v === 'object') {
+      if (PZ_TABS.some(function (t) { return t.id === v.tab; })) pz.tab = v.tab;
+      if (PZ_DATA.ws.some(function (w) { return w.id === v.ws; })) pz.ws = v.ws;
+      if (PZ_DATA.ar.some(function (a) { return a.id === v.ar; })) pz.ar = v.ar;
+      if (v.s && typeof v.s === 'object') pz.s = { ws: v.s.ws || {}, cw: v.s.cw || {}, ar: v.s.ar || {} };
+    }
+  } catch (e) {}
+}
+function pzSave() { try { localStorage.setItem(PZ_KEY, JSON.stringify(pz)); } catch (e) {} }
+function pzFmt(ms) { var s = Math.floor((ms || 0) / 1000); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+function pzReduced() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+function pzWs(id) { var f = null; PZ_DATA.ws.forEach(function (w) { if (w.id === id) f = w; }); return f; }
+function pzAr(id) { var f = null; PZ_DATA.ar.forEach(function (a) { if (a.id === id) f = a; }); return f; }
+function pzState(kind, id) {
+  var bag = pz.s[kind];
+  if (!bag[id]) bag[id] = kind === 'ws' ? { found: [], spent: 0, done: false, best: null }
+    : kind === 'cw' ? { fill: '', reveals: 0, spent: 0, done: false, best: null }
+    : { step: 0, lives: 3, hints: [], spent: 0, done: false, failed: false, best: null };
+  return bag[id];
+}
+function pzSolvedCount() {
+  var n = 0;
+  PZ_DATA.ws.forEach(function (w) { if (pz.s.ws[w.id] && pz.s.ws[w.id].done) n++; });
+  if (pz.s.cw[PZ_DATA.cw.id] && pz.s.cw[PZ_DATA.cw.id].done) n++;
+  PZ_DATA.ar.forEach(function (a) { if (pz.s.ar[a.id] && pz.s.ar[a.id].done) n++; });
+  return n;
+}
+function pzTotal() { return PZ_DATA.ws.length + 1 + PZ_DATA.ar.length; }
+function pzFinish(st) {
+  st.done = true;
+  if (st.best == null || st.spent < st.best) st.best = st.spent;
+  pzSave();
+  var chip = document.getElementById('pzSolved'); if (chip) chip.textContent = pzSolvedCount() + ' of ' + pzTotal() + ' solved';
+}
+
+/* ── Timer: counts only while the puzzle is on screen, started, and unsolved ── */
+function pzTimerHtml(kind, id, st) {
+  return '<span class="pz-timer" data-kind="' + kind + '" data-id="' + id + '" aria-label="Time"><span class="material-symbols-rounded" aria-hidden="true">hourglass_bottom</span><span class="pz-timer-t">' + pzFmt(st.spent) + '</span>' +
+    (st.best != null ? '<span class="pz-best">best ' + pzFmt(st.best) + '</span>' : '') + '</span>';
+}
+function pzStartTicking() {
+  if (_pzTick) return;
+  _pzTick = setInterval(function () {
+    var el = document.querySelector('.pz-timer');
+    if (!el || !document.contains(el) || el.offsetParent === null || document.visibilityState !== 'visible') return;
+    var st = pz.s[el.getAttribute('data-kind')][el.getAttribute('data-id')];
+    if (!st || !st.started || st.done || st.failed) return;
+    st.spent += 1000;
+    var t = el.querySelector('.pz-timer-t'); if (t) t.textContent = pzFmt(st.spent);
+    if (++_pzTickN % 5 === 0) pzSave();
+  }, 1000);
+}
+function pzBegin(st) { if (!st.started) { st.started = true; pzSave(); } }
+
+/* ── Shell ─────────────────────────────────────────────────────────────── */
+function renderPuzzleRoom(panel) {
+  panel.innerHTML = '<article class="pz-head"><div class="pz-door" aria-hidden="true"></div>' +
+    '<div class="eyebrow pz-head-eyebrow">Game 3 · Room of Requirement</div><h3 class="pz-head-title">The Puzzle Room</h3>' +
+    '<p class="pz-head-lead">It appears when you need it most: a wordsearch with a secret, a crossword with a password, and chains of Arithmancy.</p>' +
+    '<span class="chip pz-head-chip" id="pzSolved">' + pzSolvedCount() + ' of ' + pzTotal() + ' solved</span></article>' +
+    '<div class="spell-cats pz-tabs" role="tablist" aria-label="Kind of puzzle">' + PZ_TABS.map(function (t) {
+      return '<button class="spell-cat" type="button" role="tab" data-tab="' + t.id + '" aria-selected="' + (t.id === pz.tab ? 'true' : 'false') + '" onclick="pzSelectTab(\'' + t.id + '\')"><span class="spell-cat-name">' + t.name + '</span><span class="spell-cat-count">' + t.count() + '</span></button>';
+    }).join('') + '</div><div id="pzBody"></div>';
+  pzRenderBody();
+  pzStartTicking();
+}
+function pzSelectTab(id) {
+  pz.tab = id; pzSave();
+  document.querySelectorAll('.pz-tabs .spell-cat').forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-tab') === id ? 'true' : 'false'); });
+  pzRenderBody();
+  var tabs = document.querySelector('.pz-tabs');
+  if (tabs) { var top = tabs.getBoundingClientRect().top + window.pageYOffset - (56 + 8); if (tabs.getBoundingClientRect().top < 56 + 8) { try { window.scrollTo(0, Math.max(0, top)); } catch (e) {} } }
+}
+function pzRenderBody() {
+  var body = document.getElementById('pzBody'); if (!body) return;
+  _pzTap = null; _pzDrag = null;
+  if (pz.tab === 'ws') body.innerHTML = pzWsHtml();
+  else if (pz.tab === 'cw') body.innerHTML = pzCwHtml();
+  else body.innerHTML = pzArHtml();
+  if (pz.tab === 'ws') pzWsWire();
+  if (pz.tab === 'cw') pzCwPaint();
+}
+function pzChips(list, cur, fn, kind) {
+  return '<div class="pz-chips" role="tablist">' + list.map(function (x) {
+    var st = pz.s[kind][x.id], done = st && st.done;
+    return '<button class="chip' + (x.id === cur ? ' active' : '') + '" type="button" role="tab" aria-selected="' + (x.id === cur ? 'true' : 'false') + '" onclick="' + fn + '(\'' + x.id + '\')">' + (done ? '<span class="material-symbols-rounded" aria-hidden="true">check</span>' : '') + clubEsc(x.name) + '</button>';
+  }).join('') + '</div>';
+}
+function pzClearBtn(kind) {
+  return '<button class="quest-reset pz-clear" type="button" onclick="pzClearAsk(this, \'' + kind + '\')">Start over</button>';
+}
+function pzClearAsk(btn, kind) {
+  if (btn.getAttribute('data-armed') === '1') {
+    clearTimeout(_pzClear);
+    if (kind === 'ws') delete pz.s.ws[pz.ws];
+    else if (kind === 'cw') delete pz.s.cw[PZ_DATA.cw.id];
+    else delete pz.s.ar[pz.ar];
+    pzSave(); pzRenderBody();
+    var chip = document.getElementById('pzSolved'); if (chip) chip.textContent = pzSolvedCount() + ' of ' + pzTotal() + ' solved';
+    return;
+  }
+  btn.setAttribute('data-armed', '1'); btn.textContent = 'Tap again to clear this puzzle';
+  clearTimeout(_pzClear);
+  _pzClear = setTimeout(function () { if (document.contains(btn)) { btn.removeAttribute('data-armed'); btn.textContent = 'Start over'; } }, 3000);
+}
+
+/* ── Wordsearch ────────────────────────────────────────────────────────── */
+function pzSelectWs(id) { pz.ws = id; pzSave(); pzRenderBody(); }
+function pzWsCells(w) { var out = []; for (var i = 0; i < w.w.length; i++) out.push((w.r + w.dr * i) + ',' + (w.c + w.dc * i)); return out; }
+function pzWsSecretCells(ws) {
+  var used = {};
+  ws.words.forEach(function (w) { pzWsCells(w).forEach(function (k) { used[k] = 1; }); });
+  var out = [];
+  for (var r = 0; r < ws.rows; r++) for (var c = 0; c < ws.cols; c++) if (!used[r + ',' + c]) out.push([r, c]);
+  return out;
+}
+function pzWsHtml() {
+  var ws = pzWs(pz.ws), st = pzState('ws', ws.id), found = {};
+  st.found.forEach(function (w) { found[w] = 1; });
+  var secret = {}; if (st.done) pzWsSecretCells(ws).forEach(function (rc) { secret[rc[0] + ',' + rc[1]] = 1; });
+  var cells = '';
+  for (var r = 0; r < ws.rows; r++) for (var c = 0; c < ws.cols; c++) {
+    cells += '<span class="ws-cell' + (secret[r + ',' + c] ? ' is-secret' : '') + '" data-r="' + r + '" data-c="' + c + '">' + ws.grid[r][c] + '</span>';
+  }
+  var slots = '', k = 0, letters = ws.message.replace(/ /g, '');
+  ws.message.split(' ').forEach(function (word) {
+    slots += '<span class="ws-slot-word">' + word.split('').map(function () { var ch = letters[k++]; return '<span class="ws-slot">' + (st.done ? ch : '') + '</span>'; }).join('') + '</span>';
+  });
+  return '<div class="club-intro pz-card">' + pzChips(PZ_DATA.ws, ws.id, 'pzSelectWs', 'ws') +
+    '<div class="pz-title"><h3 class="club-intro-title">' + clubEsc(ws.name) + '</h3>' + pzTimerHtml('ws', ws.id, st) + '</div>' +
+    '<p class="pz-blurb">' + clubEsc(ws.blurb) + '</p>' +
+    '<div class="ws-grid" id="wsGrid" style="--cols:' + ws.cols + ';--rows:' + ws.rows + '" role="application" aria-label="Wordsearch grid, ' + ws.cols + ' by ' + ws.rows + '">' +
+    '<svg class="ws-lines" id="wsLines" viewBox="0 0 ' + ws.cols + ' ' + ws.rows + '" preserveAspectRatio="none" aria-hidden="true"></svg>' + cells + '</div>' +
+    '<p class="ws-status" id="wsStatus" role="status" aria-live="polite">' + (st.done ? 'Every word found in ' + pzFmt(st.spent) + '.' : 'Drag across a word, or tap its first letter and then its last.') + '</p>' +
+    '<ul class="ws-words" id="wsWords">' + ws.words.map(function (w) { return '<li class="' + (found[w.w] ? 'is-found' : '') + '" data-w="' + w.w + '">' + clubEsc(w.label) + '</li>'; }).join('') + '</ul>' +
+    '<div class="ws-secret' + (st.done ? ' is-open' : '') + '" id="wsSecret"><div class="eyebrow">The hidden line</div><div class="ws-slots" aria-label="' + (st.done ? clubEsc(ws.message) : 'Hidden until every word is found') + '">' + slots + '</div>' +
+    '<p class="ws-secret-note">' + (st.done ? clubEsc(ws.messageNote) : 'The letters no word uses spell it out, left to right, top to bottom.') + '</p></div>' +
+    '<div class="pz-actions">' + (st.done ? '' : '<button class="btn btn-metal" type="button" onclick="pzWsHint()"><span class="material-symbols-rounded" aria-hidden="true">lightbulb</span><span>Hint</span></button>') + pzClearBtn('ws') + '</div></div>';
+}
+function pzWsWire() {
+  var grid = document.getElementById('wsGrid'); if (!grid) return;
+  pzWsDrawLines();
+  grid.addEventListener('pointerdown', pzWsDown);
+  grid.addEventListener('pointermove', pzWsMove);
+  grid.addEventListener('pointerup', pzWsUp);
+  grid.addEventListener('pointercancel', function () { _pzDrag = null; pzWsDrawLines(); });
+}
+function pzWsCellAt(e) {
+  var ws = pzWs(pz.ws), grid = document.getElementById('wsGrid'), rc = grid.getBoundingClientRect();
+  var c = Math.floor((e.clientX - rc.left) / rc.width * ws.cols), r = Math.floor((e.clientY - rc.top) / rc.height * ws.rows);
+  return { r: Math.max(0, Math.min(ws.rows - 1, r)), c: Math.max(0, Math.min(ws.cols - 1, c)) };
+}
+function pzWsSnap(a, b) {
+  var ws = pzWs(pz.ws), dr = b.r - a.r, dc = b.c - a.c;
+  if (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc)) return b;
+  var step = Math.round(Math.atan2(dr, dc) / (Math.PI / 4)), ur = Math.round(Math.sin(step * Math.PI / 4)), uc = Math.round(Math.cos(step * Math.PI / 4));
+  var len = Math.max(Math.abs(dr), Math.abs(dc));
+  while (len > 0 && (a.r + ur * len < 0 || a.r + ur * len >= ws.rows || a.c + uc * len < 0 || a.c + uc * len >= ws.cols)) len--;
+  return { r: a.r + ur * len, c: a.c + uc * len };
+}
+function pzWsDown(e) {
+  var st = pzState('ws', pz.ws); if (st.done) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  e.preventDefault();
+  var cell = pzWsCellAt(e);
+  _pzDrag = { a: cell, b: cell, id: e.pointerId };
+  try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {}
+  pzBegin(st); pzWsDrawLines();
+}
+function pzWsMove(e) {
+  if (!_pzDrag || e.pointerId !== _pzDrag.id) return;
+  var b = pzWsSnap(_pzDrag.a, pzWsCellAt(e));
+  if (b.r !== _pzDrag.b.r || b.c !== _pzDrag.b.c) { _pzDrag.b = b; pzWsDrawLines(); }
+}
+function pzWsUp(e) {
+  if (!_pzDrag || e.pointerId !== _pzDrag.id) return;
+  var a = _pzDrag.a, b = _pzDrag.b; _pzDrag = null;
+  if (a.r === b.r && a.c === b.c) {                                   // a tap: first letter, then last
+    if (_pzTap && !(_pzTap.r === a.r && _pzTap.c === a.c)) { var s = _pzTap; _pzTap = null; pzWsTry(s, pzWsSnap(s, a)); }
+    else { _pzTap = (_pzTap && _pzTap.r === a.r && _pzTap.c === a.c) ? null : a; pzWsDrawLines(); pzWsSay(_pzTap ? 'Now tap the last letter.' : 'Drag across a word, or tap its first letter and then its last.'); }
+    return;
+  }
+  _pzTap = null; pzWsTry(a, b);
+}
+function pzWsSay(t) { var el = document.getElementById('wsStatus'); if (el) el.textContent = t; }
+function pzWsTry(a, b) {
+  var ws = pzWs(pz.ws), st = pzState('ws', ws.id), hit = null;
+  ws.words.forEach(function (w) {
+    if (st.found.indexOf(w.w) !== -1) return;
+    var er = w.r + w.dr * (w.w.length - 1), ec = w.c + w.dc * (w.w.length - 1);
+    if ((a.r === w.r && a.c === w.c && b.r === er && b.c === ec) || (b.r === w.r && b.c === w.c && a.r === er && a.c === ec)) hit = w;
+  });
+  if (!hit) { pzWsDrawLines(a, b); setTimeout(function () { pzWsDrawLines(); }, 450); pzWsSay('Not one on the list. Keep looking.'); return; }
+  st.found.push(hit.w); pzSave();
+  var li = document.querySelector('#wsWords li[data-w="' + hit.w + '"]'); if (li) li.classList.add('is-found');
+  pzWsDrawLines();
+  if (st.found.length === ws.words.length) pzWsSolved(ws, st);
+  else pzWsSay('Found ' + hit.label + '. ' + st.found.length + ' of ' + ws.words.length + '.');
+}
+function pzWsDrawLines(badA, badB) {
+  var ws = pzWs(pz.ws), st = pzState('ws', ws.id), svg = document.getElementById('wsLines'); if (!svg) return;
+  var line = function (a, b, cls) { return '<line class="' + cls + '" x1="' + (a.c + 0.5) + '" y1="' + (a.r + 0.5) + '" x2="' + (b.c + 0.5) + '" y2="' + (b.r + 0.5) + '"/>'; };
+  var h = '';
+  ws.words.forEach(function (w) { if (st.found.indexOf(w.w) !== -1) h += line({ r: w.r, c: w.c }, { r: w.r + w.dr * (w.w.length - 1), c: w.c + w.dc * (w.w.length - 1) }, 'ws-found'); });
+  if (_pzDrag) h += line(_pzDrag.a, _pzDrag.b, 'ws-active');
+  if (_pzTap) h += line(_pzTap, _pzTap, 'ws-active');
+  if (badA) h += line(badA, badB, 'ws-miss');
+  svg.innerHTML = h;
+}
+function pzWsSolved(ws, st) {
+  pzFinish(st);
+  var cells = pzWsSecretCells(ws), letters = ws.message.replace(/ /g, ''), slots = document.querySelectorAll('#wsSecret .ws-slot'), delay = pzReduced() ? 0 : 90;
+  pzWsSay('Every word found in ' + pzFmt(st.spent) + '. Watch the leftover letters…');
+  cells.forEach(function (rc, i) {
+    setTimeout(function () {
+      var el = document.querySelector('#wsGrid .ws-cell[data-r="' + rc[0] + '"][data-c="' + rc[1] + '"]'); if (el) el.classList.add('is-secret');
+      if (slots[i]) slots[i].textContent = letters[i];
+      if (i === cells.length - 1) {
+        var box = document.getElementById('wsSecret'); if (box) { box.classList.add('is-open'); var n = box.querySelector('.ws-secret-note'); if (n) n.textContent = ws.messageNote; }
+        var acts = document.querySelector('.pz-card .pz-actions .btn'); if (acts) acts.remove();
+        var t = document.querySelector('.pz-timer .pz-timer-t'); if (t) t.textContent = pzFmt(st.spent);
+      }
+    }, delay * i);
+  });
+}
+function pzWsHint() {
+  var ws = pzWs(pz.ws), st = pzState('ws', ws.id), left = ws.words.filter(function (w) { return st.found.indexOf(w.w) === -1; });
+  if (!left.length) return;
+  pzBegin(st);
+  var w = left[Math.floor(Math.random() * left.length)];
+  var el = document.querySelector('#wsGrid .ws-cell[data-r="' + w.r + '"][data-c="' + w.c + '"]'); if (!el) return;
+  el.classList.remove('is-hint'); void el.offsetWidth; el.classList.add('is-hint');
+  setTimeout(function () { el.classList.remove('is-hint'); }, 1800);
+  pzWsSay(w.label + ' starts on the glowing letter.');
+}
+
+/* ── Crossword ─────────────────────────────────────────────────────────── */
+function pzCw() { return PZ_DATA.cw; }
+function pzCwIsCell(i) { var cw = pzCw(); return cw.grid[Math.floor(i / cw.cols)][i % cw.cols] !== '.'; }
+function pzCwAnswer(i) { var cw = pzCw(); return cw.grid[Math.floor(i / cw.cols)][i % cw.cols]; }
+function pzCwFill(st) {
+  var cw = pzCw(), n = cw.rows * cw.cols;
+  if (!st.fill || st.fill.length !== n) { var f = ''; for (var i = 0; i < n; i++) f += pzCwIsCell(i) ? ' ' : '.'; st.fill = f; }
+  return st.fill;
+}
+function pzCwClueCells(cl) { var cw = pzCw(), out = []; for (var k = 0; k < cl.a.length; k++) out.push(cl.d === 'A' ? cl.r * cw.cols + cl.c + k : (cl.r + k) * cw.cols + cl.c); return out; }
+function pzCwClueAt(i, d) { var f = null; pzCw().clues.forEach(function (cl) { if (cl.d === d && pzCwClueCells(cl).indexOf(i) !== -1) f = cl; }); return f; }
+function pzCwKeyIndex(i) { var cw = pzCw(), k = -1; cw.key.forEach(function (rc, j) { if (rc[0] * cw.cols + rc[1] === i) k = j; }); return k; }
+function pzCwHtml() {
+  var cw = pzCw(), st = pzState('cw', cw.id), fill = pzCwFill(st), nums = {};
+  cw.clues.forEach(function (cl) { nums[cl.r * cw.cols + cl.c] = cl.n; });
+  if (!_pzCwSel) _pzCwSel = { i: cw.clues[0].r * cw.cols + cw.clues[0].c, d: cw.clues[0].d };
+  var cells = '';
+  for (var i = 0; i < cw.rows * cw.cols; i++) {
+    if (!pzCwIsCell(i)) { cells += '<span class="cw-block" aria-hidden="true"></span>'; continue; }
+    var k = pzCwKeyIndex(i);
+    cells += '<button class="cw-cell' + (k >= 0 ? ' is-key' : '') + '" type="button" data-i="' + i + '" onclick="pzCwTap(' + i + ')" aria-label="Row ' + (Math.floor(i / cw.cols) + 1) + ', column ' + (i % cw.cols + 1) + (k >= 0 ? ', password letter ' + (k + 1) : '') + '">' +
+      (nums[i] ? '<span class="cw-num">' + nums[i] + '</span>' : '') + (k >= 0 ? '<span class="cw-key">' + (k + 1) + '</span>' : '') + '<span class="cw-letter">' + (fill[i] === ' ' ? '' : fill[i]) + '</span></button>';
+  }
+  var kb = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map(function (row, ri) {
+    return '<div class="cw-kbd-row">' + row.split('').map(function (ch) { return '<button class="cw-key-btn" type="button" onclick="pzCwKey(\'' + ch + '\')">' + ch + '</button>'; }).join('') +
+      (ri === 2 ? '<button class="cw-key-btn cw-key-back" type="button" onclick="pzCwKey(\'⌫\')" aria-label="Delete"><span class="material-symbols-rounded" aria-hidden="true">backspace</span></button>' : '') + '</div>';
+  }).join('');
+  var list = function (d, title) {
+    return '<div><h4 class="cw-clues-h">' + title + '</h4><ol class="cw-clues-list">' + cw.clues.filter(function (cl) { return cl.d === d; }).map(function (cl) {
+      return '<li><button type="button" class="cw-clue" data-n="' + cl.n + '" data-d="' + cl.d + '" onclick="pzCwPick(' + cl.n + ',\'' + cl.d + '\')"><b>' + cl.n + '</b><span>' + clubEsc(cl.t) + ' <i>(' + cl.a.length + ')</i></span></button></li>';
+    }).join('') + '</ol></div>';
+  };
+  return '<div class="club-intro pz-card">' +
+    '<div class="pz-title"><h3 class="club-intro-title">' + clubEsc(cw.name) + '</h3>' + pzTimerHtml('cw', cw.id, st) + '</div>' +
+    '<p class="pz-blurb">' + clubEsc(cw.blurb) + '</p>' +
+    '<div class="cw-grid" id="cwGrid" style="--cols:' + cw.cols + ';--rows:' + cw.rows + '">' + cells + '</div>' +
+    '<div class="cw-bar"><button class="icon-btn" type="button" onclick="pzCwStep(-1)" aria-label="Previous clue"><span class="material-symbols-rounded" aria-hidden="true">chevron_left</span></button>' +
+    '<div class="cw-bar-text" aria-live="polite"><b id="cwBarNum"></b><span id="cwBarClue"></span></div>' +
+    '<button class="icon-btn" type="button" onclick="pzCwStep(1)" aria-label="Next clue"><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button></div>' +
+    (st.done ? '' : '<div class="cw-kbd" aria-label="Letters">' + kb + '</div>') +
+    '<div class="cw-pass' + (st.done ? ' is-open' : '') + '" id="cwPass"><div class="eyebrow">The password</div><div class="cw-pass-slots" id="cwPassSlots"></div><p class="cw-pass-note" id="cwPassNote">' + (st.done ? clubEsc(cw.passwordShow) + '. ' + clubEsc(cw.passwordNote) : 'The gold squares, in number order, spell it out as you solve.') + '</p></div>' +
+    '<p class="ws-status" id="cwStatus" role="status" aria-live="polite">' + (st.done ? 'Solved in ' + pzFmt(st.spent) + (st.reveals ? ', with ' + st.reveals + ' letter' + (st.reveals === 1 ? '' : 's') + ' revealed' : '') + '.' : '') + '</p>' +
+    '<div class="pz-actions">' + (st.done ? '' : '<button class="btn btn-metal" type="button" onclick="pzCwCheck()"><span class="material-symbols-rounded" aria-hidden="true">spellcheck</span><span>Check</span></button>' +
+    '<button class="btn" type="button" onclick="pzCwReveal()"><span class="material-symbols-rounded" aria-hidden="true">visibility</span><span>Reveal letter</span></button>') + pzClearBtn('cw') + '</div>' +
+    '<div class="cw-clues">' + list('A', 'Across') + list('D', 'Down') + '</div></div>';
+}
+function pzCwPaint() {
+  var cw = pzCw(), st = pzState('cw', cw.id), fill = pzCwFill(st), sel = _pzCwSel;
+  var cl = pzCwClueAt(sel.i, sel.d) || pzCwClueAt(sel.i, sel.d === 'A' ? 'D' : 'A'); if (!cl) return;
+  sel.d = cl.d;
+  var word = pzCwClueCells(cl);
+  document.querySelectorAll('#cwGrid .cw-cell').forEach(function (b) {
+    var i = +b.getAttribute('data-i');
+    b.classList.toggle('is-word', word.indexOf(i) !== -1);
+    b.classList.toggle('is-sel', i === sel.i);
+    b.classList.toggle('is-solved', !!st.done);
+    var L = b.querySelector('.cw-letter'); if (L) L.textContent = fill[i] === ' ' ? '' : fill[i];
+  });
+  var num = document.getElementById('cwBarNum'), txt = document.getElementById('cwBarClue');
+  if (num) num.textContent = cl.n + ' ' + (cl.d === 'A' ? 'Across' : 'Down');
+  if (txt) txt.textContent = cl.t + ' (' + cl.a.length + ')';
+  document.querySelectorAll('.cw-clue').forEach(function (b) { b.classList.toggle('is-on', +b.getAttribute('data-n') === cl.n && b.getAttribute('data-d') === cl.d); });
+  var slots = document.getElementById('cwPassSlots');
+  if (slots) slots.innerHTML = cw.key.map(function (rc, j) { var ch = fill[rc[0] * cw.cols + rc[1]]; return '<span class="cw-pass-slot"><i>' + (j + 1) + '</i>' + (ch === ' ' ? '' : ch) + '</span>'; }).join('');
+}
+function pzCwTap(i) {
+  var st = pzState('cw', pzCw().id); if (st.done) { _pzCwSel.i = i; pzCwPaint(); return; }
+  if (_pzCwSel && _pzCwSel.i === i) { var other = _pzCwSel.d === 'A' ? 'D' : 'A'; if (pzCwClueAt(i, other)) _pzCwSel.d = other; }
+  else { _pzCwSel.i = i; if (!pzCwClueAt(i, _pzCwSel.d)) _pzCwSel.d = _pzCwSel.d === 'A' ? 'D' : 'A'; }
+  pzBegin(st); pzCwPaint();
+}
+function pzCwPick(n, d) {
+  var cl = null; pzCw().clues.forEach(function (x) { if (x.n === n && x.d === d) cl = x; }); if (!cl) return;
+  var st = pzState('cw', pzCw().id), fill = pzCwFill(st), cells = pzCwClueCells(cl), first = cells[0];
+  for (var k = 0; k < cells.length; k++) if (fill[cells[k]] === ' ') { first = cells[k]; break; }
+  _pzCwSel = { i: first, d: d }; pzCwPaint();
+  var grid = document.getElementById('cwGrid');
+  if (grid && grid.getBoundingClientRect().top < 56) { try { window.scrollTo(0, Math.max(0, grid.getBoundingClientRect().top + window.pageYOffset - (56 + 12))); } catch (e) {} }
+}
+function pzCwStep(dir) {
+  var cw = pzCw(), cl = pzCwClueAt(_pzCwSel.i, _pzCwSel.d), idx = cw.clues.indexOf(cl);
+  var next = cw.clues[(idx + dir + cw.clues.length) % cw.clues.length];
+  pzCwPick(next.n, next.d);
+}
+function pzCwSet(st, i, ch) { st.fill = st.fill.slice(0, i) + ch + st.fill.slice(i + 1); }
+function pzCwKey(ch) {
+  var cw = pzCw(), st = pzState('cw', cw.id); if (st.done) return;
+  pzCwFill(st); pzBegin(st);
+  var cl = pzCwClueAt(_pzCwSel.i, _pzCwSel.d); if (!cl) return;
+  var cells = pzCwClueCells(cl), pos = cells.indexOf(_pzCwSel.i);
+  var cell = document.querySelector('#cwGrid .cw-cell[data-i="' + _pzCwSel.i + '"]'); if (cell) cell.classList.remove('is-wrong');
+  if (ch === '⌫') {
+    if (st.fill[_pzCwSel.i] !== ' ') pzCwSet(st, _pzCwSel.i, ' ');
+    else if (pos > 0) { _pzCwSel.i = cells[pos - 1]; pzCwSet(st, _pzCwSel.i, ' '); var c2 = document.querySelector('#cwGrid .cw-cell[data-i="' + _pzCwSel.i + '"]'); if (c2) c2.classList.remove('is-wrong', 'is-revealed'); }
+  } else {
+    pzCwSet(st, _pzCwSel.i, ch);
+    if (cell) cell.classList.remove('is-revealed');
+    if (pos < cells.length - 1) _pzCwSel.i = cells[pos + 1];
+  }
+  pzSave(); pzCwPaint(); pzCwDoneCheck();
+}
+function pzCwCheck() {
+  var cw = pzCw(), st = pzState('cw', cw.id), fill = pzCwFill(st), wrong = 0, blank = 0;
+  pzBegin(st);
+  document.querySelectorAll('#cwGrid .cw-cell').forEach(function (b) {
+    var i = +b.getAttribute('data-i');
+    if (fill[i] === ' ') { blank++; return; }
+    var bad = fill[i] !== pzCwAnswer(i); b.classList.toggle('is-wrong', bad); if (bad) wrong++;
+  });
+  var s = document.getElementById('cwStatus');
+  if (s) s.textContent = wrong ? (wrong + ' letter' + (wrong === 1 ? ' is' : 's are') + ' wrong, marked in red.') : (blank ? 'Everything so far is right. ' + blank + ' square' + (blank === 1 ? '' : 's') + ' to go.' : '');
+}
+function pzCwReveal() {
+  var cw = pzCw(), st = pzState('cw', cw.id); if (st.done) return;
+  pzCwFill(st); pzBegin(st);
+  var i = _pzCwSel.i; if (st.fill[i] === pzCwAnswer(i)) return;
+  pzCwSet(st, i, pzCwAnswer(i)); st.reveals = (st.reveals || 0) + 1; pzSave();
+  var cell = document.querySelector('#cwGrid .cw-cell[data-i="' + i + '"]'); if (cell) { cell.classList.remove('is-wrong'); cell.classList.add('is-revealed'); }
+  pzCwPaint(); pzCwDoneCheck();
+}
+function pzCwDoneCheck() {
+  var cw = pzCw(), st = pzState('cw', cw.id), fill = pzCwFill(st);
+  for (var i = 0; i < fill.length; i++) if (pzCwIsCell(i) && fill[i] !== pzCwAnswer(i)) return;
+  pzFinish(st);
+  var body = document.getElementById('pzBody'); if (!body) return;
+  body.innerHTML = pzCwHtml(); pzCwPaint();
+  var pass = document.getElementById('cwPass'); if (pass) { pass.classList.add('is-celebrate'); try { window.scrollTo(0, Math.max(0, pass.getBoundingClientRect().top + window.pageYOffset - window.innerHeight / 3)); } catch (e) {} }
+}
+
+/* ── Arithmancy ────────────────────────────────────────────────────────── */
+function pzSelectAr(id) { pz.ar = id; _pzArEntry = ''; pzSave(); pzRenderBody(); }
+function pzArHtml() {
+  var ch = pzAr(pz.ar), st = pzState('ar', ch.id), steps = ch.steps;
+  var lives = '<span class="ar-lives" aria-label="' + st.lives + ' chances left">' + [0, 1, 2].map(function (k) { return '<span class="material-symbols-rounded' + (k < st.lives ? '' : ' is-spent') + '" aria-hidden="true">science</span>'; }).join('') + '</span>';
+  var rows = steps.map(function (s, i) {
+    var hinted = st.hints.indexOf(i) !== -1;
+    if (i < st.step || (st.done && i <= st.step)) {
+      return '<li class="ar-step is-done"><span class="ar-idx">' + (i + 1) + '</span><span class="ar-body"><span class="ar-clue">' + clubEsc(s.t) + '</span><span class="ar-fact">' + clubEsc(s.fact) + ' · ' + (s.op === 'start' ? s.n : s.op + ' ' + s.n) + '</span></span><span class="ar-total">' + s.total + '</span></li>';
+    }
+    if (i === st.step && !st.done) {
+      return '<li class="ar-step is-current"><span class="ar-idx">' + (i + 1) + '</span><span class="ar-body"><span class="ar-clue">' + clubEsc(s.t) + '</span>' +
+        (hinted ? '<span class="ar-fact">' + clubEsc(s.fact) + ': ' + s.n + '</span>' : '') + '</span><span class="ar-entry" id="arEntry" aria-live="polite">' + (_pzArEntry || '?') + '</span></li>';
+    }
+    return '<li class="ar-step is-future"><span class="ar-idx">' + (i + 1) + '</span><span class="ar-body"><span class="ar-clue">' + clubEsc(s.t) + '</span></span><span class="ar-total"></span></li>';
+  }).join('');
+  var end = '';
+  if (st.done) end = '<div class="ar-result"><div class="eyebrow">Chain complete</div><div class="ar-result-n">' + steps[steps.length - 1].total + '</div><p>' + (st.lives === 3 ? 'Not a slip. Professor Vector would award full marks.' : 'Solved with ' + st.lives + ' of 3 chances left.') + ' Time ' + pzFmt(st.spent) + '.</p></div>';
+  else if (st.failed) end = '<div class="ar-result is-failed"><div class="eyebrow">Out of chances</div><p>Three wrong totals. The chain resets from the start.</p><button class="btn btn-house" type="button" onclick="pzArRetry()"><span class="material-symbols-rounded" aria-hidden="true">replay</span><span>Try again</span></button></div>';
+  var pad = (st.done || st.failed) ? '' : '<div class="ar-pad" role="group" aria-label="Number pad">' + ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓'].map(function (k) {
+    var cls = k === '✓' ? ' ar-enter' : k === '⌫' ? ' ar-back' : '';
+    var lab = k === '✓' ? '<span class="material-symbols-rounded" aria-hidden="true">check</span>' : k === '⌫' ? '<span class="material-symbols-rounded" aria-hidden="true">backspace</span>' : k;
+    return '<button class="ar-key' + cls + '" type="button" onclick="pzArKey(\'' + k + '\')" aria-label="' + (k === '✓' ? 'Enter' : k === '⌫' ? 'Delete' : k) + '">' + lab + '</button>';
+  }).join('') + '</div>';
+  return '<div class="club-intro pz-card">' + pzChips(PZ_DATA.ar, ch.id, 'pzSelectAr', 'ar') +
+    '<div class="pz-title"><h3 class="club-intro-title">' + clubEsc(ch.name) + ' chain</h3>' + pzTimerHtml('ar', ch.id, st) + '</div>' +
+    '<div class="ar-meta">' + lives + '<span class="ar-meta-t">Keep a running total. Enter it after every step.</span></div>' +
+    '<p class="pz-blurb">' + clubEsc(ch.blurb) + '</p><ol class="ar-chain">' + rows + '</ol>' +
+    '<p class="ws-status" id="arStatus" role="status" aria-live="polite"></p>' + end + pad +
+    '<div class="pz-actions">' + ((st.done || st.failed) ? '' : '<button class="btn btn-metal" type="button" onclick="pzArHint()"><span class="material-symbols-rounded" aria-hidden="true">lightbulb</span><span>Hint</span></button>') + pzClearBtn('ar') + '</div></div>';
+}
+function pzArKey(k) {
+  var ch = pzAr(pz.ar), st = pzState('ar', ch.id); if (st.done || st.failed) return;
+  pzBegin(st);
+  if (k === '⌫') _pzArEntry = _pzArEntry.slice(0, -1);
+  else if (k === '✓') { pzArEnter(); return; }
+  else if (_pzArEntry.length < 6) _pzArEntry += k;
+  var e = document.getElementById('arEntry'); if (e) { e.textContent = _pzArEntry || '?'; e.classList.remove('is-wrong'); }
+}
+function pzArEnter() {
+  var ch = pzAr(pz.ar), st = pzState('ar', ch.id), s = ch.steps[st.step]; if (!_pzArEntry) return;
+  var val = parseInt(_pzArEntry, 10);
+  if (val === s.total) {
+    _pzArEntry = ''; st.step++;
+    if (st.step >= ch.steps.length) { st.step = ch.steps.length - 1; pzFinish(st); }
+    pzSave(); pzRenderBody();
+    var cur = document.querySelector('.ar-step.is-current') || document.querySelector('.ar-result');
+    if (cur && (cur.getBoundingClientRect().bottom > window.innerHeight - 260 || cur.getBoundingClientRect().top < 64)) { try { window.scrollTo(0, Math.max(0, cur.getBoundingClientRect().top + window.pageYOffset - 140)); } catch (e) {} }
+    var status = document.getElementById('arStatus'); if (status && !st.done) status.textContent = 'Right: ' + s.total + '. On to step ' + (st.step + 1) + '.';
+    return;
+  }
+  st.lives--; _pzArEntry = '';
+  if (st.lives <= 0) { st.failed = true; pzSave(); pzRenderBody(); return; }
+  pzSave();
+  var e = document.getElementById('arEntry'); if (e) { e.textContent = '?'; e.classList.remove('is-wrong'); void e.offsetWidth; e.classList.add('is-wrong'); }
+  var lv = document.querySelectorAll('.ar-lives .material-symbols-rounded'); lv.forEach(function (x, k) { x.classList.toggle('is-spent', k >= st.lives); });
+  var box = document.querySelector('.ar-lives'); if (box) box.setAttribute('aria-label', st.lives + ' chances left');
+  var status = document.getElementById('arStatus'); if (status) status.textContent = 'Not ' + val + '. ' + st.lives + (st.lives === 1 ? ' chance' : ' chances') + ' left.';
+}
+function pzArHint() {
+  var ch = pzAr(pz.ar), st = pzState('ar', ch.id); if (st.done || st.failed) return;
+  pzBegin(st);
+  if (st.hints.indexOf(st.step) === -1) { st.hints.push(st.step); pzSave(); }
+  pzRenderBody();
+}
+function pzArRetry() { delete pz.s.ar[pz.ar]; _pzArEntry = ''; pzSave(); pzRenderBody(); }
+
+/* ── A physical keyboard drives the crossword and the number pad ─────────── */
+document.addEventListener('keydown', function (e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  var t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+  if ((typeof notesModalIsOpen === 'function' && notesModalIsOpen()) || (typeof isSheetOpen === 'function' && isSheetOpen()) || (typeof housePageIsOpen === 'function' && housePageIsOpen())) return;
+  var cwGrid = document.getElementById('cwGrid'), arPad = document.querySelector('.ar-pad');
+  if (cwGrid && cwGrid.offsetParent !== null && _pzCwSel) {
+    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); pzCwKey(e.key.toUpperCase()); }
+    else if (e.key === 'Backspace') { e.preventDefault(); pzCwKey('⌫'); }
+    else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); pzCwStep(e.shiftKey ? -1 : 1); }
+    else if (/^Arrow/.test(e.key)) {
+      e.preventDefault();
+      var cw = pzCw(), i = _pzCwSel.i, r = Math.floor(i / cw.cols), c = i % cw.cols, dr = 0, dc = 0;
+      if (e.key === 'ArrowUp') dr = -1; else if (e.key === 'ArrowDown') dr = 1; else if (e.key === 'ArrowLeft') dc = -1; else dc = 1;
+      for (var k = 1; k < Math.max(cw.rows, cw.cols); k++) {
+        var rr = r + dr * k, cc = c + dc * k; if (rr < 0 || cc < 0 || rr >= cw.rows || cc >= cw.cols) break;
+        var j = rr * cw.cols + cc; if (pzCwIsCell(j)) { _pzCwSel = { i: j, d: dc ? 'A' : 'D' }; if (!pzCwClueAt(j, _pzCwSel.d)) _pzCwSel.d = dc ? 'D' : 'A'; pzCwPaint(); break; }
+      }
+    }
+  } else if (arPad && arPad.offsetParent !== null) {
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); pzArKey(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); pzArKey('⌫'); }
+    else if (e.key === 'Enter') { e.preventDefault(); pzArKey('✓'); }
+  }
+});
 </script>
 </body>
 </html>
