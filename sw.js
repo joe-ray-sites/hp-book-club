@@ -6,7 +6,9 @@
 // 'hp-' are deleted: every joe-ray-sites app is served from this ONE origin, so
 // a sibling app's caches must be left alone. Bump CACHE on every change (both
 // copies: root sw.js and publish/sw.js must stay byte-identical).
-const CACHE = 'hp-v16';
+// The Download-the-App screenshots (assets/install/) are deliberately NOT
+// precached: they load lazily when that page is opened, then runtime-cache.
+const CACHE = 'hp-v18';
 const PRECACHE = [
   "./",
   "index.html",

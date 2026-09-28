@@ -2381,6 +2381,138 @@ html.house-page-open body { overflow: hidden; }
 }
 
 
+/* ── DOWNLOAD THE APP — install walkthrough ─────────────────────────────
+   Lifted from reference publish/index.html: .inst-img / .inst-note /
+   .inst-install-btn / .home-install (L3392–3405) and the step type it borrows,
+   .pbs-step / .pbs-head / .pbs-num / .pbs-q (L1138–1153), renamed .inst-*.
+   The overlay itself reuses the house page's mechanics (.house-overlay /
+   .house-app-bar / .house-inner), so it wears the house chrome and inherits
+   that page's reduced-motion and Colorblind rules; only the scroll body, the
+   scroll lock and the step type are new here.
+   Adaptations: tokens only; font stacks → var(--font-*); the reference's gold
+   step number → --md-sys-color-secondary (the house metal, text-grade); the
+   step question in the serif, house colour; .cta-btn → .btn.btn-house; paragraph
+   type at 16px (the app's reading floor); a leading icon never nudges on hover
+   (the shell's .btn nudges a trailing arrow). */
+html.install-page-open,
+html.install-page-open body { overflow: hidden; }
+#install-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  padding: 28px 16px calc(72px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 600px) {
+  #install-body { padding-left: 22px; padding-right: 22px; }
+}
+.install-inner { max-width: 620px; }
+.inst-native { margin: 0 0 4px; }
+.inst-install-btn { margin: 0 0 12px; }
+.inst-install-btn:hover .material-symbols-rounded,
+.home-install .btn:hover .material-symbols-rounded { transform: none; }
+.inst-step { margin-top: 36px; padding-top: 18px; border-top: 2px solid var(--md-sys-color-on-surface); }
+.inst-native + .inst-step { margin-top: 28px; }
+.inst-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.inst-num {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
+  color: var(--md-sys-color-secondary);
+}
+.inst-q {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 19px; line-height: 1.4;
+  color: var(--md-sys-color-primary);
+}
+.inst-p {
+  font-family: var(--font-sans);
+  font-size: 16px; line-height: 1.6;
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 60ch;
+  margin: 0;
+}
+.inst-p strong { color: var(--md-sys-color-on-surface); font-weight: 600; }
+.inst-img {
+  display: block; width: 100%; max-width: 380px; height: auto; margin: 14px auto 0;
+  border-radius: 14px; border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-variant);
+  box-shadow: var(--md-sys-elevation-1);
+}
+.inst-note {
+  margin: 36px 0 0; padding: 12px 14px; border-radius: 10px;
+  background: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-sans);
+  font-size: 14px; line-height: 1.55;
+}
+.inst-note strong { color: var(--md-sys-color-on-surface); font-weight: 600; }
+/* bottom 36px (the reference's value): clears the raised centre Listen disc, which rises 20px above the nav */
+.home-install { display: flex; justify-content: center; padding: 24px 16px 36px; }
+
+/* ── Read › J.K. Rowling Originals — 94 story links, A–Z, with a title filter ──
+   Rows follow .book-row (hairline separators, serif title, trailing glyph) with an
+   open_in_new glyph: every row leaves the app for the story's own page. A long card
+   does not lift on tap/hover like the short cards do (the whole list jumped). */
+.jkr-card { margin-top: 16px; }
+.card.jkr-card:active { transform: none; box-shadow: var(--md-sys-elevation-1); }
+@media (hover: hover) { .card.jkr-card:hover { transform: none; box-shadow: var(--md-sys-elevation-1); } }
+.jkr-card .display { margin-bottom: 4px; }
+.jkr-card .lead { margin-bottom: 16px; }
+.jkr-find { position: relative; display: block; }
+.jkr-find .material-symbols-rounded {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 20px; color: var(--md-sys-color-on-surface-variant); pointer-events: none;
+}
+.jkr-search {
+  display: block; width: 100%; box-sizing: border-box; min-height: 44px;
+  padding: 10px 14px 10px 40px; border-radius: 22px;
+  border: 1.5px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-background); color: var(--md-sys-color-on-surface);
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.4;
+  -webkit-appearance: none; appearance: none;
+}
+.jkr-search::-webkit-search-decoration { -webkit-appearance: none; }
+.jkr-search::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.8; }
+.jkr-search:focus { outline: 2px solid var(--md-sys-color-primary); outline-offset: -1px; border-color: transparent; }
+.jkr-count {
+  margin-top: 12px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.jkr-list { display: flex; flex-direction: column; }
+.jkr-letter {
+  padding: 18px 18px 6px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.2em;
+  color: var(--md-sys-color-secondary);
+}
+.jkr-row {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 50px; padding: 10px 14px 10px 18px;
+  text-decoration: none;
+  color: var(--md-sys-color-on-surface);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+}
+.jkr-row:active { background: var(--md-sys-color-surface-container); }
+@media (hover: hover) { .jkr-row:hover { background: var(--md-sys-color-surface-container); } }
+.jkr-row:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: -3px; border-radius: 10px; }
+.jkr-title {
+  flex: 1; min-width: 0;
+  font-family: var(--font-serif); font-size: 17px; line-height: 1.3; font-weight: 500;
+}
+.jkr-row .material-symbols-rounded { font-size: 18px; color: var(--md-sys-color-on-surface-variant); flex-shrink: 0; }
+.jkr-empty {
+  margin: 0; padding: 16px 18px 20px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-family: var(--font-sans); font-size: 15px; line-height: 1.5;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.jkr-group[hidden], .jkr-row[hidden], .jkr-empty[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .jkr-row { transition: none; } }
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -2751,6 +2883,11 @@ html[data-mono="1"] .ar-step.is-done .ar-idx { background: #000; color: #FFF; }
 html[data-mono="1"] .ar-entry { background: #FFF; color: #000; border-color: #000; }
 html[data-mono="1"] .ar-result, html[data-mono="1"] .ar-result.is-failed { background: #FFF; border: 2px solid #000; }
 html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000; }
+html[data-mono="1"] .inst-img { box-shadow: none; }
+html[data-mono="1"] .inst-note { border: 1px solid #000; }
+html[data-mono="1"] .jkr-search { background: #FFF; color: #000; border-color: #000; }
+html[data-mono="1"] .jkr-row:active,
+html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 0 0 0 1px #000; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -2818,13 +2955,16 @@ html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000
   </span>
 </header>
 
-<!-- ── Header menu: Theme (opens the full-page house picker) + Colorblind Mode ── -->
+<!-- ── Header menu: Theme (opens the full-page house picker) + Colorblind Mode + Download the App ── -->
 <div class="header-menu" id="headerMenu" role="menu" aria-label="App menu">
   <button class="header-menu-item" id="themeMenuItem" type="button" role="menuitem" onclick="openHousePage()">
     <span class="material-symbols-rounded" aria-hidden="true">palette</span><span class="header-menu-label">Theme · Gryffindor</span>
   </button>
   <button class="header-menu-item" id="monoMenuItem" type="button" role="menuitem" onclick="toggleMono()">
     <span class="material-symbols-rounded" aria-hidden="true">contrast</span><span class="header-menu-label">Colorblind Mode</span>
+  </button>
+  <button class="header-menu-item" id="installMenuItem" type="button" role="menuitem" onclick="openInstall()">
+    <span class="material-symbols-rounded" aria-hidden="true">install_mobile</span><span class="header-menu-label">Download the App</span>
   </button>
 </div>
 
@@ -2890,6 +3030,11 @@ html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000
         </div>
       </div>
     </div>
+    <div class="home-install" id="homeInstallBtn">
+      <button class="btn btn-house" type="button" onclick="openInstall()">
+        <span class="material-symbols-rounded" aria-hidden="true">install_mobile</span>Download the App
+      </button>
+    </div>
   </section>
 
   <!-- ── CLUB ── -->
@@ -2922,6 +3067,22 @@ html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000
           <button class="book-row" type="button" data-title="Half-Blood Prince"><span class="book-num">6</span><span class="book-title">Half-Blood Prince</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
           <button class="book-row" type="button" data-title="Deathly Hallows"><span class="book-num">7</span><span class="book-title">Deathly Hallows</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
         </div>
+      </div>
+      <!-- ── J.K. Rowling Originals: every story from harrypotter.com/writing-by-jk-rowling, each linked to
+           its own page (JKR_ORIGINALS, generated by tools/jkr-originals.py). Rows render A–Z in initOriginals. ── -->
+      <div class="card jkr-card">
+        <div class="card-body">
+          <div class="eyebrow">From HarryPotter.com</div>
+          <h2 class="display">J.K. Rowling Originals</h2>
+          <p class="lead">Explore the inner workings of the wizarding world with a collection of writing from J.K. Rowling.</p>
+          <label class="jkr-find">
+            <span class="material-symbols-rounded" aria-hidden="true">search</span>
+            <input class="jkr-search" id="jkrSearch" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Find a story" aria-label="Find a story" aria-controls="jkrList">
+          </label>
+          <div class="jkr-count" id="jkrCount" aria-live="polite"></div>
+          <span id="jkrExt" hidden>Opens on HarryPotter.com in a new tab</span>
+        </div>
+        <div class="jkr-list" id="jkrList"></div>
       </div>
     </div>
   </section>
@@ -3159,6 +3320,56 @@ html[data-mono="1"] .ar-result-n, html[data-mono="1"] .ar-result p { color: #000
 
 <p class="house-outro">Your choice is kept on this device only. Colorblind Mode, in the same menu, overrides every house with pure black and white.</p>
 
+    </div>
+  </div>
+</div>
+
+<!-- ── Download the App (ref #install-overlay, publish/index.html L16018–16063) ──
+     Installing the PWA. iOS has no install API (a page cannot press Safari's
+     Share button or drive its sheet), so iOS gets a walkthrough with the
+     owner's own screenshots (assets/install/, NOT precached; data-src → src on
+     first open, then loading="lazy" — see openInstall); Chromium
+     browsers get the real one-tap prompt via beforeinstallprompt. Mechanics and
+     chrome are the house page's (.house-overlay / .house-app-bar). -->
+<div id="install-page" class="house-overlay" role="dialog" aria-modal="true" aria-labelledby="install-page-title" aria-hidden="true">
+  <div class="house-app-bar">
+    <button class="icon-btn" id="install-page-back" type="button" onclick="closeInstall()" aria-label="Back">
+      <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+    </button>
+    <span class="house-app-bar-title">Download the App</span>
+  </div>
+
+  <div id="install-body">
+    <div class="house-inner install-inner">
+      <div class="guide-eyebrow">Harry Potter Book Club</div>
+      <h1 class="guide-display" id="install-page-title">Download the App</h1>
+
+      <div class="inst-native" id="install-native" hidden>
+        <button class="btn btn-house inst-install-btn" type="button" onclick="installNative()">
+          <span class="material-symbols-rounded" aria-hidden="true">install_mobile</span>Install Now
+        </button>
+        <p class="inst-p">Your browser can install it in one tap &mdash; or follow the steps below.</p>
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-head"><span class="inst-num">01</span><span class="inst-q">Open the Share menu</span></div>
+        <p class="inst-p">In Safari, tap <strong>Share</strong> &mdash; the square with the arrow, at the bottom of the screen or inside the <strong>&middot;&middot;&middot;</strong> menu &mdash; then tap <strong>View More</strong>.</p>
+        <img class="inst-img" data-src="assets/install/install-1.jpg" width="569" height="640" loading="lazy" decoding="async" alt="The Safari share sheet for HP Book Club, with View More at the bottom right">
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-head"><span class="inst-num">02</span><span class="inst-q">Add to Home Screen</span></div>
+        <p class="inst-p">Near the foot of the longer list, tap <strong>Add to Home Screen</strong>.</p>
+        <img class="inst-img" data-src="assets/install/install-2.jpg" width="456" height="640" loading="lazy" decoding="async" alt="The expanded share sheet, with Add to Home Screen at the foot of the list">
+      </div>
+
+      <div class="inst-step">
+        <div class="inst-head"><span class="inst-num">03</span><span class="inst-q">Tap Add</span></div>
+        <p class="inst-p">Leave <strong>Open as Web App</strong> switched on, then tap <strong>Add</strong>. The Deathly Hallows appears on your Home Screen as <strong>HP Book Club</strong>.</p>
+        <img class="inst-img" data-src="assets/install/install-3.jpg" width="640" height="525" loading="lazy" decoding="async" alt="The Add to Home Screen card for HP Book Club, the Hallows icon beside the name, Open as Web App switched on and the Add button at the top right">
+      </div>
+
+      <p class="inst-note">Using Chrome or another browser on your iPhone? The same option is in its Share menu. If this page opened inside another app &mdash; Messages, Instagram, Mail &mdash; open it in Safari first. On Android, look for <strong>Install app</strong> in the browser menu.</p>
     </div>
   </div>
 </div>
@@ -3547,6 +3758,7 @@ function housePageIsOpen() {
 function _onKeydown(e) {
   if (e.key !== 'Escape') return;
   if (typeof closeHousePage === 'function' && housePageIsOpen()) { closeHousePage(); return; }
+  if (typeof installPageIsOpen === 'function' && installPageIsOpen()) { closeInstall(); return; }
   if (typeof notesModalIsOpen === 'function' && notesModalIsOpen()) { closeNotesModal(); return; }
   if (isSheetOpen()) { closeSheet(); return; }
   if (isHeaderMenuOpen()) closeHeaderMenu();
@@ -3596,6 +3808,8 @@ function init() {
   if (typeof initListen === 'function') initListen();
   if (typeof initClub === 'function') initClub();
   if (typeof initPlay === 'function') initPlay();
+  if (typeof initInstall === 'function') initInstall();
+  if (typeof initOriginals === 'function') initOriginals();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
@@ -7096,6 +7310,277 @@ document.addEventListener('keydown', function (e) {
     else if (e.key === 'Enter') { e.preventDefault(); pzArKey('✓'); }
   }
 });
+/* ── Download the App (ref publish/index.html L14759–14807) ──────────────
+   iOS has no install API — a page cannot press Safari's Share button — so iOS
+   gets the screenshot walkthrough. Chromium fires beforeinstallprompt; the
+   event is held and offered as a genuine one-tap Install Now (an event's
+   prompt() is single-use, so it is nulled BEFORE it is spent). Both entry
+   points (#installMenuItem, #homeInstallBtn) hide when the app is already
+   running from the Home Screen.
+   Adapted to this app's overlay contract (openHousePage): aria-hidden, focus
+   to Back on open, a class scroll lock on <html> (html.install-page-open),
+   focus returned on close; Escape is handled by the shell's _onKeydown. */
+var _installPrompt = null;
+var _installReturnFocus = null;
+
+function isStandalone() {
+  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+    || window.navigator.standalone === true;
+}
+window.addEventListener('beforeinstallprompt', function (e) {
+  e.preventDefault();
+  _installPrompt = e;
+  _syncInstallNative();
+});
+window.addEventListener('appinstalled', function () {
+  _installPrompt = null;
+  _syncInstallNative();
+});
+function _syncInstallNative() {
+  var nb = document.getElementById('install-native');
+  if (nb) nb.hidden = !_installPrompt;
+}
+function installPageIsOpen() {
+  var el = document.getElementById('install-page');
+  return !!(el && el.classList.contains('open'));
+}
+function _installFocus(el) {
+  if (!el || typeof el.focus !== 'function') return false;
+  try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) { return false; } }
+  return document.activeElement === el;
+}
+function openInstall() {
+  var el = document.getElementById('install-page');
+  if (!el) return;
+  // remember focus BEFORE the menu closes (the menu item still reads as activeElement here)
+  _installReturnFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+  closeHeaderMenu();
+  _syncInstallNative();
+  // The screenshots carry data-src until the first open: a closed overlay is only slid off-screen,
+  // so loading="lazy" alone still fetched all three on every page load (measured at 38 ms).
+  el.querySelectorAll('img[data-src]').forEach(function (img) {
+    img.src = img.getAttribute('data-src');
+    img.removeAttribute('data-src');
+  });
+  var body = document.getElementById('install-body');
+  if (body) body.scrollTop = 0;
+  el.classList.add('open');
+  el.setAttribute('aria-hidden', 'false');
+  document.documentElement.classList.add('install-page-open');
+  var back = document.getElementById('install-page-back');
+  if (!_installFocus(back)) {
+    setTimeout(function () { if (installPageIsOpen()) _installFocus(back); }, 360);
+  }
+}
+function closeInstall() {
+  var el = document.getElementById('install-page');
+  if (!el) return;
+  el.classList.remove('open');
+  el.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.remove('install-page-open');
+  var target = _installReturnFocus;
+  _installReturnFocus = null;
+  var restored = false;
+  if (target && document.contains(target) && !el.contains(target)) restored = _installFocus(target);
+  // opened from the (now hidden) menu item → fall back to the menu button
+  if (!restored) restored = _installFocus(document.getElementById('header-menu-btn'));
+  if (!restored && document.activeElement && el.contains(document.activeElement)) {
+    try { document.activeElement.blur(); } catch (e) {}
+  }
+}
+function installNative() {
+  if (!_installPrompt) return;
+  var p = _installPrompt;
+  _installPrompt = null;   // prompt() is single-use
+  _syncInstallNative();
+  try {
+    var shown = p.prompt();
+    if (shown && typeof shown.catch === 'function') shown.catch(function () {});
+  } catch (e) { return; }
+  p.userChoice.then(function (c) {
+    if (c && c.outcome === 'accepted') closeInstall();
+  }).catch(function () {});
+}
+// Already installed → the install entry points have no job; hide them.
+function initInstall() {
+  if (!isStandalone()) return;
+  var mi = document.getElementById('installMenuItem');
+  if (mi) mi.style.display = 'none';
+  var hb = document.getElementById('homeInstallBtn');
+  if (hb) hb.style.display = 'none';
+}
+/* @jkr-data — generated by tools/jkr-originals.py (do not hand-edit; re-run and re-splice) */
+var JKR_BASE = "https://www.harrypotter.com/writing-by-jk-rowling/";
+var JKR_ORIGINALS = [
+  ["the-great-lake", "The Great Lake"],
+  ["mr-ollivander", "Mr Ollivander"],
+  ["scottish-rugby", "Scottish Rugby"],
+  ["owls", "Owls"],
+  ["order-of-merlin", "Order of Merlin"],
+  ["quidditch-world-cup-final-live-report", "Quidditch World Cup 2014: Final live report"],
+  ["quidditch-world-cup-2014-daily-prophet-reports", "Quidditch World Cup 2014: Daily Prophet reports"],
+  ["macusa", "The Magical Congress of the United States of America (MACUSA)"],
+  ["patronus-charm", "Patronus Charm"],
+  ["ilvermorny", "Ilvermorny School of Witchcraft and Wizardry"],
+  ["1920s-wizarding-america-en", "1920s Wizarding America"],
+  ["rappaports-law-en", "Rappaport’s Law"],
+  ["seventeenth-century-and-beyond-en", "Seventeenth Century and Beyond"],
+  ["fourteenth-century-to-seventeenth-century-en", "Fourteenth Century – Seventeenth Century"],
+  ["uagadou", "Uagadou"],
+  ["mahoutokoro", "Mahoutokoro"],
+  ["castelobruxo", "Castelobruxo"],
+  ["wizarding-schools", "Wizarding Schools"],
+  ["the-potter-family", "The Potter Family"],
+  ["number-four-privet-drive", "Number Four, Privet Drive"],
+  ["alchemy", "Alchemy"],
+  ["naming-seers", "Naming Seers"],
+  ["vampires", "Vampires"],
+  ["thestrals", "Thestrals"],
+  ["sir-cadogan", "Sir Cadogan"],
+  ["firebolt", "Firebolt"],
+  ["the-knight-bus", "The Knight Bus"],
+  ["polyjuice-potion", "Polyjuice Potion"],
+  ["gilderoy-lockhart", "Gilderoy Lockhart"],
+  ["extension-charms", "Extension Charms"],
+  ["technology", "Technology"],
+  ["professor-quirrell", "Professor Quirrell"],
+  ["remus-lupin", "Remus Lupin"],
+  ["the-philosophers-stone", "The Philosopher’s Stone"],
+  ["peeves", "Peeves"],
+  ["celestina-warbeck", "Celestina Warbeck"],
+  ["ghosts", "Ghosts"],
+  ["pensieve", "Pensieve"],
+  ["dolores-umbridge", "Dolores Umbridge"],
+  ["floo-powder", "Floo Powder"],
+  ["the-malfoy-family", "The Malfoy family"],
+  ["kings-cross-station", "King’s Cross Station"],
+  ["cokeworth", "Cokeworth"],
+  ["hogwarts-portraits", "Hogwarts Portraits"],
+  ["wand-lengths-and-flexibility", "Wand Lengths & Flexibility"],
+  ["toads", "Toads"],
+  ["professor-kettleburn", "Professor Kettleburn"],
+  ["familiars", "Familiars"],
+  ["boggart", "Boggart"],
+  ["the-quill-of-acceptance-and-the-book-of-admittance", "The Quill of Acceptance and The Book of Admittance"],
+  ["the-mirror-of-erised", "The Mirror of Erised"],
+  ["the-sword-of-gryffindor", "The Sword of Gryffindor"],
+  ["hogwarts-ghosts", "Hogwarts Ghosts"],
+  ["the-sorting-hat", "The Sorting Hat"],
+  ["cauldrons", "Cauldrons"],
+  ["the-hogwarts-express", "The Hogwarts Express"],
+  ["platform-nine-and-three-quarters", "Platform Nine and Three-Quarters"],
+  ["marge-dursley", "Marge Dursley"],
+  ["chamber-of-secrets", "Chamber of Secrets"],
+  ["wand-woods", "Wand Woods"],
+  ["hogwarts-school-subjects", "Hogwarts School Subjects"],
+  ["nicolas-flamel", "Nicolas Flamel"],
+  ["werewolves", "Werewolves"],
+  ["gobstones", "Gobstones"],
+  ["pure-blood", "Pure-Blood"],
+  ["azkaban", "Azkaban"],
+  ["inferi", "Inferi"],
+  ["the-leaky-cauldron", "The Leaky Cauldron"],
+  ["measurements", "Measurements"],
+  ["the-daily-prophet", "The Daily Prophet"],
+  ["the-floo-network", "The Floo Network"],
+  ["illness-and-disability", "Illness and Disability"],
+  ["portkeys", "Portkeys"],
+  ["the-marauders-map", "The Marauder’s Map"],
+  ["vernon-and-petunia-dursley", "Vernon & Petunia Dursley"],
+  ["wand-cores", "Wand Cores"],
+  ["dementors-and-chocolate", "Dementors and Chocolate"],
+  ["draco-malfoy", "Draco Malfoy"],
+  ["sybill-trelawney", "Sybill Trelawney"],
+  ["durmstrang-institute", "Durmstrang Institute"],
+  ["time-turner", "Time-Turner"],
+  ["hufflepuff-common-room", "Hufflepuff Common Room"],
+  ["history-of-the-quidditch-world-cup", "History of the Quidditch World Cup"],
+  ["colours", "Colours"],
+  ["clothing", "Clothing"],
+  ["ghost-plots", "Ghost Plots"],
+  ["beauxbatons-academy-of-magic", "Beauxbatons Academy of Magic"],
+  ["potions", "Potions"],
+  ["secret-keeper", "Secret Keeper"],
+  ["ministers-for-magic", "Ministers for Magic"],
+  ["professor-mcgonagall", "Professor McGonagall"],
+  ["hatstall", "Hatstall"],
+  ["florean-fortescue", "Florean Fortescue"],
+  ["the-original-forty", "The Original Forty"]
+];
+/* @/jkr-data */
+/* ── Read › J.K. Rowling Originals ───────────────────────────────────────
+   JKR_ORIGINALS (the @jkr-data block above, generated by tools/jkr-originals.py)
+   holds every story on harrypotter.com/writing-by-jk-rowling as [slug, title] in
+   the site's order. Rendered A–Z (a leading "The" ignored, figures under #), one
+   <a target="_blank"> per story to JKR_BASE + slug — the story's own page, never the
+   landing page. The filter matches anywhere in the title, ignoring case, accents
+   and curly/straight punctuation; nothing is stored. */
+function _jkrKey(t) { return String(t).replace(/^the\s+/i, '').toLowerCase(); }
+function _jkrNorm(s) {
+  var t = String(s);
+  if (t.normalize) t = t.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return t.replace(/[‘’]/g, "'").replace(/[–—]/g, '-').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+function renderOriginals() {
+  var list = document.getElementById('jkrList');
+  if (!list || typeof JKR_ORIGINALS === 'undefined') return;
+  var items = JKR_ORIGINALS.map(function (r) { return { slug: r[0], title: r[1], key: _jkrKey(r[1]) }; });
+  items.sort(function (a, b) { return a.key.localeCompare(b.key, 'en', { sensitivity: 'base', numeric: true }); });
+  var html = '', letter = null;
+  items.forEach(function (it) {
+    var c = it.key.charAt(0).toUpperCase();
+    if (!/[A-Z]/.test(c)) c = '#';
+    if (c !== letter) {
+      if (letter !== null) html += '</div>';
+      html += '<div class="jkr-group"><div class="jkr-letter" aria-hidden="true">' + c + '</div>';
+      letter = c;
+    }
+    html += '<a class="jkr-row" href="' + clubEsc(JKR_BASE + it.slug) + '" target="_blank" rel="noopener" aria-describedby="jkrExt" data-q="' + clubEsc(_jkrNorm(it.title)) + '">'
+      + '<span class="jkr-title">' + clubEsc(it.title) + '</span>'
+      + '<span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>';
+  });
+  if (letter !== null) html += '</div>';
+  html += '<p class="jkr-empty" id="jkrEmpty" hidden></p>';
+  list.innerHTML = html;
+  jkrFilter();
+}
+function jkrFilter() {
+  var list = document.getElementById('jkrList');
+  if (!list || typeof JKR_ORIGINALS === 'undefined') return;
+  var input = document.getElementById('jkrSearch');
+  var raw = input ? input.value.trim() : '';
+  var q = _jkrNorm(raw);
+  var shown = 0;
+  list.querySelectorAll('.jkr-group').forEach(function (g) {
+    var any = false;
+    g.querySelectorAll('.jkr-row').forEach(function (a) {
+      var on = !q || (a.getAttribute('data-q') || '').indexOf(q) !== -1;
+      a.hidden = !on;
+      if (on) { any = true; shown++; }
+    });
+    g.hidden = !any;
+  });
+  var total = JKR_ORIGINALS.length;
+  var count = document.getElementById('jkrCount');
+  if (count) count.textContent = q ? shown + ' of ' + total + ' stories' : total + ' stories';
+  var empty = document.getElementById('jkrEmpty');
+  if (empty) {
+    empty.hidden = shown > 0;
+    empty.textContent = shown ? '' : 'No story title matches “' + raw + '”.';
+  }
+}
+function initOriginals() {
+  var input = document.getElementById('jkrSearch');
+  if (input) {
+    input.addEventListener('input', jkrFilter);
+    input.addEventListener('search', jkrFilter);          // the native clear (x) in type=search
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') input.blur();                // put the phone keyboard away
+      if (e.key === 'Escape' && input.value) { input.value = ''; jkrFilter(); e.stopPropagation(); }
+    });
+  }
+  renderOriginals();
+}
 </script>
 </body>
 </html>
