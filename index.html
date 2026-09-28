@@ -1305,6 +1305,7 @@ html.house-page-open body { overflow: hidden; }
   width: 100%; min-height: 56px;
   padding: 12px 12px 12px 18px;
   text-align: left;
+  text-decoration: none;
   font-size: 16px;
   color: var(--md-sys-color-on-surface);
   background: transparent;
@@ -3057,15 +3058,16 @@ html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 
         <div class="card-body">
           <div class="eyebrow">The Library</div>
           <h2 class="display">The Seven Books</h2>
+          <span id="bookExt" hidden>Opens the ebook on hoopla in a new tab</span>
         </div>
         <div class="book-list">
-          <button class="book-row" type="button" data-title="Sorcerer's Stone"><span class="book-num">1</span><span class="book-title">Sorcerer's Stone</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Chamber of Secrets"><span class="book-num">2</span><span class="book-title">Chamber of Secrets</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Prisoner of Azkaban"><span class="book-num">3</span><span class="book-title">Prisoner of Azkaban</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Goblet of Fire"><span class="book-num">4</span><span class="book-title">Goblet of Fire</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Order of the Phoenix"><span class="book-num">5</span><span class="book-title">Order of the Phoenix</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Half-Blood Prince"><span class="book-num">6</span><span class="book-title">Half-Blood Prince</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
-          <button class="book-row" type="button" data-title="Deathly Hallows"><span class="book-num">7</span><span class="book-title">Deathly Hallows</span><span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></button>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-sorcerers-stone-j-k-rowling/13280634" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">1</span><span class="book-title">Sorcerer's Stone</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-chamber-of-secrets-j-k-rowling/13169458" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">2</span><span class="book-title">Chamber of Secrets</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-prisoner-of-azkaban-j-k-rowling/13169864" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">3</span><span class="book-title">Prisoner of Azkaban</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-goblet-of-fire-j-k-rowling/13169863" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">4</span><span class="book-title">Goblet of Fire</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-order-of-the-phoenix-j-k-rowling/13169457" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">5</span><span class="book-title">Order of the Phoenix</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-half-blood-prince-j-k-rowling/13169791" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">6</span><span class="book-title">Half-Blood Prince</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
+          <a class="book-row" href="https://www.hoopladigital.com/ebook/harry-potter-and-the-deathly-hallows-j-k-rowling/13169549" target="_blank" rel="noopener" aria-describedby="bookExt"><span class="book-num">7</span><span class="book-title">Deathly Hallows</span><span class="material-symbols-rounded" aria-hidden="true">open_in_new</span></a>
         </div>
       </div>
       <!-- ── J.K. Rowling Originals: every story from harrypotter.com/writing-by-jk-rowling, each linked to
@@ -3994,22 +3996,8 @@ if (document.readyState === 'loading') {
   initHousePage();
 }
 
-/* ── Book list → sheet: the shell's live demonstration of the sheet primitive.
-   ONE delegated listener on .book-list; titles come from data-title (app-authored). ── */
-(function () {
-  var list = document.querySelector('.book-list');
-  if (!list) return;
-  list.addEventListener('click', function (e) {
-    var row = e.target && e.target.closest ? e.target.closest('.book-row[data-title]') : null;
-    if (!row || !list.contains(row)) return;
-    var title = row.getAttribute('data-title');
-    if (!title) return;
-    openSheet({
-      title: 'Harry Potter and the ' + title,
-      html: '<p class="lead">Chapter pages for this book are on the way.</p>'
-    });
-  });
-})();
+/* ── Book list: the seven rows are plain links to the owner's hoopla ebook pages
+   (target=_blank; they replaced the shell's sheet demo, 2026-09-28). ── */
 
 /* listen.js — Listen tab. Harry Potter Book Club.
    Baked Drive catalogue (LISTEN_BOOKS, from tools/listen.py) → book picker → ONE sticky player →
@@ -4658,8 +4646,8 @@ function initListen() {
 
 var CLUB_TOPICS = [
   { id: 'guides', name: 'Discussion Guides', icon: 'forum', meta: '7 books', ready: true },
-  { id: 'classes', name: 'Classes', icon: 'school', meta: '8 subjects', ready: true },
   { id: 'notes', name: 'Notes', icon: 'edit_note', meta: '3 levels', ready: true },
+  { id: 'classes', name: 'Classes', icon: 'school', meta: '8 subjects', ready: true },
   { id: 'spells', name: 'Spells', icon: 'auto_fix_high', meta: '4 kinds', ready: true }
 ];
 
