@@ -19,6 +19,12 @@
     var d = new Date(), today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
     if (!onboarded || localStorage.getItem('hp-splash-date') !== today) document.documentElement.classList.add('hp-splash');
     if (!onboarded) document.documentElement.classList.add('hp-onboarding');
+    /* Desktop rail (see initRail): expanded before first paint on wide screens — a remembered
+       'hp-rail', else landscape windows from 1200 px. Phones never match the query. */
+    if (window.matchMedia && window.matchMedia('(min-width: 744px) and (min-height: 500px)').matches && window.innerWidth >= 1024) {
+      var rp = localStorage.getItem('hp-rail');
+      if (rp === '1' || (rp === null && window.innerWidth >= 1200 && window.innerWidth > window.innerHeight)) document.documentElement.classList.add('hp-rail-open');
+    }
   } catch (e) {}
 })();
 </script>
@@ -2514,6 +2520,298 @@ html.install-page-open body { overflow: hidden; }
 .jkr-group[hidden], .jkr-row[hidden], .jkr-empty[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .jkr-row { transition: none; } }
 
+/* ══ DESKTOP LAYER ══════════════════════════════════════════════════════
+   Everything in this block applies ONLY at iPad size and up:
+     @media (min-width: 744px) and (min-height: 500px)
+   744 px is the narrowest iPad (mini, portrait); the min-height keeps a phone
+   turned sideways (≈ 430 px tall) on the phone layout. Below that line the app
+   is exactly the phone experience — the only rule outside the query hides the
+   three rail-only elements the phone never shows.
+   Shape (Material 3 window classes + navigation rail; Apple HIG sidebars):
+     · the bottom nav becomes a left NAVIGATION RAIL in the house chrome —
+       collapsed 96 px (icon over label), expanded 256 px (icon beside label,
+       the wordmark, utilities labelled); menu button or the '[' key, the
+       choice remembered as 'hp-rail'. Below 1024 px an expanded rail floats
+       over the page with a scrim (modal); from 1024 px it pushes the page.
+     · the top bar is hidden: the rail carries the brand and the header menu's
+       three items (Theme, Colorblind Mode, Download the App).
+     · <main class="content"> is a size container ("page"); pages split when
+       the CONTENT area — not the window — reaches 900 px, so expanding the
+       rail on a small screen folds a split back to one column.
+     · sheets become centred dialogs; sticky bars stick to the top edge. */
+.rail-head, .rail-foot, .rail-scrim { display: none; }
+
+@media (min-width: 744px) and (min-height: 500px) {
+  html { --rail-w: 96px; --rail-push: 96px; }
+  html.hp-rail-open { --rail-w: 256px; }
+
+  /* ── Chrome: no top bar; the page starts at the top edge ── */
+  .top-app-bar, .header-menu { display: none; }
+  .content {
+    container: page / inline-size;
+    margin-left: var(--rail-push);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+    transition: margin-left 0.26s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* ── The rail (the bottom nav, re-laid) ── */
+  .bottom-nav {
+    top: 0; bottom: 0; left: 0; right: auto;
+    width: var(--rail-w); height: auto;
+    flex-direction: column; align-items: stretch; gap: 4px;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px);
+    box-shadow: 1px 0 0 rgba(0,0,0,0.14);
+    overflow-x: hidden; overflow-y: auto; scrollbar-width: none;
+    transition: width 0.26s cubic-bezier(0.2, 0, 0, 1), background 0.3s, box-shadow 0.26s;
+  }
+  .bottom-nav::-webkit-scrollbar { display: none; }
+
+  .rail-head { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .rail-toggle { color: var(--hp-on-chrome); }
+  .rail-toggle:focus-visible { outline-color: var(--hp-chrome-accent); }
+  .rail-brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px; border-radius: 14px;
+    color: var(--hp-on-chrome); text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rail-brand:focus-visible { outline: 2px solid var(--hp-chrome-accent); outline-offset: 2px; }
+  .rail-mark { width: 46px; height: 46px; flex-shrink: 0; display: block; color: var(--hp-metal); fill: currentColor; }
+  .rail-word { display: none; flex-direction: column; min-width: 0; line-height: 1.12; letter-spacing: 0.005em; font-family: var(--font-sans); font-size: 15px; }
+  .rail-word-a { font-weight: 700; color: var(--hp-on-chrome); white-space: nowrap; }
+  .rail-word-b { font-weight: 400; color: var(--hp-chrome-muted); white-space: nowrap; }
+
+  /* collapsed items: icon over label, the M3 56×32 indicator pill */
+  .nav-tab { flex: 0 0 auto; min-height: 64px; padding: 6px 0 8px; gap: 4px; border-radius: 16px; }
+  .nav-tab .nav-indicator { top: 6px; width: 56px; height: 32px; }
+  @media (hover: hover) {
+    .nav-tab:hover { color: var(--hp-on-chrome); }
+    .nav-tab:not(.active):not([aria-current="page"]):hover .nav-indicator { background: color-mix(in srgb, var(--hp-on-chrome) 10%, transparent); }
+  }
+  /* the raised centre disc is a phone affordance — in the rail Listen is an ordinary item */
+  .nav-tab--feature .nav-indicator { display: block; }
+  .nav-tab--feature .material-symbols-rounded,
+  .nav-tab--feature.active .material-symbols-rounded,
+  .nav-tab--feature[aria-current="page"] .material-symbols-rounded {
+    width: 24px; height: 24px; margin: 0; padding: 0;
+    display: block; font-size: 24px;
+    transform: none; background: transparent; color: inherit; box-shadow: none;
+  }
+  .nav-tab--feature:active .material-symbols-rounded,
+  .nav-tab--feature.active:active .material-symbols-rounded { transform: none; }
+
+  .rail-foot {
+    display: flex; flex-direction: column; gap: 2px;
+    margin-top: auto; padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--hp-on-chrome) 16%, transparent);
+  }
+  .rail-util {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    min-height: 44px; padding: 0 10px; border-radius: 22px;
+    color: var(--hp-chrome-muted);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+  .rail-util .material-symbols-rounded { font-size: 22px; }
+  .rail-util-label { display: none; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rail-util[aria-pressed="true"] { color: var(--hp-chrome-accent); }
+  .rail-util:focus-visible { outline: 2px solid var(--hp-chrome-accent); outline-offset: -2px; }
+  @media (hover: hover) {
+    .rail-util:hover { background: color-mix(in srgb, var(--hp-on-chrome) 10%, transparent); color: var(--hp-on-chrome); }
+  }
+
+  /* expanded: icon beside label, a full-width pill, the wordmark and labelled utilities */
+  html.hp-rail-open .rail-head { flex-direction: row; justify-content: flex-start; gap: 4px; }
+  html.hp-rail-open .rail-word { display: flex; }
+  html.hp-rail-open .nav-tab { flex-direction: row; justify-content: flex-start; gap: 16px; min-height: 52px; padding: 0 20px; }
+  html.hp-rail-open .nav-tab .nav-indicator { top: 0; left: 0; width: 100%; height: 100%; border-radius: 26px; }
+  html.hp-rail-open .nav-tab .nav-label { font-size: 14px; letter-spacing: 0.06em; }
+  html.hp-rail-open .rail-util { justify-content: flex-start; padding: 0 20px; }
+  html.hp-rail-open .rail-util-label { display: block; }
+  html.hp-rail-open .rail-word,
+  html.hp-rail-open .nav-tab .nav-label,
+  html.hp-rail-open .rail-util-label { animation: hpRailLabel 0.3s ease both; }
+  @keyframes hpRailLabel { from { opacity: 0; } 40% { opacity: 0; } to { opacity: 1; } }
+
+  /* ── Sticky bars stick to the top edge (there is no top bar above them) ── */
+  .listen-player, .age-bar, .quest-rail, .spell-cats { top: calc(env(safe-area-inset-top, 0px) + 16px); }
+
+  /* ── Pages: wider measure, roomier gutters ── */
+  .section-inner { max-width: 1180px; padding: 0 32px 72px; }
+  .section-inner--pad { padding-top: 36px; }
+  .club-head, .listen-head, .play-head { padding: 0 2px 22px; }
+  .club-head .display, .listen-head .display, .play-head .display { font-size: 46px; line-height: 1.08; margin-bottom: 10px; }
+  .club-head .lead, .listen-head .lead, .play-head .lead { font-size: 17px; }
+
+  .play-head .lead { margin: 0; }
+  #clubPanel { container: panel / inline-size; }
+
+  /* picker strips: the subject and game strips always fit in one row, so they become an even grid;
+     book strips (7–8 tiles) stay the phone's sideways strip until the content area is wide (below) —
+     with a visible thin scrollbar for a mouse, which has no swipe */
+  #clubTopics, #playGames {
+    display: grid; overflow: visible; scroll-snap-type: none; touch-action: auto;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); padding-bottom: 16px;
+  }
+  #playGames { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+  #clubTopics .book-tile, #playGames .book-tile { width: auto; }
+  @media (hover: hover) and (pointer: fine) { .book-picker { scrollbar-width: thin; } }
+
+  /* ── Home: hero on top, the four steps in a 2 × 2 grid ── */
+  .home-hero { min-height: 58dvh; }
+  .home-hero-content { padding: 0 40px 40px; }
+  .hero-h1 { font-size: clamp(44px, 6.4cqi, 72px); }
+  .hero-lead { font-size: 18px; }
+  .home-walk { max-width: 1000px; padding: 20px 16px 0; }
+  .walk-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 0 16px; }
+  .walk-card { grid-template-rows: auto auto 1fr auto; }            /* Open buttons line up across a row */
+  .walk-card .btn { align-self: end; }
+  .home-install { padding: 32px 16px 56px; }
+
+  /* ── Read: the Originals card no longer needs the phone gap ── */
+  .card.book-card:active, .card.book-card:hover { transform: none; box-shadow: var(--md-sys-elevation-1); }
+
+  /* ── Sheets and the notes editor become centred dialogs ── */
+  .hp-sheet-overlay, .notes-modal-overlay { align-items: center; padding: 24px; }
+  .hp-sheet-drag, .notes-modal-drag { display: none; }
+  .hp-sheet, .notes-modal-container { border-radius: 24px; box-shadow: 0 24px 64px -12px rgba(0,0,0,0.5); }
+  /* a dialog sizes to its content (the phone sheet is a fixed 92 % tall) */
+  .hp-sheet, .hp-sheet--auto { max-width: 600px; height: auto; min-height: min(320px, 100%); max-height: min(86dvh, 100%); }
+  .notes-modal-container { max-width: 820px; height: min(86dvh, 100%); }
+  .hp-sheet-header, .notes-modal-header { padding-top: 14px; padding-bottom: 14px; }
+  .hp-sheet-overlay.open .hp-sheet,
+  .notes-modal-overlay.open .notes-modal-container { animation: hpDlgIn 0.24s cubic-bezier(0.2, 0, 0, 1); }
+  .hp-sheet-overlay.closing .hp-sheet { animation: hpDlgOut 0.2s ease forwards; }
+  @keyframes hpDlgIn  { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+  @keyframes hpDlgOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scale(0.98); } }
+}
+
+/* ── Rail below 1024 px: expanded = modal, floating over the page ── */
+@media (min-width: 744px) and (min-height: 500px) and (max-width: 1023.98px) {
+  html.hp-rail-open .bottom-nav { box-shadow: var(--md-sys-elevation-3); }
+  html.hp-rail-open .rail-scrim {
+    display: block; position: fixed; inset: 0; z-index: 99;
+    background: rgba(0,0,0,0.42);
+    animation: hpSheetFade 0.2s ease;
+  }
+}
+/* ── Rail from 1024 px: expanded pushes the page ── */
+@media (min-width: 1024px) and (min-height: 500px) {
+  html.hp-rail-open { --rail-push: 256px; }
+  /* the full-page overlays get their desktop layouts */
+  #house-page .house-inner { max-width: 1120px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; align-items: stretch; }
+  #house-page .house-intro, #house-page .house-outro { grid-column: 1 / -1; width: 100%; max-width: 760px; justify-self: center; }
+  #house-page .house-plate { margin: 0 0 24px; display: flex; flex-direction: column; }
+  #house-page .house-plate .house-choose { margin-top: auto; align-self: flex-start; }
+  #install-page .install-inner { max-width: 1120px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; align-items: start; }
+  #install-page .install-inner > .guide-eyebrow,
+  #install-page .install-inner > .guide-display,
+  #install-page .install-inner > .inst-native,
+  #install-page .install-inner > .inst-note { grid-column: 1 / -1; }
+  #install-page .inst-native + .inst-step { margin-top: 36px; }
+}
+
+/* ── Splits: the CONTENT area (container "page") is at least 900 px ── */
+@container page (min-width: 900px) {
+  /* Listen's book strip becomes an even grid: seven tiles fit one row from here */
+  #listenBooks {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    overflow: visible; scroll-snap-type: none; touch-action: auto; padding-bottom: 16px;
+  }
+  #listenBooks .book-tile { width: auto; }
+  /* Home — 50/50: the slideshow holds the left half, full height; the steps sit centred on the right */
+  #section-home.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    min-height: calc(100dvh - env(safe-area-inset-top, 0px));
+  }
+  .home-hero {
+    grid-column: 1; grid-row: 1 / -1; align-self: start;
+    position: sticky; top: env(safe-area-inset-top, 0px);
+    height: calc(100dvh - env(safe-area-inset-top, 0px)); min-height: 0;
+  }
+  .home-hero-content { padding: 0 48px 56px; }
+  .hero-h1 { font-size: clamp(44px, 5.2cqi, 76px); }
+  .hero-lead { font-size: 19px; max-width: 32ch; }
+  .hero-mark { top: 40px; right: 36px; width: 240px; height: 240px; }
+  .home-walk { grid-column: 2; grid-row: 2; width: 100%; max-width: 640px; justify-self: center; padding: 48px 24px 0; }
+  .walk-list { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  /* each step becomes one row: icon · number / title / line · Open */
+  .walk-card { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; padding: 16px 18px 16px 16px; }
+  .walk-card .btn { grid-column: 3; grid-row: 1 / span 3; align-self: center; margin: 0 0 0 12px; }
+  .home-install { grid-column: 2; grid-row: 3; padding: 28px 24px 56px; }
+
+  /* Club — a subject list on the left (sticky), the subject on the right */
+  #section-club .section-inner { display: grid; grid-template-columns: 220px minmax(0, 1fr); column-gap: 36px; align-items: start; }
+  #section-club .club-head { grid-column: 1 / -1; }
+  #clubTopics {
+    grid-column: 1; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
+    display: flex; flex-direction: column; flex-wrap: nowrap; gap: 8px; padding: 0; margin: 0;
+  }
+  #clubTopics .club-tile { width: 100%; min-height: 0; flex-direction: row; align-items: center; gap: 12px; padding: 14px 16px; }
+  #clubTopics .club-tile .book-tile-title { margin-top: 0; font-size: 16px; }
+  #clubPanel { grid-column: 2; min-width: 0; }
+
+  /* Listen — 40/60: the player stays in view on the left, the chapters scroll on the right */
+  #section-listen .section-inner { display: grid; grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr); column-gap: 32px; align-items: start; }
+  #section-listen .listen-head, #listenBooks { grid-column: 1 / -1; }
+  #section-listen .listen-player { grid-column: 1; grid-row: 3; margin: 0; padding: 16px 18px 16px; }
+  #section-listen .listen-card { grid-column: 2; grid-row: 3; margin: 0; }
+  /* the player wears an audiobook "cover": the house plate with the Hallows in the house metal */
+  #section-listen .listen-player::before {
+    content: ""; display: block; aspect-ratio: 16 / 10; margin: 0 0 16px; border-radius: 12px;
+    background: radial-gradient(120% 95% at 50% 32%, var(--hp-house-2) 0%, var(--hp-house) 42%, var(--hp-ink) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  #section-listen .listen-player::after {
+    content: ""; position: absolute; left: 18px; right: 18px; top: 16px; aspect-ratio: 16 / 10; pointer-events: none;
+    background: var(--hp-metal);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='black' stroke-width='5.5'%3E%3Cpath d='M50 18.42 L89.16 84.21 L10.84 84.21 Z'/%3E%3Ccircle cx='50' cy='61.95' r='22.26'/%3E%3Cpath d='M50 18.42 V84.21'/%3E%3C/g%3E%3C/svg%3E") center / auto 52% no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='black' stroke-width='5.5'%3E%3Cpath d='M50 18.42 L89.16 84.21 L10.84 84.21 Z'/%3E%3Ccircle cx='50' cy='61.95' r='22.26'/%3E%3Cpath d='M50 18.42 V84.21'/%3E%3C/g%3E%3C/svg%3E") center / auto 52% no-repeat;
+    opacity: 0.9;
+  }
+  #section-listen .lnp-title { font-size: 22px; }
+  #section-listen .speed-menu { top: 28px; right: 30px; z-index: 1; }
+
+  /* Play › The Half-Way Quest — cover: photo | brief; a challenge: photo (stays in view) | its stages */
+  .quest-cover { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: stretch; }
+  .quest-cover-media img { height: 100%; min-height: 420px; aspect-ratio: auto; }
+  .quest-cover-text { left: 32px; right: 32px; bottom: 28px; }
+  .quest-cover-title { font-size: 40px; }
+  .quest-cover-body { padding: 32px 32px 30px; align-self: center; }
+  .quest-cover-body p { font-size: 16px; }
+  .quest-card:has(> .quest-media) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; overflow: clip; }
+  .quest-card:has(> .quest-media) > .quest-media { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 88px); }
+  .quest-card:has(> .quest-media) > .quest-body { padding: 24px 28px 28px; }
+
+  /* Play › The Puzzle Room — puzzle beside its clues: two columns, broken where the clue side starts */
+  .pz-card:has(> .ws-grid), .pz-card:has(> .cw-grid), .pz-card:has(> .ar-pad) { columns: 2; column-gap: 36px; }
+  .pz-card:has(> .ws-grid) > *, .pz-card:has(> .cw-grid) > *, .pz-card:has(> .ar-pad) > * { break-inside: avoid; }
+  .pz-card:has(> .ws-grid) > .ws-status,
+  .pz-card:has(> .ar-pad) > .ws-status,
+  .pz-card:has(> .cw-grid) > .cw-pass { break-before: column; margin-top: 0; }
+  .pz-card:has(> .ws-grid) > .ws-words { justify-content: flex-start; }
+
+  /* Read — 40/60: the seven books stay in view, the Originals list scrolls beside them */
+  #section-book .section-inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 28px; align-items: start; }
+  #section-book .book-card { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+  #section-book .jkr-card { margin-top: 0; }
+}
+/* ── A wide Club panel (container "panel" — its own width, beside or under the subject list):
+      the Guides / Notes book strips become an even grid, Classes and Spells lay their cards two across ── */
+@container panel (min-width: 760px) {
+  #clubPanel .book-picker {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    overflow: visible; scroll-snap-type: none; touch-action: auto; padding-bottom: 16px;
+  }
+  #clubPanel .book-picker .book-tile { width: auto; }
+  #clubPanel .club-intro:not(.guide-intro) + .class-list,
+  #clubPanel .spell-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; align-items: start; }
+}
+
 html[data-mono="1"] {
   --md-sys-color-primary: #000000;
   --md-sys-color-on-primary: #FFFFFF;
@@ -2889,6 +3187,22 @@ html[data-mono="1"] .inst-note { border: 1px solid #000; }
 html[data-mono="1"] .jkr-search { background: #FFF; color: #000; border-color: #000; }
 html[data-mono="1"] .jkr-row:active,
 html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 0 0 0 1px #000; }
+@media (min-width: 744px) and (min-height: 500px) {
+  html[data-mono="1"] .bottom-nav { border-top: 0; border-right: 1px solid #000000; }
+  html[data-mono="1"] .nav-tab--feature .material-symbols-rounded,
+  html[data-mono="1"] .nav-tab--feature.active .material-symbols-rounded,
+  html[data-mono="1"] .nav-tab--feature[aria-current="page"] .material-symbols-rounded { background: transparent; color: inherit; box-shadow: none; }
+  html[data-mono="1"] .nav-tab--feature.active .material-symbols-rounded,
+  html[data-mono="1"] .nav-tab--feature[aria-current="page"] .material-symbols-rounded { color: var(--hp-chrome); }
+  html[data-mono="1"] .hp-sheet, html[data-mono="1"] .notes-modal-container { box-shadow: none; }
+  /* the mono tokens paint the bar, the pill and the active glyph all #000 — the rail's active item
+     gets a white pill so its black glyph (and, expanded, its label on the pill) can be seen */
+  html[data-mono="1"] .nav-tab.active .nav-indicator,
+  html[data-mono="1"] .nav-tab[aria-current="page"] .nav-indicator { background: #FFFFFF; }
+  html[data-mono="1"].hp-rail-open .nav-tab.active .nav-label,
+  html[data-mono="1"].hp-rail-open .nav-tab[aria-current="page"] .nav-label { color: #000000; }
+  html[data-mono="1"] .nav-tab:not(.active):not([aria-current="page"]):hover .nav-indicator { background: transparent; box-shadow: inset 0 0 0 1px #FFFFFF; }
+}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEeklEQVR42tWWz28VVRTHz7lzZ+5MZ16pVfpa+0MrVANSChpIpcVKXNin0EIBRU1rMKQBZCHRpdGNCYHgv4BJpbrRjWJo0wQ3JaAYCSSNiMHCAkqQ9/o6783vmXtcFGqL/UWERM/u3pzkm3M+33PPxep0GTzMYPCQ4z8mQABED02ACDgDzu9PY7ECigK2I7vbze5203akoixWgC8mCRH8AJbX8J0vlwDA96e9G7elpi6qlEVVwBDCmPZ0WJaBloF7OqwwJoYPqEUKg4JLrau19mbdC8gLqL1Zb12tFVxS2IMQSCQYAvd1pbyACq60Hen6tK8rZQhM5L8WUBQouLStzdjQqH1x0rk1Lm/mZN+A09KobWszCi4tSJstyLYurfRutU5fDPoHXUNgicD+AXf4YtC71apLK34AOC8MpdTS5+m+69PBXannntFGb8QdG40nq/gSi21oFF5IDbWqruGpnwNdw3nsNKcAY1B0qXmVdmCHlSTwRKXiBaQoGMeAiKueUr0AltfwkdHojxuJmFtjzhZJCbrA3k6r1GQjo9HeI+NvfpLLTshbebnr4+y+I+O/Xo1KTdbbaekCpbxPBpNsd24yWpvEyTPegc/Gz46EiIAACIAIZ0bC946OD/zotzaJHZvmo83mYltboezebF65Hh0+XogTWGLOQLnExDiBw332levRu5vN2oo5abNZ5zaIqCdj1lbw/kH3ZlYaAuJkRk6cgCFgLCv7B93aCt6TMYNo9tlms7D1aN0KtWOjMZZNzl8OhQaztlhKEBqcvxyOZZOOjca6FWrRI8YWEiAJKsfeTksXUPTIdkhhSHPsBoWB7ZDjkS6gt9NSOZKcV0BhYLu0pUVfv1LLTkhDgFCRiGadJAQgAl1DXUB2Qq5fqW1p0e1/PFBsOtswgspytrfLunQt7h900+XKsmoeRoCzeQ0ZhBHUP87T5crxAffStXhvl1VZzsJoBm02na0bUE+mpL6KHzvhfDvsOR5tbTMYA6J7HYIIRMAYdLUZRY++G/aOnXDqq3hPpsQNZtBmU2wdj9Y0qN0Za+icP3whmCjIr39w25v17oyZm5CJhCmnKwpICbkJ+c6r5ivN+jen3HxRDl8Ihs753RlrTYPqTKPNpvYtY7B/u+X58lCfnbNlFNPRLwsDZ/2Db6Q+eCslVMgXpCSQBPmC1FT88O3U+6+nTp7xj35ViGPK2fJQn+35cv92a7Lov98ihUG+SK+16Ls3W7/8Fo7b8vkV2rP1an2VartyWTV/YZV4ca2oS/On67jKsWYpP7Az9dJakbPl0E9+1aO8qUFtalDLU+yRUrahUVy9GV/4PS7RkQiwprIsjuGxMvb5R+VLy1giwTJQ0h0qUQxeQEQgNNQ1cHwCAFNHP4QgJEQwBKocpvKLHikM/szL3Z/mbucl58CnHH3kuD1pgOl7ChEmiRGBJNA4EEAUA8M72CXNWP0KAyLQVFAYTF5jdboMEaIY/HDhPU53J2D+kAS6hioHoskKCFQOmorw4ILuVsbvOf//Pr9/Af2bEzsQULVlAAAAAElFTkSuQmCC">
 <link rel="manifest" href="manifest.json">
@@ -2978,7 +3292,6 @@ html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 
         <img class="hero-slide active" src="assets/hero-viaduct.webp" alt="A red steam train crossing a stone viaduct in misty highlands" width="1200" height="1500" decoding="async">
         <img class="hero-slide" src="assets/hero-feast.webp" alt="The Great Hall at a feast, long tables beneath floating candles" width="1200" height="1500" loading="lazy" decoding="async">
         <img class="hero-slide" src="assets/hero-gringotts.webp" alt="A dragon perched on the domed roof of a white bank building" width="1200" height="1500" loading="lazy" decoding="async">
-        <img class="hero-slide" src="assets/hero-stairs.webp" alt="The moving staircases, lined with portraits" width="1200" height="1500" loading="lazy" decoding="async">
         <img class="hero-slide" src="assets/hero-hogwarts-dusk.webp" alt="A castle of towers and spires glowing at dusk" width="1200" height="1500" loading="lazy" decoding="async">
         <img class="hero-slide" src="assets/hero-gryffindor-room.webp" alt="The Gryffindor common room, a lion above the fireplace and red armchairs in sunlight" width="1200" height="1500" loading="lazy" decoding="async">
         <img class="hero-slide" src="assets/hero-ollivanders.webp" alt="A wand shop front with bow windows and a hand-painted sign" width="1200" height="1500" loading="lazy" decoding="async">
@@ -3154,8 +3467,18 @@ html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 
 
 </main>
 
-<!-- ── Bottom navigation (house chrome; centre slot raised) ── -->
+<!-- ── Bottom navigation (house chrome; centre slot raised) — at ≥ 744 × 500 the desktop layer re-lays it as the left rail ── -->
 <nav class="bottom-nav" aria-label="Primary">
+  <!-- Desktop layer only (hidden on phones): the rail's menu button + brand; the bottom nav becomes the left rail at ≥ 744 × 500 -->
+  <div class="rail-head">
+    <button class="icon-btn rail-toggle" id="railToggle" type="button" aria-expanded="false" aria-label="Expand navigation" title="Expand navigation ( [ )" onclick="toggleRail()">
+      <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+    </button>
+    <button class="rail-brand" type="button" aria-label="Harry Potter Book Club — home" onclick="goToTab('home')">
+      <svg class="rail-mark" aria-hidden="true" focusable="false"><use href="#hp-hallows"/></svg>
+      <span class="rail-word" aria-hidden="true"><span class="rail-word-a">Harry Potter</span><span class="rail-word-b">Book Club</span></span>
+    </button>
+  </div>
   <button class="nav-tab active" type="button" data-section="home" aria-current="page" aria-label="HP">
     <div class="nav-indicator"></div>
     <svg class="nav-icon" aria-hidden="true" focusable="false"><use href="#hp-glasses"/></svg>
@@ -3181,7 +3504,20 @@ html[data-mono="1"] .jkr-row:hover { background: transparent; box-shadow: inset 
     <span class="material-symbols-rounded" aria-hidden="true">menu_book</span>
     <span class="nav-label">Read</span>
   </button>
+  <!-- Desktop layer only: the header menu's three items live at the foot of the rail -->
+  <div class="rail-foot">
+    <button class="rail-util" id="railTheme" type="button" aria-haspopup="dialog" onclick="railUtil('theme')">
+      <span class="material-symbols-rounded" aria-hidden="true">palette</span><span class="rail-util-label">Theme · Gryffindor</span>
+    </button>
+    <button class="rail-util" id="railMono" type="button" aria-pressed="false" onclick="railUtil('mono')">
+      <span class="material-symbols-rounded" aria-hidden="true">contrast</span><span class="rail-util-label">Colorblind Mode</span>
+    </button>
+    <button class="rail-util" id="railInstall" type="button" onclick="railUtil('install')">
+      <span class="material-symbols-rounded" aria-hidden="true">install_mobile</span><span class="rail-util-label">Download the App</span>
+    </button>
+  </div>
 </nav>
+<div class="rail-scrim" id="railScrim" aria-hidden="true"></div>
 
 <!-- ── Shared bottom sheet (ids per the primitives' contract: overlay #hp-sheet-overlay, container #hp-sheet) ── -->
 <!-- Notes sheet (ref #notes-modal L15879–15898): rich-text editor with the formatting bar; autosaves -->
@@ -3516,6 +3852,7 @@ function syncMenuLabels() {
     if (label) label.textContent = on ? 'Colorblind Mode: On' : 'Colorblind Mode';
     monoItem.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  if (typeof syncRailLabels === 'function') syncRailLabels();
 }
 
 /* ── Header menu (ref L5347–5355) ──────────────────────────────────────── */
@@ -3812,6 +4149,7 @@ function init() {
   if (typeof initPlay === 'function') initPlay();
   if (typeof initInstall === 'function') initInstall();
   if (typeof initOriginals === 'function') initOriginals();
+  if (typeof initRail === 'function') initRail();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
@@ -7567,6 +7905,106 @@ function initOriginals() {
     });
   }
   renderOriginals();
+}
+/* ── Desktop layer: the navigation rail ────────────────────────────────────
+   At iPad size and up (HP_DESK_MQ: ≥ 744 px wide AND ≥ 500 px tall, so a phone
+   turned sideways stays on the phone layout) CSS re-lays the bottom nav as a
+   left rail and hides the top bar. This script owns only the rail's state:
+     html.hp-rail-open   expanded (256 px). Below 1024 px it floats over the page
+                         with a scrim (modal, never remembered, closes on a pick);
+                         from 1024 px it pushes the page (remembered).
+     'hp-rail' '1'|'0'   the last explicit choice in push mode (device pref). With
+                         no choice, the rail opens on landscape windows ≥ 1200 px
+                         and stays collapsed otherwise (Apple HIG: collapsed in
+                         portrait, expanded in landscape). The head script applies
+                         the same rule before first paint.
+   Phones never reach any of this: every entry point checks isDesk(). */
+var HP_DESK_MQ = '(min-width: 744px) and (min-height: 500px)';
+var _railMode = null;
+function isDesk() { return !!(window.matchMedia && window.matchMedia(HP_DESK_MQ).matches); }
+function _railModeNow() { return !isDesk() ? 'phone' : (window.innerWidth >= 1024 ? 'push' : 'modal'); }
+function railIsOpen() { return document.documentElement.classList.contains('hp-rail-open'); }
+function _railWanted() {
+  var p = null;
+  try { p = localStorage.getItem('hp-rail'); } catch (e) {}
+  if (p === '1') return true;
+  if (p === '0') return false;
+  return window.innerWidth >= 1200 && window.innerWidth > window.innerHeight;
+}
+function setRail(open, remember) {
+  document.documentElement.classList.toggle('hp-rail-open', !!open);
+  if (remember) { try { localStorage.setItem('hp-rail', open ? '1' : '0'); } catch (e) {} }
+  var btn = document.getElementById('railToggle');
+  if (btn) {
+    var label = open ? 'Collapse navigation' : 'Expand navigation';
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label + ' ( [ )');
+    var ic = btn.querySelector('.material-symbols-rounded');
+    if (ic) ic.textContent = open ? 'menu_open' : 'menu';
+  }
+}
+function toggleRail() {
+  if (!isDesk()) return;
+  setRail(!railIsOpen(), _railModeNow() === 'push');
+}
+function _syncRailMode() {
+  var mode = _railModeNow();
+  if (mode === _railMode) return;       // only a change of mode re-decides (an iPad keyboard resizing the page must not)
+  _railMode = mode;
+  setRail(mode === 'push' ? _railWanted() : false, false);
+}
+function syncRailLabels() {
+  var theme = document.getElementById('railTheme');
+  if (theme) {
+    var h = (typeof houseById === 'function' && typeof currentHouse === 'function') ? houseById(currentHouse()) : null;
+    var t = 'Theme · ' + (h ? h.name : 'Gryffindor');
+    var tl = theme.querySelector('.rail-util-label'); if (tl) tl.textContent = t;
+    theme.setAttribute('aria-label', t); theme.setAttribute('title', t);
+  }
+  var mono = document.getElementById('railMono');
+  if (mono) {
+    var on = typeof monoIsOn === 'function' && monoIsOn();
+    var m = on ? 'Colorblind Mode: On' : 'Colorblind Mode';
+    var ml = mono.querySelector('.rail-util-label'); if (ml) ml.textContent = m;
+    mono.setAttribute('aria-label', m); mono.setAttribute('title', m);
+    mono.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  var inst = document.getElementById('railInstall');
+  if (inst) { inst.setAttribute('aria-label', 'Download the App'); inst.setAttribute('title', 'Download the App'); }
+}
+function railUtil(which) {
+  if (_railModeNow() === 'modal' && railIsOpen()) setRail(false, false);
+  if (which === 'theme') openHousePage();
+  else if (which === 'mono') toggleMono();
+  else if (which === 'install') openInstall();
+}
+function initRail() {
+  setRail(railIsOpen(), false);          // the head script may already have opened it; sync the button
+  _railMode = _railModeNow();
+  if (_railMode !== 'push' && railIsOpen()) setRail(false, false);
+  syncRailLabels();
+  if (typeof isStandalone === 'function' && isStandalone()) {
+    var inst = document.getElementById('railInstall'); if (inst) inst.style.display = 'none';
+  }
+  var nav = document.querySelector('.bottom-nav');
+  if (nav) nav.addEventListener('click', function (e) {
+    // a pick from the floating (modal) rail closes it; the pushed rail stays as it is
+    if (_railModeNow() === 'modal' && railIsOpen() && e.target.closest && e.target.closest('.nav-tab, .rail-brand')) setRail(false, false);
+  });
+  var scrim = document.getElementById('railScrim');
+  if (scrim) scrim.addEventListener('click', function () { setRail(false, false); });
+  window.addEventListener('resize', _syncRailMode);
+  document.addEventListener('keydown', function (e) {
+    if (!isDesk()) return;
+    if (e.key === 'Escape' && _railModeNow() === 'modal' && railIsOpen()) { setRail(false, false); return; }
+    if (e.key !== '[' || e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target, tag = t && t.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+    if (document.querySelector('.house-overlay.open, .hp-sheet-overlay.open, .notes-modal-overlay.open')) return;
+    e.preventDefault();
+    toggleRail();
+  });
 }
 </script>
 </body>

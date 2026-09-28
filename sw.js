@@ -8,7 +8,7 @@
 // copies: root sw.js and publish/sw.js must stay byte-identical).
 // The Download-the-App screenshots (assets/install/) are deliberately NOT
 // precached: they load lazily when that page is opened, then runtime-cache.
-const CACHE = 'hp-v20';
+const CACHE = 'hp-v22';
 const PRECACHE = [
   "./",
   "index.html",
@@ -22,7 +22,6 @@ const PRECACHE = [
   "assets/hero-hogwarts-snow.webp",
   "assets/hero-ollivanders.webp",
   "assets/hero-feast.webp",
-  "assets/hero-stairs.webp",
   "assets/hero-gryffindor-room.webp",
   "assets/hero-knight-bus.webp",
   "assets/hero-quidditch.webp",
