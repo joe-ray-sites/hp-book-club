@@ -8,7 +8,7 @@
 // copies: root sw.js and publish/sw.js must stay byte-identical).
 // The Download-the-App screenshots (assets/install/) are deliberately NOT
 // precached: they load lazily when that page is opened, then runtime-cache.
-const CACHE = 'hp-v19';
+const CACHE = 'hp-v20';
 const PRECACHE = [
   "./",
   "index.html",

@@ -4830,8 +4830,7 @@ function renderClubTopics() {
     var sel = clubTopic === t.id;
     return '<button class="book-tile club-tile" type="button" role="tab" data-topic="' + t.id + '" aria-selected="' + (sel ? 'true' : 'false') + '" onclick="selectClubTopic(\'' + t.id + '\')">' +
       '<span class="material-symbols-rounded" aria-hidden="true">' + t.icon + '</span>' +
-      '<span class="book-tile-title">' + clubEsc(t.name) + '</span>' +
-      '<span class="book-tile-meta">' + clubEsc(t.meta) + '</span></button>';
+      '<span class="book-tile-title">' + clubEsc(t.name) + '</span></button>';
   }).join('');
 }
 function selectClubTopic(id) {
@@ -5841,7 +5840,7 @@ function renderPlayGames() {
   host.innerHTML = PLAY_GAMES.map(function (g) {
     var icon = g.icon === 'snitch' ? '<svg class="nav-icon" aria-hidden="true"><use href="#hp-snitch"></use></svg>' : '<span class="material-symbols-rounded" aria-hidden="true">' + g.icon + '</span>';
     return '<button class="book-tile game-tile" type="button" role="tab" data-game="' + g.id + '" aria-selected="' + (playGame === g.id ? 'true' : 'false') + '" onclick="selectPlayGame(\'' + g.id + '\')">' +
-      icon + '<span class="book-tile-title">' + playEsc(g.name) + '</span><span class="game-tile-sub">' + playEsc(g.sub) + '</span><span class="book-tile-meta">' + playEsc(g.meta) + '</span></button>';
+      icon + '<span class="book-tile-title">' + playEsc(g.name) + '</span><span class="game-tile-sub">' + playEsc(g.sub) + '</span></button>';
   }).join('');
 }
 function selectPlayGame(id) {
