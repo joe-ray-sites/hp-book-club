@@ -209,7 +209,10 @@
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font-sans);
-  background: var(--md-sys-color-background);
+  /* The house chrome, not the parchment: iOS 27 Home Screen apps tint the fade under the status
+     bar with the body's background colour (not the header, theme-color or <html>), which washed a
+     parchment band over the header. The parchment lives on <main class="content"> instead. */
+  background: var(--hp-chrome);
   color: var(--md-sys-color-on-background);
   min-height: 100dvh;
   overflow-x: hidden;
@@ -230,7 +233,12 @@ input, select, textarea { font-family: inherit; font-size: 16px; color: inherit;
 }
 
 /* ── Layout (ref L188–190, L2940–2947) ── */
-.content { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.content {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  background: var(--md-sys-color-background);                        /* the page (see body) */
+  min-height: calc(100dvh - 56px - env(safe-area-inset-top, 0px));    /* + the top bar = one screen */
+  transition: background 0.3s;
+}
 .section { display: none; }
 .section.active { display: block; animation: hpFadeIn 0.25s ease; }
 @keyframes hpFadeIn {
@@ -2547,8 +2555,10 @@ html.install-page-open body { overflow: hidden; }
 
   /* ── Chrome: no top bar; the page starts at the top edge ── */
   .top-app-bar, .header-menu { display: none; }
+  body { background: var(--md-sys-color-background); }   /* the phone's iOS 27 fix (see body) is not needed here */
   .content {
     container: page / inline-size;
+    background: none; min-height: 0;
     margin-left: var(--rail-push);
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: 0;
